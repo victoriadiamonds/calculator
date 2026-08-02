@@ -21,6 +21,18 @@
         </select>
       </div>
       <div style="flex:1">
+        <label for="typeFilter">Type</label>
+        <select id="typeFilter">
+          <option value="all" selected>All Types</option>
+          <option value="ring">Rings</option>
+          <option value="necklace">Necklaces</option>
+          <option value="earrings">Earrings</option>
+          <option value="bracelet">Bracelets</option>
+          <option value="brooch">Brooch</option>
+          <option value="tiara">Tiara</option>
+        </select>
+      </div>
+      <div style="flex:1">
         <label for="product">Choose product / design</label>
         <select id="product"></select>
       </div>
@@ -48,7 +60,10 @@
     </div>
 
     <div class="diamond-block">
-      <div class="diamond-section-title">Main Diamond</div>
+      <div class="diamond-section-title">
+        Main Diamond
+        <button type="button" class="diamond-reset" data-index="0" title="Reset this diamond">↺</button>
+      </div>
       <div class="row" style="margin-top:8px">
         <div style="flex:1">
           <label for="dq0">Diamond quality</label>
@@ -69,7 +84,10 @@
     </div>
 
     <div class="diamond-block">
-      <div class="diamond-section-title">Diamond 2</div>
+      <div class="diamond-section-title">
+        Diamond 2
+        <button type="button" class="diamond-reset" data-index="1" title="Reset this diamond">↺</button>
+      </div>
       <div class="row" style="margin-top:8px">
         <div style="flex:1">
           <label for="dq1">Diamond quality</label>
@@ -90,7 +108,10 @@
     </div>
 
     <div class="diamond-block">
-      <div class="diamond-section-title">Diamond 3</div>
+      <div class="diamond-section-title">
+        Diamond 3
+        <button type="button" class="diamond-reset" data-index="2" title="Reset this diamond">↺</button>
+      </div>
       <div class="row" style="margin-top:8px">
         <div style="flex:1">
           <label for="dq2">Diamond quality</label>
@@ -111,7 +132,10 @@
     </div>
 
     <div class="diamond-block">
-      <div class="diamond-section-title">Diamond 4</div>
+      <div class="diamond-section-title">
+        Diamond 4
+        <button type="button" class="diamond-reset" data-index="3" title="Reset this diamond">↺</button>
+      </div>
       <div class="row" style="margin-top:8px">
         <div style="flex:1">
           <label for="dq3">Diamond quality</label>
@@ -230,7 +254,7 @@
     // Centralized diamond pricing lookup:
     // price per stone by quality tier and carat weight (GBP).
     // Carat sizes 0.20 / 0.30 / 0.40 have no official price yet (null = "unpriced", NOT free).
-    const DIAMOND_CARATS = ['0.10','0.15','0.20','0.25','0.30','0.40','0.50','0.75','1.00','2.00','3.00','4.00','5.00'];
+    const DIAMOND_CARATS = ['0.10','0.15','0.25','0.50','0.75','1.00','2.00','3.00','4.00','5.00'];
 
     // Updated 2-tier pricing (Elite tier discontinued — Luxe is now the top tier).
     // Luxe: Color D, Clarity IF/F. Select: Color E/F/G, Clarity VS+.
@@ -238,10 +262,9 @@
       luxe: {
         '0.10': 33,
         '0.15': 50,
-        '0.20': null,
+     
         '0.25': 131,
-        '0.30': null,
-        '0.40': null,
+      
         '0.50': 344,
         '0.75': 445,
         '1.00': 594,
@@ -253,10 +276,9 @@
       select: {
         '0.10': 22,
         '0.15': 33,
-        '0.20': null,
+   
         '0.25': 55,
-        '0.30': null,
-        '0.40': null,
+     
         '0.50': 110,
         '0.75': 165,
         '1.00': 220,
@@ -351,25 +373,27 @@
           { id: 'ds_s_princess', name: 'Princess', weight: 3.5, labor: 30, stones: 1, type: 'ring' },
           { id: 'ds_s_elan', name: 'Elan', weight: 2.5, labor: 26, stones: 0, type: 'ring' },
           { id: 'ds_s_solitaire', name: 'Solitaire', weight: 4.0, labor: 35, stones: 1, type: 'ring' },
-          { id: 'ds_s_timeless', name: 'Timeless Classic', weight: 3.8, labor: 33, stones: 0, type: 'ring' }
+          { id: 'ds_s_timeless', name: 'Timeless Classic', weight: 3.8, labor: 33, stones: 0, type: 'ring' },
+          { id: 'ds_s_fiora', name: 'Fiora Earrings', weight: 5.7, labor: 30, stones: 8, type: 'earrings', diamondPreset: { q: 'select', c: '0.25', qty: 8 } },
+          { id: 'ds_s_luminea', name: 'Luminea Earrings', weight: 5.23, labor: 30, stones: 6, type: 'earrings', diamondPreset: { q: 'select', c: '0.25', qty: 6 } },
+          { id: 'ds_s_martini', name: 'Martini Studs', weight: 5.0, labor: 40, stones: 2, type: 'earrings' }
         ],
         signature: [
-          { id: 'ds_m_solstice', name: 'Solstice Necklace', weight: 8.0, labor: 55, stones: 3, type: 'necklace' },
-          { id: 'ds_m_aurora', name: 'Aurora Necklace', weight: 9.0, labor: 58, stones: 3, type: 'necklace' },
-          { id: 'ds_m_celeste', name: 'Celeste Necklace', weight: 8.5, labor: 56, stones: 2, type: 'necklace' },
-          { id: 'ds_m_solenne_bracelet', name: 'Solenne Bracelet', weight: 7.0, labor: 50, stones: 2, type: 'bracelet' },
-          { id: 'ds_m_aurea_bracelet', name: 'Aurea Bracelet', weight: 7.5, labor: 52, stones: 2, type: 'bracelet' },
-          { id: 'ds_m_liora_bracelet', name: 'Liora Bracelet', weight: 6.5, labor: 48, stones: 1, type: 'bracelet' },
-          { id: 'ds_m_celeste_bracelet', name: 'Celeste Bracelet', weight: 7.0, labor: 50, stones: 1, type: 'bracelet' },
-          { id: 'ds_m_lumiere_bracelet', name: 'Lumiere Bracelet', weight: 8.0, labor: 54, stones: 3, type: 'bracelet' },
-          { id: 'ds_m_martini', name: 'Martini Studs', weight: 5.0, labor: 40, stones: 2, type: 'earrings' },
+          { id: 'ds_m_solstice', name: 'Solstice Necklace', weight: 8.0, labor: 55, stones: 3, type: 'necklace', diamondPreset: { q: 'select', c: '0.50', qty: 3 } },
+          { id: 'ds_m_aurora', name: 'Aurora Necklace', weight: 9.0, labor: 58, stones: 3, type: 'necklace', diamondPreset: { q: 'select', c: '0.50', qty: 3 } },
+          { id: 'ds_m_celeste', name: 'Celeste Necklace', weight: 8.5, labor: 56, stones: 2, type: 'necklace', diamondPreset: { q: 'select', c: '0.50', qty: 2 } },
+          { id: 'ds_m_solenne_bracelet', name: 'Solenne Bracelet', weight: 7.0, labor: 50, stones: 2, type: 'bracelet', diamondPreset: { q: 'select', c: '0.50', qty: 2 } },
+          { id: 'ds_m_aurea_bracelet', name: 'Aurea Bracelet', weight: 7.5, labor: 52, stones: 2, type: 'bracelet', diamondPreset: { q: 'select', c: '0.50', qty: 2 } },
+          { id: 'ds_m_liora_bracelet', name: 'Liora Bracelet', weight: 6.5, labor: 48, stones: 1, type: 'bracelet', diamondPreset: { q: 'select', c: '0.50', qty: 1 } },
+          { id: 'ds_m_celeste_bracelet', name: 'Celeste Bracelet', weight: 7.0, labor: 50, stones: 1, type: 'bracelet', diamondPreset: { q: 'select', c: '0.50', qty: 1 } },
+          { id: 'ds_m_lumiere_bracelet', name: 'Lumiere Bracelet', weight: 8.0, labor: 54, stones: 3, type: 'bracelet', diamondPreset: { q: 'select', c: '0.50', qty: 3 } },
           { id: 'ds_m_eternity', name: 'Eternity Ring', weight: 5.5, labor: 45, stones: 2, type: 'ring' },
-          { id: 'ds_m_splendor', name: 'Splendor Earrings', weight: 6.0, labor: 48, stones: 2, type: 'earrings' }
+          { id: 'ds_m_splendor', name: 'Splendor Rings', weight: 6.0, labor: 48, stones: 2, type: 'ring' }
         ],
         atelier: [
-          { id: 'ds_l_serenity', name: 'Serenity Necklace', weight: 16.0, labor: 80, stones: 5, type: 'necklace' },
-          { id: 'ds_l_virelle', name: 'Virelle Necklace', weight: 18.0, labor: 85, stones: 6, type: 'necklace' },
-          { id: 'ds_l_luvia', name: 'Luvia Necklace', weight: 20.0, labor: 90, stones: 7, type: 'necklace' }
+          { id: 'ds_l_serenity', name: 'Serenity Necklace', weight: 16.0, labor: 80, stones: 5, type: 'necklace', diamondPreset: { q: 'select', c: '0.50', qty: 5 } },
+          { id: 'ds_l_virelle', name: 'Virelle Necklace', weight: 18.0, labor: 85, stones: 6, type: 'necklace', diamondPreset: { q: 'select', c: '0.50', qty: 6 } },
+          { id: 'ds_l_luvia', name: 'Luvia Necklace', weight: 20.0, labor: 90, stones: 7, type: 'necklace', diamondPreset: { q: 'select', c: '0.50', qty: 7 } }
         ]
       },
       occasionWear: {
@@ -381,54 +405,57 @@
           { id: 'ow_s_promise_rg', name: 'Promise of Forever (Rose Gold)', weight: 4.0, labor: 38, stones: 1, type: 'ring' }
         ],
         signature: [
-          { id: 'ow_m_elysia', name: 'Elysia', weight: 9.0, labor: 60, stones: 4, type: 'necklace' },
-          { id: 'ow_m_eternelle', name: 'Eternelle Grand', weight: 10.0, labor: 65, stones: 5, type: 'necklace' },
-          { id: 'ow_m_rosebloom', name: 'Rose Bloom', weight: 8.5, labor: 58, stones: 3, type: 'necklace' },
-          { id: 'ow_m_skylar', name: 'Skylar', weight: 9.5, labor: 62, stones: 4, type: 'necklace' },
-          { id: 'ow_m_fae', name: 'Fae', weight: 8.0, labor: 55, stones: 3, type: 'necklace' },
-          { id: 'ow_m_celestia', name: 'Celestia', weight: 10.0, labor: 65, stones: 5, type: 'necklace' },
-          { id: 'ow_m_athena', name: 'Athena', weight: 9.0, labor: 60, stones: 4, type: 'necklace' },
-          { id: 'ow_m_victorian', name: 'Victorian', weight: 11.0, labor: 68, stones: 5, type: 'necklace' },
-          { id: 'ow_m_lunelle', name: 'Lunelle', weight: 8.5, labor: 56, stones: 3, type: 'necklace' },
+          { id: 'ow_m_elysia', name: 'Elysia', weight: 9.0, labor: 60, stones: 4, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 4 } },
+          { id: 'ow_m_eternelle', name: 'Eternelle Grand', weight: 10.0, labor: 65, stones: 5, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 5 } },
+          { id: 'ow_m_rosebloom', name: 'Rose Bloom', weight: 8.5, labor: 58, stones: 3, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 3 } },
+          { id: 'ow_m_skylar', name: 'Skylar', weight: 9.5, labor: 62, stones: 4, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 4 } },
+          { id: 'ow_m_fae', name: 'Fae', weight: 8.0, labor: 55, stones: 3, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 3 } },
+          { id: 'ow_m_celestia', name: 'Celestia', weight: 10.0, labor: 65, stones: 5, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 5 } },
+          { id: 'ow_m_athena', name: 'Athena', weight: 9.0, labor: 60, stones: 4, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 4 } },
+          { id: 'ow_m_victorian', name: 'Victorian', weight: 11.0, labor: 68, stones: 5, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 5 } },
+          { id: 'ow_m_lunelle', name: 'Lunelle', weight: 8.5, labor: 56, stones: 3, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 3 } },
           { id: 'ow_m_celestia_brooch', name: 'Celestia Brooch', weight: 7.0, labor: 50, stones: 3, type: 'brooch' },
           { id: 'ow_m_eternelle_brooch', name: 'Eternelle Brooch', weight: 7.5, labor: 52, stones: 3, type: 'brooch' },
-          { id: 'ow_m_illusion', name: 'Round Illusion', weight: 8.0, labor: 55, stones: 2, type: 'ring' },
-          { id: 'ow_m_flora', name: 'Flora', weight: 9.0, labor: 60, stones: 4, type: 'necklace' },
+          { id: 'ow_m_illusion', name: 'Round Illusion', weight: 8.0, labor: 55, stones: 2, type: 'earrings' },
+          { id: 'ow_m_fiora', name: 'Fiora', weight: 9.0, labor: 60, stones: 4, type: 'earrings', diamondPreset: { q: 'select', c: '0.50', qty: 4 } },
           { id: 'ow_m_luminia_tiara', name: 'Luminia Tiara', weight: 12.0, labor: 75, stones: 6, type: 'tiara' }
         ],
         atelier: [
-          { id: 'ow_l_venus', name: 'Venus', weight: 18.0, labor: 90, stones: 8, type: 'necklace' },
-          { id: 'ow_l_imperial', name: 'Imperial Pave', weight: 22.0, labor: 100, stones: 10, type: 'necklace' },
-          { id: 'ow_l_lumina', name: 'Lumina', weight: 18.0, labor: 88, stones: 7, type: 'necklace' },
-          { id: 'ow_l_arabella', name: 'Arabella', weight: 20.0, labor: 95, stones: 8, type: 'necklace' }
-        ],
+          { id: 'ow_l_venus', name: 'Venus', weight: 18.0, labor: 90, stones: 8, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 8 } },
+          { id: 'ow_l_imperial', name: 'Imperial Pave', weight: 22.0, labor: 100, stones: 10, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 10 } },
+          { id: 'ow_l_lumina', name: 'Lumina', weight: 18.0, labor: 88, stones: 7, type: 'bracelet', diamondPreset: { q: 'select', c: '0.50', qty: 7 } },
+          { id: 'ow_l_arabella', name: 'Arabella', weight: 20.0, labor: 95, stones: 8, type: 'bracelet', diamondPreset: { q: 'select', c: '0.50', qty: 8 } }
+],
         custom: [
           { id: 'ow_c_luminia_tiara', name: 'Luminia Tiara (Custom)', weight: 14.0, labor: 85, stones: 7, type: 'tiara' }
         ]
       },
       foreverBond: {
         essentials: [
-          { id: 'fb_s_shine', name: 'Shine', weight: 3.0, labor: 28, stones: 0, type: 'ring' },
-          { id: 'fb_s_unbreakable', name: 'Unbreakable Hearts', weight: 3.5, labor: 32, stones: 1, type: 'ring' },
-          { id: 'fb_s_bound', name: 'Bound by Destiny', weight: 4.0, labor: 35, stones: 1, type: 'ring' },
-          { id: 'fb_s_amour_eternel', name: 'Amour Eternel', weight: 3.8, labor: 33, stones: 1, type: 'ring' },
-          { id: 'fb_s_eternal_promise', name: 'Eternal Promise (Wedding Band Set)', weight: 5.0, labor: 40, stones: 1, type: 'ring' },
-          { id: 'fb_s_her_ring', name: 'Eternal Connection — Her Ring', weight: 3.2, labor: 30, stones: 1, type: 'ring' }
+          { id: 'fb_s_moment_to_shine', name: 'Moment to Shine Ring', weight: 3.0, labor: 28, stones: 0, type: 'ring' },
+          { id: 'fb_s_unbreakable_hearts', name: 'Unbreakable Hearts Ring', weight: 3.5, labor: 32, stones: 1, type: 'ring' },
+          { id: 'fb_s_bound_by_destiny', name: 'Bound by Destiny Ring', weight: 4.0, labor: 35, stones: 1, type: 'ring' },
+          { id: 'fb_s_amour_eternel', name: 'Amour Éternel Ring', weight: 3.8, labor: 33, stones: 1, type: 'ring' },
+          { id: 'fb_s_eternal_promise', name: 'Eternal Promise Ring', weight: 5.0, labor: 40, stones: 1, type: 'ring' },
+          { id: 'fb_s_wedding_bands', name: 'Wedding Bands', weight: 4.5, labor: 38, stones: 0, type: 'ring' }
         ],
         signature: [
           { id: 'fb_m_stellar', name: 'Stellar Promise', weight: 7.0, labor: 50, stones: 2, type: 'ring' },
           { id: 'fb_m_elegance', name: 'Elegance Unie', weight: 8.0, labor: 55, stones: 3, type: 'ring' },
-          { id: 'fb_m_lumiere_eternity', name: 'Lumiere Eternity', weight: 7.5, labor: 52, stones: 2, type: 'ring' },
-          { id: 'fb_m_endless', name: 'Endless Devotion', weight: 8.5, labor: 58, stones: 3, type: 'ring' },
-          { id: 'fb_m_luminous', name: 'Luminous Devotion', weight: 8.0, labor: 55, stones: 3, type: 'ring' },
-          { id: 'fb_m_everlasting', name: 'Everlasting Embrace', weight: 9.0, labor: 60, stones: 3, type: 'ring' },
-          { id: 'fb_m_knot', name: 'The Knot', weight: 7.0, labor: 50, stones: 2, type: 'ring' },
-          { id: 'fb_m_celestial', name: 'Celestial Embrace', weight: 9.5, labor: 62, stones: 4, type: 'ring' },
-          { id: 'fb_m_his_ring', name: 'Eternal Connection — His Ring', weight: 8.0, labor: 55, stones: 2, type: 'ring' },
-          { id: 'fb_m_couple_set', name: 'Eternal Connection — Couple Set', weight: 11.2, labor: 75, stones: 3, type: 'ring' }
+          { id: 'fb_m_lumiere_eternity', name: 'Lumière Eternity Ring', weight: 7.5, labor: 52, stones: 2, type: 'ring' },
+          { id: 'fb_m_endless', name: 'Endless Devotion Ring', weight: 8.5, labor: 58, stones: 3, type: 'ring' },
+          { id: 'fb_m_luminous', name: 'Luminous Devotion Ring', weight: 8.0, labor: 55, stones: 3, type: 'ring' },
+          { id: 'fb_m_everlasting', name: 'Everlasting Embrace Ring', weight: 9.0, labor: 60, stones: 3, type: 'ring' },
+          { id: 'fb_m_knot', name: 'The Knot Ring', weight: 7.0, labor: 50, stones: 2, type: 'ring' },
+          { id: 'fb_m_eternal_connection', name: 'Eternal Connection Ring', weight: 8.0, labor: 55, stones: 2, type: 'ring' },
+          { id: 'fb_m_eternal_harmony', name: 'Eternal Harmony Ring', weight: 8.5, labor: 56, stones: 3, type: 'ring' },
+          { id: 'fb_m_destiny_couple', name: 'Destiny Couple Ring', weight: 10.0, labor: 65, stones: 4, type: 'ring' },
+          { id: 'fb_m_elysian', name: 'Elysian Ring', weight: 7.5, labor: 54, stones: 2, type: 'ring' }
         ],
         atelier: [
-          { id: 'fb_l_ethereal', name: 'Ethereal Halo', weight: 14.0, labor: 78, stones: 6, type: 'ring' }
+          { id: 'fb_l_ethereal_halo', name: 'Ethereal Halo Ring', weight: 14.0, labor: 78, stones: 6, type: 'ring' },
+          { id: 'fb_l_celestial_embrace', name: 'Celestial Embrace Ring', weight: 9.5, labor: 62, stones: 4, type: 'ring' },
+          { id: 'fb_l_eternal_promise_set', name: 'Eternal Promise Ring Set (Couple\'s Ring)', weight: 12.0, labor: 80, stones: 5, type: 'ring' }
         ]
       }
     };
@@ -455,14 +482,20 @@
       return null;
     }
 
-    // Return ALL products from all tiers for the selected collection
+    // Return ALL products from all tiers for the selected collection,
+    // optionally filtered by the jewelry type selected in the Type dropdown.
     function getProductsForCurrentSelections(){
       const collection = document.getElementById('collection').value;
+      const typeFilter = document.getElementById('typeFilter').value;
       var allProducts = [];
       const tiers = PRODUCTS_BY_COLLECTION[collection] || {};
       for(var tierKey in tiers){
         if(tiers.hasOwnProperty(tierKey)){
-          allProducts = allProducts.concat(tiers[tierKey]);
+          var tierProducts = tiers[tierKey];
+          if(typeFilter && typeFilter !== 'all'){
+            tierProducts = tierProducts.filter(function(p){ return p.type === typeFilter; });
+          }
+          allProducts = allProducts.concat(tierProducts);
         }
       }
       return allProducts;
@@ -527,6 +560,24 @@
       }
     }
 
+// Apply a product's diamond preset (if any) to the diamond section controls.
+    // Used for products with predefined diamond requirements (earrings, necklaces, bracelets).
+    // Products without a preset leave diamonds untouched.
+    function applyDiamondPreset(preset){
+      if(!preset) return;
+      // Reset all four diamond sections to defaults, then apply this product's preset
+      for(var i = 0; i < 4; i++){
+        document.getElementById('dq' + i).value = 'select';
+        document.getElementById('dc' + i).value = '0';
+        document.getElementById('dqt' + i).value = '1';
+      }
+      // Set the first diamond section to the preset values
+      document.getElementById('dq0').value = preset.q || 'select';
+      document.getElementById('dc0').value = String(preset.c || '0');
+      document.getElementById('dqt0').value = String(preset.qty != null ? preset.qty : 1);
+      updateLiveTotal();
+    }
+
     function renderProductInfo(){
       const prod = getCurrentProduct();
       if(prod){
@@ -534,6 +585,7 @@
         document.getElementById('product').dataset.labor = prod.labor;
         document.getElementById('product').dataset.type = prod.type;
       }
+      applyDiamondPreset(prod && prod.diamondPreset);
       renderTierBadge();
       updateModelName();
     }
@@ -679,7 +731,16 @@
         };
       }
 
-      const packageKey = TIER_TO_PACKAGE[tierKey] || 'basic';
+      // Design/labor fee package selection.
+      // Base package comes from the product's tier, but jewelry type overrides it:
+      //   - Necklaces always use the Signature design fee
+      //   - Bracelets always use the Essential (basic) design fee
+      let packageKey = TIER_TO_PACKAGE[tierKey] || 'basic';
+      if(prod.type === 'necklace'){
+        packageKey = 'signature';
+      } else if(prod.type === 'bracelet'){
+        packageKey = 'basic';
+      }
       const metal = document.getElementById('metal').value;
 
       // Determine metal key for the design-fee lookup
@@ -802,6 +863,18 @@
           }
         }
       });
+
+      // For earrings, show diamond weight per earring and per pair
+      if(prod.type === 'earrings'){
+        var totalCts = 0;
+        p.entries.forEach(function(e){
+          if(e.caratNum > 0) totalCts += e.caratNum * e.qty;
+        });
+        if(totalCts > 0){
+          html += '<div class="small"><strong>Diamond weight:</strong> ' + (totalCts / 2) + ' ct per earring / ' + totalCts + ' ct per pair</div>';
+        }
+      }
+
       html += '<div><strong>Diamond cost (all):</strong> ' + formatGBP(p.diamondPrice) + '</div><hr />' +
         (p.designFee > 0 ? '<div><strong>Design customization:</strong> ' + formatGBP(p.designFee) + '</div>' : '') +
         '<div><strong>Subtotal (per unit):</strong> ' + formatGBP(p.subtotal) + '</div>' +
@@ -929,16 +1002,24 @@
       document.getElementById('resultPopup').hidden = true;
     }
 
+    // Reset a single diamond section (index 0–3) to its defaults:
+    // Main Diamond = Select, 1.00 ct, qty 1; others = Select, None, qty 1.
+    function resetDiamondSection(i){
+      document.getElementById('dq' + i).value = 'select';
+      document.getElementById('dc' + i).value = i === 0 ? '1.00' : '0';
+      document.getElementById('dqt' + i).value = '1';
+      updateLiveTotal();
+    }
+
     function resetAll(){
       document.getElementById('collection').value = 'dailySparkle';
+      document.getElementById('typeFilter').value = 'all';
       populateProducts();
       document.getElementById('metal').value = 'gold';
       renderMetalExtras();
       // Reset all four diamond sections to defaults (Main = Select 1.00 ct, others = None)
       for(var i = 0; i < 4; i++){
-        document.getElementById('dq' + i).value = 'select';
-        document.getElementById('dc' + i).value = i === 0 ? '1.00' : '0';
-        document.getElementById('dqt' + i).value = '1';
+        resetDiamondSection(i);
       }
       document.getElementById('quantity').value = '1';
       document.getElementById('discount').value = '0';
@@ -1010,12 +1091,17 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+      // Populate carat dropdowns first so product diamond presets can be applied on load
+      populateDiamondCarats();
       populateProducts();
       renderMetalExtras();
-      populateDiamondCarats();
       updateLiveTotal();
 
       document.getElementById('collection').addEventListener('change', function() {
+        populateProducts();
+        updateLiveTotal();
+      });
+      document.getElementById('typeFilter').addEventListener('change', function() {
         populateProducts();
         updateLiveTotal();
       });
@@ -1044,6 +1130,13 @@
 
       // Karat / purity controls are regenerated inside #metalExtras, so listen on the container
       document.getElementById('metalExtras').addEventListener('change', updateLiveTotal);
+
+      // Per-diamond reset buttons (small ↺ in each diamond section title)
+      document.querySelectorAll('.diamond-reset').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          resetDiamondSection(Number(btn.dataset.index));
+        });
+      });
 
       document.getElementById('calc').addEventListener('click', calculate);
       document.getElementById('reset').addEventListener('click', resetAll);

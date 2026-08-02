@@ -1,13 +1,14 @@
-# Fix White Box Height — Task List
+# Design Fee Overrides + Diamond Presets for Necklaces & Bracelets — Task List
+
+## Context
+- Necklaces (all, across collections/tiers) should use the **Signature** design/labor fee.
+- Bracelets (all) should use the **Essential (basic)** design/labor fee.
+- Necklaces & bracelets auto-fill diamond carat **0.50** with quantity adjustable like rings (preset to the product's stone count).
+- Keep existing metal weights.
 
 ## Steps
-- [x] Analyze the task & read relevant files (index.html, style.css)
-- [x] Confirm plan with user
-- [x] 1. Remove `margin: 0 auto` from `.card` rule in style.css so the body's flex `align-items: stretch` fills viewport height
-- [x] 2. User feedback: card should cover the WHOLE page — made `.card` full-bleed:
-  - `body` padding set to `0` (removes beige border around the card)
-  - `.card` width set to `100%` / `max-width: 100%` (fills full width, no 960px cap)
-  - `.card` `min-height: 100vh` (fills full height)
-  - `border-radius: 0`, `box-shadow: none`, `border: 0` (no rounded corners / shadow reveal edges)
-  - Mobile media query border-radius also set to `0`
+- [x] 1. Add type-based design fee override in `computePricing()`: necklace → signature, bracelet → basic
+- [x] 2. Add `diamondPreset: { q:'select', c:'0.50', qty:<stones> }` to all Daily Sparkle necklaces & bracelets
+- [x] 3. Add `diamondPreset: { q:'select', c:'0.50', qty:<stones> }` to all Occasion Wear necklaces
+- [x] 4. Verify in browser that necklaces use Signature fee and bracelets use Essential fee, with 0.50ct auto-filled
 

@@ -835,12 +835,51 @@ input[type="number"]:focus, select:focus {
 }
 
 .diamond-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   font-weight: 700;
   color: #55483a;
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.4px;
   margin-bottom: 4px;
+}
+
+.diamond-reset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1.5px solid #d8cbb8;
+  background: #fff;
+  color: #9a8f80;
+  font-size: 0.75rem;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+}
+
+.diamond-reset:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(184, 134, 11, 0.08);
+  transform: rotate(-90deg);
+}
+
+.diamond-reset:active {
+  transform: rotate(-90deg) scale(0.9);
+}
+
+.diamond-reset:focus-visible {
+  outline: 0;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.12);
 }
 
 .diamond-block .row {
