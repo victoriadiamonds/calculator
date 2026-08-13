@@ -16,6 +16,11 @@ app.use(express.json({
   }
 }));
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 // Serve static files (the calculator)
 app.use(express.static(path.join(__dirname)));
 
@@ -304,11 +309,6 @@ app.post('/airwallex/webhook', async (req, res) => {
     console.error('Webhook processing error:', error.message);
     res.status(500).json({ error: 'Webhook processing failed' });
   }
-});
-
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 const port = process.env.PORT || 3000;
