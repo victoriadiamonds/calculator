@@ -1061,10 +1061,6 @@
         });
         console.log('[Airwallex] Drop-in created');
 
-        console.log('[Airwallex] mounting Drop-in');
-        airwallexDropin.mount('airwallex-dropin');
-        console.log('[Airwallex] Drop-in mounted');
-
         airwallexDropin.on('ready', () => {
           console.log('[Airwallex] ready event fired');
           document.getElementById('paymentStatus').textContent = 'Enter your payment details below.';
@@ -1077,8 +1073,13 @@
         airwallexDropin.on('error', (error) => {
           console.error('[Airwallex] error event:', error);
           document.getElementById('paymentStatus').textContent = 'Payment error. Please review your details and try again.';
+          document.getElementById('submitPayment').disabled = false;
         });
         console.log('[Airwallex] event listeners registered');
+
+        console.log('[Airwallex] mounting Drop-in');
+        airwallexDropin.mount('airwallex-dropin');
+        console.log('[Airwallex] Drop-in mounted');
       } catch (error) {
         console.error('[Airwallex] initialization failed:', error);
         document.getElementById('paymentStatus').textContent = 'Unable to load payment form. Please try again.';
