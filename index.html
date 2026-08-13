@@ -1055,8 +1055,8 @@
 
         console.log('[Airwallex] creating Drop-in element');
         airwallexDropin = await window.AirwallexComponentsSDK.createElement('dropIn', {
-          intentId: currentPaymentIntent.paymentIntentId,
-          clientSecret: clientSecret,
+          intent_id: currentPaymentIntent.paymentIntentId,
+          client_secret: clientSecret,
           currency: 'GBP'
         });
         console.log('[Airwallex] Drop-in created');
