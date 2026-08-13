@@ -701,7 +701,8 @@
       if(metal === 'platinum'){
         metalKey = 'platinum';
       } else if(metal === 'gold'){
-        metalKey = document.getElementById('karat').value + 'K';
+        const karatEl = document.getElementById('karat');
+        metalKey = karatEl ? karatEl.value + 'K' : '18K';
       } else {
         metalKey = '9K';
       }
