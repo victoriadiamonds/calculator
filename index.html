@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Jewelry Price Calculator</title>
+  <title>Victoria Diamonds Jewelry Price Calculator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -169,7 +169,7 @@
     <div class="row">
       <div style="flex:1">
         <label for="profit">Profit margin (%)</label>
-        <input id="profit" type="number" step="1" min="0" value="20" />
+        <input id="profit" type="number" step="1" min="0" value="0" />
       </div>
       <div style="flex:1">
         <label for="notes">Notes (optional)</label>
@@ -236,8 +236,13 @@
             <input id="email" type="email" placeholder="john@example.com" />
           </div>
 
+          <div class="form-group" id="airwallexDropinContainer" style="margin-top:16px;">
+            <label>Payment Details</label>
+            <div id="airwallex-dropin"></div>
+          </div>
+
           <div class="buttons" style="margin-top:24px">
-            <button id="submitPayment" class="btn">Pay with Stripe</button>
+            <button id="submitPayment" class="btn">Continue to payment</button>
             <button id="cancelCheckout" class="btn secondary">Cancel</button>
           </div>
 
@@ -247,26 +252,27 @@
     </div>
   </div>
 
+  <!-- Airwallex JS SDK -->
+  <script src="https://static.airwallex.com/components/sdk/v1/index.js"></script>
   <script>
-    // Realistic base prices (GBP) per gram of pure metal at 24K/999/pure equivalents
+    // Airwallex environment configuration (synced with backend)
+    window.AIRWALLEX_ENV = 'sandbox';
+  </script>
+
+  <script>
+    // ============ PRICING CONSTANTS (mirrored from pricing.js for frontend) ============
     const BASE = { gold24: 62.0, silver: 0.85, platinum: 34.0 };
 
-    // Centralized diamond pricing lookup:
-    // price per stone by quality tier and carat weight (GBP).
-    // Carat sizes 0.20 / 0.30 / 0.40 have no official price yet (null = "unpriced", NOT free).
-    const DIAMOND_CARATS = ['0.10','0.15','0.25','0.50','0.75','1.00','2.00','3.00','4.00','5.00'];
+    const DIAMOND_CARATS = ['0.05','0.1','0.15','0.25','0.50','0.75','1.00','2.00','3.00','4.00','5.00'];
 
-    // Updated 2-tier pricing (Elite tier discontinued — Luxe is now the top tier).
-    // Luxe: Color D, Clarity IF/F. Select: Color E/F/G, Clarity VS+.
     const DIAMOND_PRICES = {
       luxe: {
-        '0.10': 33,
-        '0.15': 50,
-     
-        '0.25': 131,
-      
-        '0.50': 344,
-        '0.75': 445,
+        '0.05': 16.50,
+        '0.1': 59,
+        '0.15': 89,
+        '0.25': 149,
+        '0.50': 297,
+        '0.75': 446,
         '1.00': 594,
         '2.00': 1063,
         '3.00': 1594,
@@ -274,14 +280,13 @@
         '5.00': 2313
       },
       select: {
-        '0.10': 22,
-        '0.15': 33,
-   
-        '0.25': 55,
-     
-        '0.50': 110,
-        '0.75': 165,
-        '1.00': 220,
+        '0.05': 12.50,
+        '0.1': 23,
+        '0.15': 35,
+        '0.25': 90,
+        '0.50': 150,
+        '0.75': 188,
+        '1.00': 250,
         '2.00': 500,
         '3.00': 850,
         '4.00': 1300,
@@ -289,11 +294,6 @@
       }
     };
 
-    // Design/labor package price by tier and metal (GBP).
-    // NOTE (hybrid pricing): this fee represents design complexity and
-    // craftsmanship/labor ONLY. The raw metal cost is calculated separately
-    // from each product's actual gram weight (see computePricing -> materialCost),
-    // so heavier pieces in the same tier cost more, and lighter pieces cost less.
     const PRICING_PACKAGE_MATRIX = {
       basic: {
         '22K': 1325,
@@ -308,37 +308,19 @@
         '14K': 1190,
         '9K': 805,
         'platinum': 805
-      },
-      atelier: {
-        '22K': 2120,
-        '18K': 1800,
-        '14K': 1360,
-        '9K': 920,
-        'platinum': 920
       }
     };
 
     const TIERS = {
       essentials: { label: '✦ Essentials', emoji: '✦', color: '#2d7d46', tierLabel: 'S' },
-      signature: { label: '◆ Signature', emoji: '◆', color: '#b8860b', tierLabel: 'M' },
-      atelier: { label: '◈ Atelier', emoji: '◈', color: '#6b3fa0', tierLabel: 'L' },
-      custom: { label: '◈ Custom Atelier', emoji: '◈', color: '#c05621', tierLabel: 'Custom' }
+      signature: { label: '◆ Signature', emoji: '◆', color: '#b8860b', tierLabel: 'M' }
     };
 
-    // Maps a product's inherent tier to the design-complexity key used in
-    // PRICING_PACKAGE_MATRIX (basic = Simple Design, signature = Medium
-    // Complicated, atelier = Substantial). Custom Atelier products price
-    // the same as Atelier.
     const TIER_TO_PACKAGE = {
       essentials: 'basic',
-      signature: 'signature',
-      atelier: 'atelier',
-      custom: 'atelier'
+      signature: 'signature'
     };
 
-    // Jewelry type labels (for display) and which types are NOT auto-calculated.
-    // Per business rule: tiaras and brooches are bespoke/one-off pieces and are
-    // always quoted manually — the calculator will not attempt a price for them.
     const TYPE_LABELS = {
       ring: 'Ring',
       necklace: 'Necklace',
@@ -349,19 +331,10 @@
     };
     const NON_CALCULATED_TYPES = ['tiara', 'brooch'];
 
-    // Product data organized by Collection -> Tier
-    // Each product now carries an explicit `type` field (ring / necklace /
-    // bracelet / earrings / tiara / brooch) used both for display and to
-    // decide whether the calculator can price it automatically.
-    //
-    // NOTE: types were inferred from product names/descriptions where the
-    // name didn't already say it outright (e.g. "Solitaire" -> ring). If any
-    // of these are wrong for your actual catalog, they're easy to correct —
-    // just change the `type` value on that product.
     const COLLECTION_TIERS = {
-      dailySparkle: ['essentials', 'signature', 'atelier'],
-      occasionWear: ['essentials', 'signature', 'atelier', 'custom'],
-      foreverBond: ['essentials', 'signature', 'atelier']
+      dailySparkle: ['essentials', 'signature'],
+      occasionWear: ['essentials', 'signature'],
+      foreverBond: ['essentials', 'signature']
     };
 
     const PRODUCTS_BY_COLLECTION = {
@@ -370,28 +343,35 @@
           { id: 'ds_s_solenne', name: 'Solenne', weight: 3.0, labor: 30, stones: 1, type: 'ring' },
           { id: 'ds_s_aria', name: 'Aria', weight: 2.8, labor: 28, stones: 0, type: 'ring' },
           { id: 'ds_s_aurelle', name: 'Aurelle', weight: 3.2, labor: 32, stones: 1, type: 'ring' },
+          { id: 'ds_s_aurelia', name: 'Aurelia', weight: 3.4, labor: 33, stones: 1, type: 'ring' },
           { id: 'ds_s_princess', name: 'Princess', weight: 3.5, labor: 30, stones: 1, type: 'ring' },
           { id: 'ds_s_elan', name: 'Elan', weight: 2.5, labor: 26, stones: 0, type: 'ring' },
           { id: 'ds_s_solitaire', name: 'Solitaire', weight: 4.0, labor: 35, stones: 1, type: 'ring' },
           { id: 'ds_s_timeless', name: 'Timeless Classic', weight: 3.8, labor: 33, stones: 0, type: 'ring' },
+          { id: 'ds_m_eternity', name: 'Eternity Ring', weight: 5.5, labor: 45, stones: 2, type: 'ring' },
+          { id: 'ds_m_splendor', name: 'Splendor Rings', weight: 6.0, labor: 48, stones: 2, type: 'ring' },
           { id: 'ds_s_fiora', name: 'Fiora Earrings', weight: 5.7, labor: 30, stones: 8, type: 'earrings', diamondPreset: { q: 'select', c: '0.25', qty: 8 } },
           { id: 'ds_s_luminea', name: 'Luminea Earrings', weight: 5.23, labor: 30, stones: 6, type: 'earrings', diamondPreset: { q: 'select', c: '0.25', qty: 6 } },
-          { id: 'ds_s_martini', name: 'Martini Studs', weight: 5.0, labor: 40, stones: 2, type: 'earrings' }
-        ],
-        signature: [
-          { id: 'ds_m_solstice', name: 'Solstice Necklace', weight: 8.0, labor: 55, stones: 3, type: 'necklace', diamondPreset: { q: 'select', c: '0.50', qty: 3 } },
-          { id: 'ds_m_aurora', name: 'Aurora Necklace', weight: 9.0, labor: 58, stones: 3, type: 'necklace', diamondPreset: { q: 'select', c: '0.50', qty: 3 } },
-          { id: 'ds_m_celeste', name: 'Celeste Necklace', weight: 8.5, labor: 56, stones: 2, type: 'necklace', diamondPreset: { q: 'select', c: '0.50', qty: 2 } },
+          { id: 'ds_s_martini', name: 'Martini Studs', weight: 5.0, labor: 40, stones: 2, type: 'earrings' },
+          { id: 'ds_s_diamond_dust', name: 'Diamond Dust', weight: 3.0, labor: 30, stones: 1, type: 'ring' },
+          { id: 'ds_s_nocturne', name: 'Nocturne', weight: 3.2, labor: 30, stones: 1, type: 'ring' },
+          { id: 'ds_s_gianna', name: 'Gianna', weight: 3.0, labor: 28, stones: 0, type: 'ring' },
+          { id: 'ds_s_raya', name: 'Raya', weight: 3.2, labor: 30, stones: 1, type: 'ring' },
+          { id: 'ds_s_mirabelle', name: 'Mirabelle', weight: 3.5, labor: 32, stones: 1, type: 'ring' },
+          { id: 'ds_s_cascade', name: 'Cascade', weight: 3.2, labor: 30, stones: 1, type: 'ring' },
+          { id: 'ds_s_nova', name: 'Nova', weight: 3.0, labor: 30, stones: 1, type: 'ring' },
+          { id: 'ds_s_elara', name: 'Elara', weight: 3.2, labor: 30, stones: 1, type: 'ring' },
           { id: 'ds_m_solenne_bracelet', name: 'Solenne Bracelet', weight: 7.0, labor: 50, stones: 2, type: 'bracelet', diamondPreset: { q: 'select', c: '0.50', qty: 2 } },
           { id: 'ds_m_aurea_bracelet', name: 'Aurea Bracelet', weight: 7.5, labor: 52, stones: 2, type: 'bracelet', diamondPreset: { q: 'select', c: '0.50', qty: 2 } },
           { id: 'ds_m_liora_bracelet', name: 'Liora Bracelet', weight: 6.5, labor: 48, stones: 1, type: 'bracelet', diamondPreset: { q: 'select', c: '0.50', qty: 1 } },
           { id: 'ds_m_celeste_bracelet', name: 'Celeste Bracelet', weight: 7.0, labor: 50, stones: 1, type: 'bracelet', diamondPreset: { q: 'select', c: '0.50', qty: 1 } },
-          { id: 'ds_m_lumiere_bracelet', name: 'Lumiere Bracelet', weight: 8.0, labor: 54, stones: 3, type: 'bracelet', diamondPreset: { q: 'select', c: '0.50', qty: 3 } },
-          { id: 'ds_m_eternity', name: 'Eternity Ring', weight: 5.5, labor: 45, stones: 2, type: 'ring' },
-          { id: 'ds_m_splendor', name: 'Splendor Rings', weight: 6.0, labor: 48, stones: 2, type: 'ring' }
+          { id: 'ds_m_lumiere_bracelet', name: 'Lumiere Bracelet', weight: 8.0, labor: 54, stones: 3, type: 'bracelet', diamondPreset: { q: 'select', c: '0.50', qty: 3 } }
         ],
-        atelier: [
-          { id: 'ds_l_serenity', name: 'Serenity Necklace', weight: 16.0, labor: 80, stones: 5, type: 'necklace', diamondPreset: { q: 'select', c: '0.50', qty: 5 } },
+        signature: [
+          { id: 'ds_m_solstice', name: 'Solstice Necklace', weight: 8.0, labor: 55, stones: 3, type: 'necklace', diamondPreset: { q: 'select', c: '0.75', qty: 3 } },
+          { id: 'ds_m_aurora', name: 'Aurora Necklace', weight: 9.0, labor: 58, stones: 3, type: 'necklace', diamondPreset: { q: 'select', c: '0.75', qty: 3 } },
+          { id: 'ds_m_celeste', name: 'Celeste Necklace', weight: 8.5, labor: 56, stones: 2, type: 'necklace', diamondPreset: { q: 'select', c: '0.50', qty: 2 } },
+          { id: 'ds_l_serenity', name: 'Serenity Necklace', weight: 16.0, labor: 80, stones: 5, type: 'necklace', diamondPreset: { q: 'select', c: '0.75', qty: 5 } },
           { id: 'ds_l_virelle', name: 'Virelle Necklace', weight: 18.0, labor: 85, stones: 6, type: 'necklace', diamondPreset: { q: 'select', c: '0.50', qty: 6 } },
           { id: 'ds_l_luvia', name: 'Luvia Necklace', weight: 20.0, labor: 90, stones: 7, type: 'necklace', diamondPreset: { q: 'select', c: '0.50', qty: 7 } }
         ]
@@ -402,32 +382,27 @@
           { id: 'ow_s_tranquility', name: 'Tranquility', weight: 3.5, labor: 32, stones: 0, type: 'ring' },
           { id: 'ow_s_anora', name: 'Anora', weight: 3.8, labor: 33, stones: 1, type: 'ring' },
           { id: 'ow_s_amour', name: 'Amour', weight: 4.2, labor: 36, stones: 1, type: 'ring' },
-          { id: 'ow_s_promise_rg', name: 'Promise of Forever (Rose Gold)', weight: 4.0, labor: 38, stones: 1, type: 'ring' }
-        ],
-        signature: [
+          { id: 'ow_s_promise_rg', name: 'Promise of Forever (Rose Gold)', weight: 4.0, labor: 38, stones: 1, type: 'ring' },
+          { id: 'ow_m_skylar', name: 'Skylar', weight: 9.5, labor: 62, stones: 4, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 4 } },
+          { id: 'ow_m_fae', name: 'Fae', weight: 8.0, labor: 55, stones: 3, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 3 } },
+          { id: 'ow_m_athena', name: 'Athena', weight: 9.0, labor: 60, stones: 4, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 4 } },
+          { id: 'ow_m_victorian', name: 'Victorian', weight: 11.0, labor: 68, stones: 5, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 5 } },
           { id: 'ow_m_elysia', name: 'Elysia', weight: 9.0, labor: 60, stones: 4, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 4 } },
           { id: 'ow_m_eternelle', name: 'Eternelle Grand', weight: 10.0, labor: 65, stones: 5, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 5 } },
           { id: 'ow_m_rosebloom', name: 'Rose Bloom', weight: 8.5, labor: 58, stones: 3, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 3 } },
-          { id: 'ow_m_skylar', name: 'Skylar', weight: 9.5, labor: 62, stones: 4, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 4 } },
-          { id: 'ow_m_fae', name: 'Fae', weight: 8.0, labor: 55, stones: 3, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 3 } },
           { id: 'ow_m_celestia', name: 'Celestia', weight: 10.0, labor: 65, stones: 5, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 5 } },
-          { id: 'ow_m_athena', name: 'Athena', weight: 9.0, labor: 60, stones: 4, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 4 } },
-          { id: 'ow_m_victorian', name: 'Victorian', weight: 11.0, labor: 68, stones: 5, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 5 } },
           { id: 'ow_m_lunelle', name: 'Lunelle', weight: 8.5, labor: 56, stones: 3, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 3 } },
           { id: 'ow_m_celestia_brooch', name: 'Celestia Brooch', weight: 7.0, labor: 50, stones: 3, type: 'brooch' },
           { id: 'ow_m_eternelle_brooch', name: 'Eternelle Brooch', weight: 7.5, labor: 52, stones: 3, type: 'brooch' },
           { id: 'ow_m_illusion', name: 'Round Illusion', weight: 8.0, labor: 55, stones: 2, type: 'earrings' },
           { id: 'ow_m_fiora', name: 'Fiora', weight: 9.0, labor: 60, stones: 4, type: 'earrings', diamondPreset: { q: 'select', c: '0.50', qty: 4 } },
-          { id: 'ow_m_luminia_tiara', name: 'Luminia Tiara', weight: 12.0, labor: 75, stones: 6, type: 'tiara' }
-        ],
-        atelier: [
-          { id: 'ow_l_venus', name: 'Venus', weight: 18.0, labor: 90, stones: 8, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 8 } },
-          { id: 'ow_l_imperial', name: 'Imperial Pave', weight: 22.0, labor: 100, stones: 10, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 10 } },
+          { id: 'ow_m_luminia_tiara', name: 'Luminia Tiara', weight: 12.0, labor: 75, stones: 6, type: 'tiara' },
           { id: 'ow_l_lumina', name: 'Lumina', weight: 18.0, labor: 88, stones: 7, type: 'bracelet', diamondPreset: { q: 'select', c: '0.50', qty: 7 } },
           { id: 'ow_l_arabella', name: 'Arabella', weight: 20.0, labor: 95, stones: 8, type: 'bracelet', diamondPreset: { q: 'select', c: '0.50', qty: 8 } }
-],
-        custom: [
-          { id: 'ow_c_luminia_tiara', name: 'Luminia Tiara (Custom)', weight: 14.0, labor: 85, stones: 7, type: 'tiara' }
+        ],
+        signature: [
+          { id: 'ow_l_venus', name: 'Venus', weight: 18.0, labor: 90, stones: 8, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 8 } },
+          { id: 'ow_l_imperial', name: 'Imperial Pave', weight: 22.0, labor: 100, stones: 10, type: 'ring', diamondPreset: { q: 'select', c: '0.50', qty: 10 } }
         ]
       },
       foreverBond: {
@@ -437,40 +412,50 @@
           { id: 'fb_s_bound_by_destiny', name: 'Bound by Destiny Ring', weight: 4.0, labor: 35, stones: 1, type: 'ring' },
           { id: 'fb_s_amour_eternel', name: 'Amour Éternel Ring', weight: 3.8, labor: 33, stones: 1, type: 'ring' },
           { id: 'fb_s_eternal_promise', name: 'Eternal Promise Ring', weight: 5.0, labor: 40, stones: 1, type: 'ring' },
-          { id: 'fb_s_wedding_bands', name: 'Wedding Bands', weight: 4.5, labor: 38, stones: 0, type: 'ring' }
-        ],
-        signature: [
+          { id: 'fb_s_wedding_bands', name: 'Wedding Bands', weight: 4.5, labor: 38, stones: 0, type: 'ring' },
           { id: 'fb_m_stellar', name: 'Stellar Promise', weight: 7.0, labor: 50, stones: 2, type: 'ring' },
           { id: 'fb_m_elegance', name: 'Elegance Unie', weight: 8.0, labor: 55, stones: 3, type: 'ring' },
           { id: 'fb_m_lumiere_eternity', name: 'Lumière Eternity Ring', weight: 7.5, labor: 52, stones: 2, type: 'ring' },
           { id: 'fb_m_endless', name: 'Endless Devotion Ring', weight: 8.5, labor: 58, stones: 3, type: 'ring' },
-          { id: 'fb_m_luminous', name: 'Luminous Devotion Ring', weight: 8.0, labor: 55, stones: 3, type: 'ring' },
           { id: 'fb_m_everlasting', name: 'Everlasting Embrace Ring', weight: 9.0, labor: 60, stones: 3, type: 'ring' },
           { id: 'fb_m_knot', name: 'The Knot Ring', weight: 7.0, labor: 50, stones: 2, type: 'ring' },
           { id: 'fb_m_eternal_connection', name: 'Eternal Connection Ring', weight: 8.0, labor: 55, stones: 2, type: 'ring' },
           { id: 'fb_m_eternal_harmony', name: 'Eternal Harmony Ring', weight: 8.5, labor: 56, stones: 3, type: 'ring' },
           { id: 'fb_m_destiny_couple', name: 'Destiny Couple Ring', weight: 10.0, labor: 65, stones: 4, type: 'ring' },
-          { id: 'fb_m_elysian', name: 'Elysian Ring', weight: 7.5, labor: 54, stones: 2, type: 'ring' }
-        ],
-        atelier: [
-          { id: 'fb_l_ethereal_halo', name: 'Ethereal Halo Ring', weight: 14.0, labor: 78, stones: 6, type: 'ring' },
-          { id: 'fb_l_celestial_embrace', name: 'Celestial Embrace Ring', weight: 9.5, labor: 62, stones: 4, type: 'ring' },
           { id: 'fb_l_eternal_promise_set', name: 'Eternal Promise Ring Set (Couple\'s Ring)', weight: 12.0, labor: 80, stones: 5, type: 'ring' }
+        ],
+        signature: [
+          { id: 'fb_m_luminous', name: 'Luminous Devotion Ring', weight: 8.0, labor: 55, stones: 3, type: 'ring' },
+          { id: 'fb_m_elysian', name: 'Elysian Ring', weight: 7.5, labor: 54, stones: 2, type: 'ring' },
+          { id: 'fb_l_ethereal_halo', name: 'Ethereal Halo Ring', weight: 14.0, labor: 78, stones: 6, type: 'ring' },
+          { id: 'fb_l_celestial_embrace', name: 'Celestial Embrace Ring', weight: 9.5, labor: 62, stones: 4, type: 'ring' }
         ]
       }
     };
 
+    const DIAMOND_SECTION_NAMES = ['Main Diamond', 'Diamond 2', 'Diamond 3', 'Diamond 4'];
+
     let currentOrderTotal = 0;
     let currentIsPriceOnRequest = false;
+    let currentPaymentIntent = null;
+    let airwallexDropin = null;
 
     function formatGBP(v){ return '£' + Math.round(v).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0}); }
+
+    function formatGBPRate(v){
+      const rounded = Math.round(v * 100) / 100;
+      const hasFraction = Math.abs(rounded - Math.round(rounded)) > 0.001;
+      return '£' + rounded.toLocaleString(undefined, {
+        minimumFractionDigits: hasFraction ? 2 : 0,
+        maximumFractionDigits: 2
+      });
+    }
 
     function getCollectionName(id){
       const names = { dailySparkle: 'Daily Sparkle', occasionWear: 'Occasion Wear', foreverBond: 'Forever Bond' };
       return names[id] || id;
     }
 
-    // Find which tier a product belongs to within a collection
     function getProductInherentTier(collection, productId){
       const tiers = PRODUCTS_BY_COLLECTION[collection];
       for(var tierKey in tiers){
@@ -482,8 +467,6 @@
       return null;
     }
 
-    // Return ALL products from all tiers for the selected collection,
-    // optionally filtered by the jewelry type selected in the Type dropdown.
     function getProductsForCurrentSelections(){
       const collection = document.getElementById('collection').value;
       const typeFilter = document.getElementById('typeFilter').value;
@@ -533,7 +516,6 @@
         sel.appendChild(opt);
       } else {
         products.forEach(function(p){
-          // Find which tier group this product belongs to
           const collection = document.getElementById('collection').value;
           const tierKey = getProductInherentTier(collection, p.id) || '';
           const tierInfo = TIERS[tierKey];
@@ -560,18 +542,13 @@
       }
     }
 
-// Apply a product's diamond preset (if any) to the diamond section controls.
-    // Used for products with predefined diamond requirements (earrings, necklaces, bracelets).
-    // Products without a preset leave diamonds untouched.
     function applyDiamondPreset(preset){
       if(!preset) return;
-      // Reset all four diamond sections to defaults, then apply this product's preset
       for(var i = 0; i < 4; i++){
         document.getElementById('dq' + i).value = 'select';
         document.getElementById('dc' + i).value = '0';
         document.getElementById('dqt' + i).value = '1';
       }
-      // Set the first diamond section to the preset values
       document.getElementById('dq0').value = preset.q || 'select';
       document.getElementById('dc0').value = String(preset.c || '0');
       document.getElementById('dqt0').value = String(preset.qty != null ? preset.qty : 1);
@@ -645,10 +622,6 @@
       return BASE.platinum;
     }
 
-    const DIAMOND_SECTION_NAMES = ['Main Diamond', 'Diamond 2', 'Diamond 3', 'Diamond 4'];
-
-    // Populate every diamond carat dropdown from the centralized carat list.
-    // A "None" option (value 0) is included so unused diamond sections cost nothing.
     function populateDiamondCarats(){
       document.querySelectorAll('.diamond-carat').forEach(function(sel){
         var current = sel.value;
@@ -667,9 +640,6 @@
       });
     }
 
-    // Read the four diamond sections (quality / carat / quantity) into an array.
-    // Carat sizes with a `null` price (unpriced) are flagged via `unpriced: true`
-    // instead of silently costing £0.
     function getDiamondEntries(){
       var entries = [];
       for(var i = 0; i < 4; i++){
@@ -702,15 +672,6 @@
       return entries;
     }
 
-    // Single source of truth for the whole pricing calculation.
-    // Returns null if no product is available.
-    // Returns { priceOnRequest: true, prod, tierKey, type } for types that are
-    // never auto-calculated (tiara / brooch) — no numbers are computed for these.
-    //
-    // HYBRID PRICING MODEL (for calculable types):
-    //   designComplexityFee = design/labor complexity fee, looked up by tier + metal type
-    //   materialCost        = actual gold/silver/platinum weight (g) x price per gram
-    //   ringPrice            = designComplexityFee + materialCost   <-- the "base price"
     function computePricing(){
       const products = getProductsForCurrentSelections();
       const pid = document.getElementById('product').value;
@@ -720,7 +681,6 @@
       const collection = document.getElementById('collection').value;
       const tierKey = getProductInherentTier(collection, prod.id) || 'essentials';
 
-      // Bespoke/one-off types are never auto-calculated — always quoted manually.
       if(isNonCalculatedType(prod.type)){
         return {
           priceOnRequest: true,
@@ -731,19 +691,12 @@
         };
       }
 
-      // Design/labor fee package selection.
-      // Base package comes from the product's tier, but jewelry type overrides it:
-      //   - Necklaces always use the Signature design fee
-      //   - Bracelets always use the Essential (basic) design fee
       let packageKey = TIER_TO_PACKAGE[tierKey] || 'basic';
-      if(prod.type === 'necklace'){
-        packageKey = 'signature';
-      } else if(prod.type === 'bracelet'){
+      if(prod.type === 'bracelet'){
         packageKey = 'basic';
       }
       const metal = document.getElementById('metal').value;
 
-      // Determine metal key for the design-fee lookup
       let metalKey;
       if(metal === 'platinum'){
         metalKey = 'platinum';
@@ -753,18 +706,9 @@
         metalKey = '9K';
       }
 
-      // Design/labor fee from the tier matrix (complexity only, no metal cost baked in)
       const designComplexityFee = (PRICING_PACKAGE_MATRIX[packageKey] && PRICING_PACKAGE_MATRIX[packageKey][metalKey]) || 0;
+      const ringPrice = designComplexityFee;
 
-      // Material cost = actual weight of THIS product x price per gram of the chosen metal/purity
-      const pricePerGram = getMetalPricePerGram();
-      const weightGrams = Number(prod.weight) || 0;
-      const materialCost = weightGrams * pricePerGram;
-
-      // Combined base "ring price" used in the rest of the calculation
-      const ringPrice = designComplexityFee + materialCost;
-
-      // Sum the cost of every diamond entry: (price per stone x quantity)
       const entries = getDiamondEntries();
       let diamondPrice = 0;
       let hasUnpricedDiamond = false;
@@ -777,7 +721,6 @@
       const profitPct = Number(document.getElementById('profit').value) || 0;
       const designFee = Number(document.getElementById('designFee').value) || 0;
 
-      // Discount is clamped to 0–100 and applied to the final calculated price.
       let discount = Number(document.getElementById('discount').value) || 0;
       discount = Math.min(Math.max(discount, 0), 100);
 
@@ -797,9 +740,6 @@
         metal: metal,
         metalKey: metalKey,
         designComplexityFee: designComplexityFee,
-        pricePerGram: pricePerGram,
-        weightGrams: weightGrams,
-        materialCost: materialCost,
         ringPrice: ringPrice,
         entries: entries,
         diamondPrice: diamondPrice,
@@ -817,7 +757,6 @@
       };
     }
 
-    // Live total shown under the buttons; refreshes on any input/select change.
     function updateLiveTotal(){
       const el = document.getElementById('liveTotal');
       if(!el) return;
@@ -850,10 +789,8 @@
         '<div><strong>Model name:</strong> ' + (document.getElementById('modelName').value.trim() || '(none)') + '</div>' +
         '<div><strong>Metal:</strong> ' + metalLabel + '</div>' +
         '<div><strong>Design/labor fee:</strong> ' + formatGBP(p.designComplexityFee) + '</div>' +
-        '<div><strong>Material cost (' + p.weightGrams + 'g x ' + formatGBP(p.pricePerGram) + '/g):</strong> ' + formatGBP(p.materialCost) + '</div>' +
-        '<div><strong>Base price (design + material):</strong> ' + formatGBP(p.ringPrice) + '</div>';
+        '<div><strong>Base price (design):</strong> ' + formatGBP(p.ringPrice) + '</div>';
 
-      // List each non-empty diamond entry
       p.entries.forEach(function(e, idx){
         if(e.caratNum > 0){
           if(e.unpriced){
@@ -864,7 +801,6 @@
         }
       });
 
-      // For earrings, show diamond weight per earring and per pair
       if(prod.type === 'earrings'){
         var totalCts = 0;
         p.entries.forEach(function(e){
@@ -906,12 +842,11 @@
         '<div class="small" style="margin-top:8px">Notes: ' + (document.getElementById('notes').value.trim() || '-') + '</div>';
     }
 
-    function buildBreakdownMarkup(metalLabel, p){
-      const packageLabels = { basic: 'Basic design', signature: 'Signature design', atelier: 'Atelier design' };
+    function buildBreakdownMarkup(p){
+      const packageLabels = { basic: 'Essential design', signature: 'Signature design' };
       const qualityLabels = { luxe: 'Luxe', select: 'Select' };
       let lines = '<div class="breakdown-title">How this was calculated</div>';
       lines += '<div class="breakdown-line"><span>Design/labor fee — ' + (packageLabels[p.packageKey] || p.packageKey) + '</span><span>' + formatGBP(p.designComplexityFee) + '</span></div>';
-      lines += '<div class="breakdown-line"><span>Material — ' + metalLabel + ', ' + p.weightGrams + 'g</span><span>' + formatGBP(p.materialCost) + '</span></div>';
       p.entries.forEach(function(e, idx){
         if(e.caratNum > 0){
           if(e.unpriced){
@@ -925,7 +860,7 @@
         lines += '<div class="breakdown-line"><span>Design customization</span><span>' + formatGBP(p.designFee) + '</span></div>';
       }
       lines += '<hr />';
-      lines += '<div class="breakdown-formula">Base price = ' + formatGBP(p.designComplexityFee) + ' (design) + ' + formatGBP(p.materialCost) + ' (material) = <strong>' + formatGBP(p.ringPrice) + '</strong></div>';
+      lines += '<div class="breakdown-formula">Base price = ' + formatGBP(p.designComplexityFee) + ' (design) = <strong>' + formatGBP(p.ringPrice) + '</strong></div>';
       lines += '<div class="breakdown-formula">Subtotal = ' + formatGBP(p.ringPrice) + ' + ' + formatGBP(p.diamondPrice) + (p.designFee > 0 ? ' + ' + formatGBP(p.designFee) : '') + ' = <strong>' + formatGBP(p.subtotal) + '</strong></div>';
       lines += '<div class="breakdown-formula">Profit (' + p.profitPct + '%) = ' + formatGBP(p.subtotal) + ' × ' + p.profitPct + '% = <strong>' + formatGBP(p.profitAmount) + '</strong></div>';
       lines += '<div class="breakdown-formula">Unit total = ' + formatGBP(p.subtotal) + ' + ' + formatGBP(p.profitAmount) + ' = <strong>' + formatGBP(p.unitTotal) + '</strong></div>';
@@ -978,8 +913,7 @@
       const popupBody = document.getElementById('resultPopupBody');
       popupBody.innerHTML = buildResultMarkup(p.prod, p);
 
-      const metalLabel = p.metal === 'gold' ? document.getElementById('karat').value + 'K gold' : (p.metal === 'silver' ? document.getElementById('purity').value + ' silver' : '950 platinum');
-      breakdownPanel.innerHTML = buildBreakdownMarkup(metalLabel, p);
+      breakdownPanel.innerHTML = buildBreakdownMarkup(p);
       breakdownPanel.hidden = true;
       breakdownBtn.hidden = false;
       breakdownBtn.textContent = 'Check breakdown';
@@ -1002,8 +936,6 @@
       document.getElementById('resultPopup').hidden = true;
     }
 
-    // Reset a single diamond section (index 0–3) to its defaults:
-    // Main Diamond = Select, 1.00 ct, qty 1; others = Select, None, qty 1.
     function resetDiamondSection(i){
       document.getElementById('dq' + i).value = 'select';
       document.getElementById('dc' + i).value = i === 0 ? '1.00' : '0';
@@ -1017,13 +949,12 @@
       populateProducts();
       document.getElementById('metal').value = 'gold';
       renderMetalExtras();
-      // Reset all four diamond sections to defaults (Main = Select 1.00 ct, others = None)
       for(var i = 0; i < 4; i++){
         resetDiamondSection(i);
       }
       document.getElementById('quantity').value = '1';
       document.getElementById('discount').value = '0';
-      document.getElementById('profit').value = '20';
+      document.getElementById('profit').value = '0';
       document.getElementById('notes').value = '';
       document.getElementById('designFee').value = '0';
       document.getElementById('out').innerHTML = '<div class="muted">Choose product and options, then press Calculate.</div>';
@@ -1037,13 +968,19 @@
       renderTierBadge();
       updateModelName();
       updateLiveTotal();
+      destroyAirwallexDropin();
     }
 
     function openPaymentModal(){
-      if(currentIsPriceOnRequest) return; // safety guard — should already be disabled
+      if(currentIsPriceOnRequest) return;
       closeResultPopup();
       document.getElementById('paymentModal').classList.add('open');
       document.getElementById('totalPrice').textContent = formatGBP(currentOrderTotal);
+      document.getElementById('paymentStatus').textContent = '';
+      document.getElementById('submitPayment').disabled = false;
+
+      // Clear any existing dropin
+      destroyAirwallexDropin();
     }
 
     function closePaymentModal(){
@@ -1051,47 +988,203 @@
       document.getElementById('paymentStatus').textContent = '';
       document.getElementById('fullName').value = '';
       document.getElementById('email').value = '';
-      const cardName = document.getElementById('cardName');
-      if(cardName){ cardName.value = ''; }
-      const cardNumber = document.getElementById('cardNumber');
-      if(cardNumber){ cardNumber.value = ''; }
-      const expiry = document.getElementById('expiry');
-      if(expiry){ expiry.value = ''; }
-      const cvc = document.getElementById('cvc');
-      if(cvc){ cvc.value = ''; }
+      destroyAirwallexDropin();
     }
 
-    async function processPayment(){
+    function destroyAirwallexDropin(){
+      if (airwallexDropin) {
+        try {
+          airwallexDropin.destroy();
+        } catch (e) {
+          // ignore
+        }
+        airwallexDropin = null;
+      }
+      currentPaymentIntent = null;
+      const container = document.getElementById('airwallex-dropin');
+      if (container) container.innerHTML = '';
+    }
+
+    function getOrderDataForPayment() {
+      const p = computePricing();
+      if (!p || p.priceOnRequest) return null;
+
+      const diamonds = [];
+      for (let i = 0; i < 4; i++) {
+        diamonds.push({
+          quality: document.getElementById('dq' + i).value,
+          carat: document.getElementById('dc' + i).value || '0',
+          qty: Number(document.getElementById('dqt' + i).value) || 1
+        });
+      }
+
+      return {
+        productId: document.getElementById('product').value,
+        collection: document.getElementById('collection').value,
+        typeFilter: document.getElementById('typeFilter').value,
+        metal: document.getElementById('metal').value,
+        karat: document.getElementById('karat') ? Number(document.getElementById('karat').value) : 18,
+        purity: document.getElementById('purity') ? Number(document.getElementById('purity').value) : 999,
+        diamonds: diamonds,
+        quantity: Number(document.getElementById('quantity').value) || 1,
+        discount: Number(document.getElementById('discount').value) || 0,
+        profit: Number(document.getElementById('profit').value) || 0,
+        designFee: Number(document.getElementById('designFee').value) || 0,
+        customerName: document.getElementById('fullName').value.trim(),
+        customerEmail: document.getElementById('email').value.trim()
+      };
+    }
+
+    async function initializeAirwallexDropin(clientSecret) {
+      if (!window.AirwallexComponentsSDK) {
+        throw new Error('Airwallex SDK not loaded');
+      }
+
+      const container = document.getElementById('airwallex-dropin');
+      container.innerHTML = '';
+
+      try {
+        await window.AirwallexComponentsSDK.init({
+          env: (window.AIRWALLEX_ENV === 'production') ? 'prod' : 'demo',
+          enabledElements: ['payments']
+        });
+        airwallexDropin = await window.AirwallexComponentsSDK.createElement('dropIn', {
+          intent_id: currentPaymentIntent.paymentIntentId,
+          client_secret: clientSecret,
+          currency: 'GBP'
+        });
+        airwallexDropin.mount('airwallex-dropin');
+        airwallexDropin.on('ready', () => {
+          document.getElementById('paymentStatus').textContent = 'Enter your payment details below.';
+          document.getElementById('submitPayment').disabled = true;
+        });
+        airwallexDropin.on('success', () => {
+          document.getElementById('paymentStatus').textContent = 'Payment successful. Confirming your order…';
+          document.getElementById('submitPayment').disabled = true;
+        });
+        airwallexDropin.on('error', (error) => {
+          console.error('Airwallex Drop-in error:', error);
+          document.getElementById('paymentStatus').textContent = 'Payment error. Please review your details and try again.';
+        });
+      } catch (error) {
+        console.error('Failed to initialize Airwallex Drop-in:', error);
+        document.getElementById('paymentStatus').textContent = 'Unable to load payment form. Please try again.';
+        throw error;
+      }
+    }
+
+    /*
+    function showMockPaymentForm() {
+      const container = document.getElementById('airwallex-dropin');
+      container.innerHTML = `
+        <div style="padding: 20px; background: rgba(255,255,255,0.05); border-radius: 8px; border: 1px dashed rgba(255,255,255,0.2);">
+          <h4 style="margin-top: 0; color: #b8860b;">⚠ DEVELOPMENT MODE - Mock Payment</h4>
+          <p style="font-size: 0.9rem; color: #aaa; margin-bottom: 16px;">
+            The Airwallex Drop-in requires valid Payment Acceptance credentials to load.
+            Your current credentials don't have Payment Acceptance enabled.
+          </p>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button type="button" class="btn" onclick="simulatePaymentSuccess()">Simulate Successful Payment</button>
+            <button type="button" class="btn secondary" onclick="simulatePaymentFailed()">Simulate Failed Payment</button>
+          </div>
+          <p style="font-size: 0.8rem; color: #888; margin-top: 12px;">
+            In production with real credentials, the Airwallex Drop-in payment form would appear here.
+          </p>
+        </div>
+      `;
+    }
+
+    function simulatePaymentSuccess() {
+      document.getElementById('paymentStatus').textContent = 'Payment successful! (Simulated)';
+      document.getElementById('submitPayment').disabled = true;
+      // Simulate webhook processing
+      setTimeout(() => {
+        alert('Payment simulated as successful! In production, the webhook would mark the order as paid.');
+        closePaymentModal();
+      }, 1000);
+    }
+
+    function simulatePaymentFailed() {
+      document.getElementById('paymentStatus').textContent = 'Payment failed. Please try again. (Simulated)';
+      document.getElementById('submitPayment').disabled = false;
+    }
+
+    */
+
+    async function createPaymentIntent() {
+      const orderData = getOrderDataForPayment();
+      if (!orderData) {
+        throw new Error('Invalid order data');
+      }
+
+      const status = document.getElementById('paymentStatus');
+      status.textContent = 'Creating payment session...';
+
+      try {
+        const resp = await fetch('/create-payment-intent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderData)
+        });
+
+        const json = await resp.json();
+
+        if (!resp.ok) {
+          throw new Error(json.error || 'Failed to create payment intent');
+        }
+
+        currentPaymentIntent = {
+          paymentIntentId: json.paymentIntentId,
+          clientSecret: json.clientSecret,
+          merchantOrderId: json.merchantOrderId,
+          amount: json.amount
+        };
+
+        return currentPaymentIntent;
+      } catch (error) {
+        console.error('PaymentIntent creation failed:', error);
+        status.textContent = 'Unable to start payment. Please try again.';
+        throw error;
+      }
+    }
+
+    async function processPayment() {
       const name = document.getElementById('fullName').value.trim();
       const email = document.getElementById('email').value.trim();
       const status = document.getElementById('paymentStatus');
-      if(!name || !email){ status.textContent = 'Please enter name and email.'; return; }
 
-      const amountText = document.getElementById('totalPrice').textContent.replace(/[^0-9.,]/g,'').replace(',','.');
-      const amount = Math.round(parseFloat(amountText) * 100);
-      const collectionName = getCollectionName(document.getElementById('collection').value);
-      const productName = collectionName + ' — ' + ((document.querySelector('#product option:checked')||{}).textContent || 'Jewelry');
-      const quantity = Number(document.getElementById('quantity').value) || 1;
+      if (!name || !email) {
+        status.textContent = 'Please enter name and email.';
+        return;
+      }
 
-      status.textContent = 'Opening Stripe Checkout…';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        status.textContent = 'Please enter a valid email address.';
+        return;
+      }
 
-      try{
-        const resp = await fetch('/create-checkout-session', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ amount, productName, quantity })
-        });
-        const json = await resp.json();
-        if(json.url){ window.location = json.url; }
-        else { status.textContent = 'Failed to create checkout session.'; }
-      }catch(err){
-        console.error(err);
-        status.textContent = 'Error contacting server: '+err.message;
+      if (currentIsPriceOnRequest) {
+        status.textContent = 'This item is priced on request and cannot be paid online.';
+        return;
+      }
+
+      try {
+        // Create PaymentIntent if not already created or if amount changed
+        if (!currentPaymentIntent) {
+          await createPaymentIntent();
+        }
+
+        // Initialize Drop-in with client secret
+        if (currentPaymentIntent && currentPaymentIntent.clientSecret) {
+          await initializeAirwallexDropin(currentPaymentIntent.clientSecret);
+        }
+      } catch (error) {
+        console.error('Payment processing error:', error);
+        status.textContent = 'Error starting payment: ' + error.message;
       }
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-      // Populate carat dropdowns first so product diamond presets can be applied on load
       populateDiamondCarats();
       populateProducts();
       renderMetalExtras();
@@ -1100,27 +1193,29 @@
       document.getElementById('collection').addEventListener('change', function() {
         populateProducts();
         updateLiveTotal();
+        destroyAirwallexDropin();
       });
       document.getElementById('typeFilter').addEventListener('change', function() {
         populateProducts();
         updateLiveTotal();
+        destroyAirwallexDropin();
       });
       document.getElementById('product').addEventListener('change', function() {
         renderProductInfo();
         updateLiveTotal();
+        destroyAirwallexDropin();
       });
       document.getElementById('metal').addEventListener('change', function() {
         renderMetalExtras();
         updateLiveTotal();
+        destroyAirwallexDropin();
       });
 
-      // Live total updates for all order/discount/design inputs
       ['quantity','discount','profit','designFee'].forEach(function(id){
         document.getElementById(id).addEventListener('input', updateLiveTotal);
         document.getElementById(id).addEventListener('change', updateLiveTotal);
       });
 
-      // Live total updates for diamond sections
       for(var i = 0; i < 4; i++){
         document.getElementById('dq' + i).addEventListener('change', updateLiveTotal);
         document.getElementById('dc' + i).addEventListener('change', updateLiveTotal);
@@ -1128,13 +1223,15 @@
         document.getElementById('dqt' + i).addEventListener('change', updateLiveTotal);
       }
 
-      // Karat / purity controls are regenerated inside #metalExtras, so listen on the container
-      document.getElementById('metalExtras').addEventListener('change', updateLiveTotal);
+      document.getElementById('metalExtras').addEventListener('change', function() {
+        updateLiveTotal();
+        destroyAirwallexDropin();
+      });
 
-      // Per-diamond reset buttons (small ↺ in each diamond section title)
       document.querySelectorAll('.diamond-reset').forEach(function(btn){
         btn.addEventListener('click', function(){
           resetDiamondSection(Number(btn.dataset.index));
+          destroyAirwallexDropin();
         });
       });
 
@@ -1151,6 +1248,7 @@
       document.getElementById('closeModal').addEventListener('click', closePaymentModal);
       document.getElementById('cancelCheckout').addEventListener('click', closePaymentModal);
       document.getElementById('submitPayment').addEventListener('click', processPayment);
+
     });
   </script>
 </body>

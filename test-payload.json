@@ -1,0 +1,20 @@
+{
+  "productId": "ds_s_solenne",
+  "collection": "dailySparkle",
+  "typeFilter": "all",
+  "metal": "gold",
+  "karat": 18,
+  "purity": 999,
+  "diamonds": [
+    {"quality": "select", "carat": "1.00", "qty": 1},
+    {"quality": "select", "carat": "0", "qty": 1},
+    {"quality": "select", "carat": "0", "qty": 1},
+    {"quality": "select", "carat": "0", "qty": 1}
+  ],
+  "quantity": 1,
+  "discount": 0,
+  "profit": 0,
+  "designFee": 0,
+  "customerName": "Test User",
+  "customerEmail": "test@example.com"
+}
