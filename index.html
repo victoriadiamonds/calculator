@@ -1049,8 +1049,8 @@
           enabledElements: ['payments']
         });
         airwallexDropin = await window.AirwallexComponentsSDK.createElement('dropIn', {
-          intent_id: currentPaymentIntent.paymentIntentId,
-          client_secret: clientSecret,
+          intentId: currentPaymentIntent.paymentIntentId,
+          clientSecret: clientSecret,
           currency: 'GBP'
         });
         airwallexDropin.mount('airwallex-dropin');
