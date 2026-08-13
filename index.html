@@ -1042,6 +1042,9 @@
         throw new Error('Airwallex SDK not loaded');
       }
 
+      const paymentIntentId = currentPaymentIntent?.paymentIntentId;
+      destroyAirwallexDropin();
+
       const container = document.getElementById('airwallex-dropin');
       container.innerHTML = '';
 
@@ -1055,7 +1058,7 @@
 
         console.log('[Airwallex] creating Drop-in element');
         airwallexDropin = await window.AirwallexComponentsSDK.createElement('dropIn', {
-          intent_id: currentPaymentIntent.paymentIntentId,
+          intent_id: paymentIntentId,
           client_secret: clientSecret,
           currency: 'GBP'
         });
@@ -1067,8 +1070,12 @@
           document.getElementById('submitPayment').disabled = true;
         });
         airwallexDropin.on('success', () => {
-          document.getElementById('paymentStatus').textContent = 'Payment successful. Confirming your order…';
+          document.getElementById('paymentStatus').textContent = 'Payment successful! Confirming your order...';
           document.getElementById('submitPayment').disabled = true;
+          setTimeout(() => {
+            closePaymentModal();
+            alert('Payment successful! Your order has been confirmed.');
+          }, 500);
         });
         airwallexDropin.on('error', (error) => {
           console.error('[Airwallex] error event:', error);
@@ -1163,6 +1170,11 @@
     }
 
     async function processPayment() {
+      if (window.__paymentProcessing) {
+        return;
+      }
+      window.__paymentProcessing = true;
+
       console.log('[processPayment] Starting');
       const name = document.getElementById('fullName').value.trim();
       const email = document.getElementById('email').value.trim();
@@ -1170,16 +1182,19 @@
 
       if (!name || !email) {
         status.textContent = 'Please enter name and email.';
+        window.__paymentProcessing = false;
         return;
       }
 
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         status.textContent = 'Please enter a valid email address.';
+        window.__paymentProcessing = false;
         return;
       }
 
       if (currentIsPriceOnRequest) {
         status.textContent = 'This item is priced on request and cannot be paid online.';
+        window.__paymentProcessing = false;
         return;
       }
 
@@ -1200,6 +1215,8 @@
       } catch (error) {
         console.error('[processPayment] error:', error);
         status.textContent = 'Error starting payment: ' + error.message;
+      } finally {
+        window.__paymentProcessing = false;
       }
     }
 
