@@ -1037,6 +1037,7 @@
     }
 
     async function initializeAirwallexDropin(clientSecret) {
+      console.log('[Airwallex] init starting');
       if (!window.AirwallexComponentsSDK) {
         throw new Error('Airwallex SDK not loaded');
       }
@@ -1045,17 +1046,27 @@
       container.innerHTML = '';
 
       try {
+        console.log('[Airwallex] calling SDK.init()');
         await window.AirwallexComponentsSDK.init({
           env: (window.AIRWALLEX_ENV === 'production') ? 'prod' : 'demo',
           enabledElements: ['payments']
         });
+        console.log('[Airwallex] SDK initialized');
+
+        console.log('[Airwallex] creating Drop-in element');
         airwallexDropin = await window.AirwallexComponentsSDK.createElement('dropIn', {
           intentId: currentPaymentIntent.paymentIntentId,
           clientSecret: clientSecret,
           currency: 'GBP'
         });
+        console.log('[Airwallex] Drop-in created');
+
+        console.log('[Airwallex] mounting Drop-in');
         airwallexDropin.mount('airwallex-dropin');
+        console.log('[Airwallex] Drop-in mounted');
+
         airwallexDropin.on('ready', () => {
+          console.log('[Airwallex] ready event fired');
           document.getElementById('paymentStatus').textContent = 'Enter your payment details below.';
           document.getElementById('submitPayment').disabled = true;
         });
@@ -1064,11 +1075,12 @@
           document.getElementById('submitPayment').disabled = true;
         });
         airwallexDropin.on('error', (error) => {
-          console.error('Airwallex Drop-in error:', error);
+          console.error('[Airwallex] error event:', error);
           document.getElementById('paymentStatus').textContent = 'Payment error. Please review your details and try again.';
         });
+        console.log('[Airwallex] event listeners registered');
       } catch (error) {
-        console.error('Failed to initialize Airwallex Drop-in:', error);
+        console.error('[Airwallex] initialization failed:', error);
         document.getElementById('paymentStatus').textContent = 'Unable to load payment form. Please try again.';
         throw error;
       }
@@ -1150,6 +1162,7 @@
     }
 
     async function processPayment() {
+      console.log('[processPayment] Starting');
       const name = document.getElementById('fullName').value.trim();
       const email = document.getElementById('email').value.trim();
       const status = document.getElementById('paymentStatus');
@@ -1172,15 +1185,19 @@
       try {
         // Create PaymentIntent if not already created or if amount changed
         if (!currentPaymentIntent) {
+          console.log('[processPayment] Calling createPaymentIntent');
           await createPaymentIntent();
+          console.log('[processPayment] createPaymentIntent returned');
         }
 
         // Initialize Drop-in with client secret
         if (currentPaymentIntent && currentPaymentIntent.clientSecret) {
+          console.log('[processPayment] Calling initializeAirwallexDropin');
           await initializeAirwallexDropin(currentPaymentIntent.clientSecret);
+          console.log('[processPayment] initializeAirwallexDropin returned');
         }
       } catch (error) {
-        console.error('Payment processing error:', error);
+        console.error('[processPayment] error:', error);
         status.textContent = 'Error starting payment: ' + error.message;
       }
     }
