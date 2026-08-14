@@ -30,6 +30,11 @@ app.get('/debug/payment-intent/:id', async (req, res) => {
     }
 
     console.log(`[DEBUG] Retrieving PaymentIntent: ${paymentIntentId}`);
+    console.log('[DEBUG] Using Airwallex client config:', {
+      clientId: AIRWALLEX_CLIENT_ID ? 'SET' : 'NOT SET',
+      apiKey: AIRWALLEX_API_KEY ? 'SET' : 'NOT SET',
+      env: AIRWALLEX_ENV === 'production' ? 'prod' : 'demo'
+    });
 
     const response = await airwallexClient.paymentAcceptance.paymentIntents.retrievePaymentIntent(paymentIntentId);
     const pi = response;
@@ -50,7 +55,9 @@ app.get('/debug/payment-intent/:id', async (req, res) => {
     res.json(pi);
   } catch (error) {
     console.error('[DEBUG] Error retrieving PaymentIntent:', error.message);
-    console.error('[DEBUG] Error response:', error.response?.data);
+    console.error('[DEBUG] Error response status:', error.response?.status);
+    console.error('[DEBUG] Error response data:', JSON.stringify(error.response?.data, null, 2));
+    console.error('[DEBUG] Error response headers:', error.response?.headers);
     res.status(500).json({ 
       error: 'Failed to retrieve PaymentIntent', 
       details: error.response?.data || error.message 
@@ -212,6 +219,12 @@ app.post('/create-payment-intent', async (req, res) => {
     const paymentIntentId = paymentIntentResponse.id;
     const client_secret = paymentIntentResponse.client_secret;
     console.log('Airwallex PaymentIntent created:', paymentIntentId);
+    console.log('[CREATE] PaymentIntent full response:', JSON.stringify(paymentIntentResponse, null, 2));
+    console.log('[CREATE] Using Airwallex client config:', {
+      clientId: AIRWALLEX_CLIENT_ID ? 'SET' : 'NOT SET',
+      apiKey: AIRWALLEX_API_KEY ? 'SET' : 'NOT SET',
+      env: AIRWALLEX_ENV === 'production' ? 'prod' : 'demo'
+    });
 
     // Store order
     storeOrder(merchantOrderId, {
