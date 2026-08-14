@@ -383,14 +383,21 @@ app.post('/create-payment-link', async (req, res) => {
     // Create Payment Link
     const createResponse = await airwallexClient.post('/api/v1/pa/payment_links/create', paymentLinkData);
 
-    console.log('[PaymentLink] Airwallex create response status:', createResponse.status);
-    console.log('[PaymentLink] Airwallex create response data:', JSON.stringify(createResponse.data, null, 2));
+    console.log('[PaymentLink] SDK create response:', JSON.stringify(createResponse, null, 2));
 
-    const paymentLink = createResponse.data;
-    const paymentLinkId = paymentLink.id;
-    const paymentLinkUrl = paymentLink.url;
+    // SDK post() may return parsed data directly (like specific SDK methods) or axios-style response
+    const paymentLink = createResponse.data || createResponse;
+    const paymentLinkId = paymentLink?.id;
+    const paymentLinkUrl = paymentLink?.url;
+    const paymentLinkStatus = paymentLink?.status;
 
-    console.log('[PaymentLink] Created:', paymentLinkId, paymentLinkUrl);
+    if (!paymentLinkId || !paymentLinkUrl) {
+      console.error('[PaymentLink] ERROR: Invalid payment link response - missing id or url');
+      console.error('[PaymentLink] Full response:', JSON.stringify(createResponse, null, 2));
+      throw new Error('Invalid payment link response from Airwallex');
+    }
+
+    console.log('[PaymentLink] Created:', paymentLinkId, paymentLinkUrl, 'Status:', paymentLinkStatus);
 
     // Send notification email to shopper
     console.log('[PaymentLink] Sending email notification to:', customerEmail);
@@ -399,8 +406,7 @@ app.post('/create-payment-link', async (req, res) => {
       { shopper_email: customerEmail }
     );
 
-    console.log('[PaymentLink] Email notification response status:', notifyResponse.status);
-    console.log('[PaymentLink] Email notification response data:', JSON.stringify(notifyResponse.data, null, 2));
+    console.log('[PaymentLink] SDK notify response:', JSON.stringify(notifyResponse, null, 2));
     console.log('[PaymentLink] Email notification sent');
 
     // Store order (similar to PaymentIntent but with paymentLinkId)
