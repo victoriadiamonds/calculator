@@ -1087,6 +1087,19 @@
         airwallexDropin.on('error', (error) => {
           console.log('[Airwallex EVENT] ERROR fired', new Date().toISOString(), error);
           console.error('[Airwallex] error event:', error);
+          console.error('[Airwallex] FULL error event:', error);
+          console.error('[Airwallex] error.detail:', error?.detail);
+          try {
+            console.error(
+              '[Airwallex] error.detail JSON:',
+              JSON.stringify(error?.detail, null, 2)
+            );
+          } catch (e) {
+            console.error('[Airwallex] Could not stringify error.detail:', e);
+          }
+          if (currentPaymentIntent?.paymentIntentId) {
+            console.error('[Airwallex] PaymentIntent ID:', currentPaymentIntent.paymentIntentId);
+          }
           document.getElementById('paymentStatus').textContent = 'Payment error. Please review your details and try again.';
           document.getElementById('submitPayment').disabled = false;
         });
