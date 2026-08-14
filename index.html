@@ -979,6 +979,8 @@
       document.getElementById('totalPrice').textContent = formatGBP(currentOrderTotal);
       document.getElementById('paymentStatus').textContent = '';
       document.getElementById('submitPayment').disabled = false;
+      document.getElementById('submitPayment').style.display = '';
+      document.getElementById('cancelCheckout').textContent = 'Cancel';
 
       // Clear any existing dropin
       destroyAirwallexDropin();
@@ -989,6 +991,9 @@
       document.getElementById('paymentStatus').textContent = '';
       document.getElementById('fullName').value = '';
       document.getElementById('email').value = '';
+      document.getElementById('submitPayment').disabled = false;
+      document.getElementById('submitPayment').style.display = '';
+      document.getElementById('cancelCheckout').textContent = 'Cancel';
       destroyAirwallexDropin();
     }
 
@@ -1186,6 +1191,76 @@
       }
     }
 
+    // NEW: Payment Link flow (replaces embedded Drop-in)
+    async function createPaymentLink() {
+      if (window.__paymentProcessing) {
+        return;
+      }
+      window.__paymentProcessing = true;
+
+      console.log('[createPaymentLink] Starting');
+      const name = document.getElementById('fullName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const status = document.getElementById('paymentStatus');
+      const submitBtn = document.getElementById('submitPayment');
+
+      if (!name || !email) {
+        status.textContent = 'Please enter name and email.';
+        window.__paymentProcessing = false;
+        return;
+      }
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        status.textContent = 'Please enter a valid email address.';
+        window.__paymentProcessing = false;
+        return;
+      }
+
+      if (currentIsPriceOnRequest) {
+        status.textContent = 'This item is priced on request and cannot be paid online.';
+        window.__paymentProcessing = false;
+        return;
+      }
+
+      submitBtn.disabled = true;
+      status.textContent = 'Creating payment link...';
+
+      try {
+        const orderData = getOrderDataForPayment();
+        if (!orderData) {
+          throw new Error('Invalid order data');
+        }
+
+        console.log('[createPaymentLink] Calling /create-payment-link');
+        const resp = await fetch('/create-payment-link', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderData)
+        });
+
+        const json = await resp.json();
+
+        if (!resp.ok) {
+          throw new Error(json.error || 'Failed to create payment link');
+        }
+
+        console.log('[createPaymentLink] Payment Link created:', json.paymentLinkId);
+
+        // Success - show confirmation message
+        status.textContent = `Payment link sent to ${email}. Please check your inbox to complete your payment.`;
+        submitBtn.style.display = 'none';
+        document.getElementById('cancelCheckout').textContent = 'Close';
+
+      } catch (error) {
+        console.error('[createPaymentLink] error:', error);
+        status.textContent = 'Error creating payment link: ' + error.message;
+        submitBtn.disabled = false;
+      } finally {
+        window.__paymentProcessing = false;
+      }
+    }
+
+    // OLD: PaymentIntent + Drop-in flow (kept for rollback)
     async function processPayment() {
       if (window.__paymentProcessing) {
         return;
@@ -1300,7 +1375,7 @@
 
       document.getElementById('closeModal').addEventListener('click', closePaymentModal);
       document.getElementById('cancelCheckout').addEventListener('click', closePaymentModal);
-      document.getElementById('submitPayment').addEventListener('click', processPayment);
+      document.getElementById('submitPayment').addEventListener('click', createPaymentLink);
 
     });
   </script>

@@ -256,6 +256,174 @@ app.post('/create-payment-intent', async (req, res) => {
   }
 });
 
+// Create Payment Link endpoint
+app.post('/create-payment-link', async (req, res) => {
+  try {
+    if (!AIRWALLEX_CLIENT_ID || !AIRWALLEX_API_KEY) {
+      return res.status(503).json({ error: 'Payments are not configured. Add Airwallex API credentials on the server.' });
+    }
+    const {
+      productId,
+      collection,
+      typeFilter,
+      metal,
+      karat,
+      purity,
+      diamonds,
+      quantity,
+      discount,
+      profit,
+      designFee,
+      customerName,
+      customerEmail
+    } = req.body;
+
+    // Validate required fields
+    if (!productId || !collection || !metal || !customerName || !customerEmail) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Validate email format
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) {
+      return res.status(400).json({ error: 'Invalid email format' });
+    }
+
+    // Compute pricing server-side (same as PaymentIntent)
+    const pricingParams = {
+      collection,
+      productId,
+      typeFilter: typeFilter || 'all',
+      metal,
+      karat: Number(karat) || 18,
+      purity: Number(purity) || 999,
+      diamonds: diamonds || [],
+      quantity: Number(quantity) || 1,
+      discount: Number(discount) || 0,
+      profit: Number(profit) || 0,
+      designFee: Number(designFee) || 0
+    };
+
+    const pricingResult = pricing.computePricing(pricingParams);
+
+    if (!pricingResult) {
+      return res.status(400).json({ error: 'Invalid product or configuration' });
+    }
+
+    if (pricingResult.priceOnRequest) {
+      return res.status(400).json({ error: 'This item is priced on request and cannot be paid online' });
+    }
+
+    const amount = Math.round(pricingResult.finalTotal * 100) / 100; // GBP with 2 decimal places
+
+    if (amount <= 0) {
+      return res.status(400).json({ error: 'Invalid amount' });
+    }
+
+    // Generate unique merchant order ID
+    const merchantOrderId = generateMerchantOrderId();
+    const requestId = uuidv4();
+
+    const firstName = customerName.split(/\s+/, 1)[0];
+    const lastName = customerName.split(/\s+/).slice(1).join(' ') || undefined;
+
+    // Create Payment Link
+    const paymentLinkData = {
+      amount: amount,
+      currency: 'GBP',
+      title: `Victoria Diamonds — ${pricingResult.prod.name}`,
+      description: `Order ${merchantOrderId}`,
+      reference: merchantOrderId,
+      reusable: false,
+      metadata: {
+        collection: collection,
+        product_id: productId,
+        product_name: pricingResult.prod.name,
+        quantity: String(pricingResult.qty),
+        customer_email: customerEmail,
+        customer_name: customerName,
+        merchant_order_id: merchantOrderId
+      },
+      customer: {
+        email: customerEmail,
+        first_name: firstName,
+        last_name: lastName
+      }
+    };
+
+    console.log('[PaymentLink] Creating Payment Link:', JSON.stringify(paymentLinkData, null, 2));
+
+    // Use the Airwallex client to create Payment Link
+    // The SDK may not have a direct method, so use axios to call the API directly
+    const axios = require('axios');
+    const baseUrl = AIRWALLEX_ENV === 'production' 
+      ? 'https://api.airwallex.com' 
+      : 'https://api-demo.airwallex.com';
+    
+    const auth = Buffer.from(`${AIRWALLEX_CLIENT_ID}:${AIRWALLEX_API_KEY}`).toString('base64');
+    
+    // Create Payment Link
+    const createResponse = await axios.post(
+      `${baseUrl}/api/v1/pa/payment_links/create`,
+      paymentLinkData,
+      {
+        headers: {
+          'Authorization': `Basic ${auth}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    const paymentLink = createResponse.data;
+    const paymentLinkId = paymentLink.id;
+    const paymentLinkUrl = paymentLink.url;
+
+    console.log('[PaymentLink] Created:', paymentLinkId, paymentLinkUrl);
+
+    // Send notification email to shopper
+    console.log('[PaymentLink] Sending email notification to:', customerEmail);
+    const notifyResponse = await axios.post(
+      `${baseUrl}/api/v1/pa/payment_links/${paymentLinkId}/notify_shopper`,
+      { shopper_email: customerEmail },
+      {
+        headers: {
+          'Authorization': `Basic ${auth}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    console.log('[PaymentLink] Email notification sent:', notifyResponse.data);
+
+    // Store order (similar to PaymentIntent but with paymentLinkId)
+    storeOrder(merchantOrderId, {
+      paymentLinkId,
+      paymentLinkUrl,
+      amount,
+      currency: 'GBP',
+      customerName,
+      customerEmail,
+      product: pricingResult.prod,
+      collection,
+      pricing: pricingResult
+    });
+
+    res.json({
+      paymentLinkId,
+      paymentLinkUrl,
+      merchantOrderId,
+      amount,
+      currency: 'GBP'
+    });
+
+  } catch (error) {
+    console.error('PaymentLink creation failed:');
+    console.error('  Status:', error.response?.status);
+    console.error('  Data:', JSON.stringify(error.response?.data, null, 2));
+    console.error('  Message:', error.message);
+    res.status(500).json({ error: 'Failed to create payment link' });
+  }
+});
+
 // Airwallex Webhook endpoint
 app.post('/airwallex/webhook', async (req, res) => {
   try {
@@ -274,24 +442,35 @@ app.post('/airwallex/webhook', async (req, res) => {
 
     const event = req.body;
     const eventType = event.type;
+    
+    // Handle both payment_intent and payment_link webhook payloads
+    const paymentLink = event.data?.object || event.data;
     const paymentIntent = event.data?.object || event.data;
 
-    if (!paymentIntent || !paymentIntent.id) {
-      console.warn('Invalid webhook payload: missing payment intent');
-      return res.status(400).json({ error: 'Invalid payload' });
+    let paymentLinkId = null;
+    let paymentIntentId = null;
+    let merchantOrderId = null;
+
+    if (eventType.startsWith('payment_link.')) {
+      // Payment Link webhook
+      paymentLinkId = paymentLink.id;
+      merchantOrderId = paymentLink.reference;
+      console.log(`Received webhook: ${eventType} for PaymentLink ${paymentLinkId}, Order ${merchantOrderId}`);
+    } else {
+      // PaymentIntent webhook (existing)
+      paymentIntentId = paymentIntent.id;
+      merchantOrderId = paymentIntent.merchant_order_id;
+      console.log(`Received webhook: ${eventType} for PaymentIntent ${paymentIntentId}, Order ${merchantOrderId}`);
     }
 
-    const paymentIntentId = paymentIntent.id;
-    const merchantOrderId = paymentIntent.merchant_order_id;
-
-    console.log(`Received webhook: ${eventType} for PaymentIntent ${paymentIntentId}, Order ${merchantOrderId}`);
-
-    // Find order by merchant_order_id or paymentIntentId
+    // Find order by merchant_order_id, paymentLinkId, or paymentIntentId
     let order = null;
     let orderKey = null;
 
     for (const [key, value] of orders.entries()) {
-      if (value.merchantOrderId === merchantOrderId || value.paymentIntentId === paymentIntentId) {
+      if (value.merchantOrderId === merchantOrderId || 
+          value.paymentLinkId === paymentLinkId || 
+          value.paymentIntentId === paymentIntentId) {
         order = value;
         orderKey = key;
         break;
@@ -299,13 +478,13 @@ app.post('/airwallex/webhook', async (req, res) => {
     }
 
     if (!order) {
-      console.warn(`Order not found for PaymentIntent ${paymentIntentId} / merchant_order_id ${merchantOrderId}`);
+      console.warn(`Order not found for PaymentLink ${paymentLinkId} / PaymentIntent ${paymentIntentId} / merchant_order_id ${merchantOrderId}`);
       return res.status(404).json({ error: 'Order not found' });
     }
 
     // Idempotency: skip if already processed
     const processedEvents = order.processedEvents || [];
-    const eventId = event.id || `${eventType}_${paymentIntentId}_${Date.now()}`;
+    const eventId = event.id || `${eventType}_${paymentLinkId || paymentIntentId}_${Date.now()}`;
     if (processedEvents.includes(eventId)) {
       console.log(`Event ${eventId} already processed, skipping`);
       return res.json({ received: true });
@@ -347,6 +526,28 @@ app.post('/airwallex/webhook', async (req, res) => {
           order.processedEvents = [...processedEvents, eventId];
           orders.set(orderKey, order);
           console.log(`Order ${merchantOrderId} requires customer action`);
+        }
+        break;
+
+      case 'payment_link.paid':
+        // Supplementary event: log and associate paymentLinkId, but do NOT mark PAID here.
+        // The authoritative event for marking PAID is payment_intent.succeeded (fired for the underlying PaymentIntent).
+        if (!order.paymentLinkId && paymentLinkId) {
+          order.paymentLinkId = paymentLinkId;
+          order.processedEvents = [...processedEvents, eventId];
+          orders.set(orderKey, order);
+          console.log(`Order ${merchantOrderId}: associated paymentLinkId ${paymentLinkId} via payment_link.paid`);
+        }
+        break;
+
+      case 'payment_link.expired':
+      case 'payment_link.canceled':
+        // These can mark CANCELED if order is still PENDING (no payment_intent.succeeded will come)
+        if (order.status === 'PENDING') {
+          updateOrderStatus(orderKey, 'CANCELED', paymentIntentId);
+          order.processedEvents = [...processedEvents, eventId];
+          orders.set(orderKey, order);
+          console.log(`Order ${merchantOrderId} marked as CANCELED via payment_link.${eventType.split('.')[1]}`);
         }
         break;
 
