@@ -21,6 +21,43 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Temporary diagnostic endpoint to retrieve full PaymentIntent from Airwallex
+app.get('/debug/payment-intent/:id', async (req, res) => {
+  try {
+    const paymentIntentId = req.params.id;
+    if (!paymentIntentId) {
+      return res.status(400).json({ error: 'PaymentIntent ID required' });
+    }
+
+    console.log(`[DEBUG] Retrieving PaymentIntent: ${paymentIntentId}`);
+
+    const response = await airwallexClient.paymentAcceptance.paymentIntents.retrievePaymentIntent(paymentIntentId);
+    const pi = response;
+
+    console.log('[DEBUG] PaymentIntent status:', pi.status);
+    console.log('[DEBUG] latest_payment_attempt:', JSON.stringify(pi.latest_payment_attempt, null, 2));
+    
+    if (pi.latest_payment_attempt) {
+      console.log('[DEBUG] latest_payment_attempt.status:', pi.latest_payment_attempt.status);
+      console.log('[DEBUG] latest_payment_attempt.failure_code:', pi.latest_payment_attempt.failure_code);
+      console.log('[DEBUG] latest_payment_attempt.failure_details:', pi.latest_payment_attempt.failure_details);
+      console.log('[DEBUG] latest_payment_attempt.payment_method.type:', pi.latest_payment_attempt.payment_method?.type);
+    }
+    
+    console.log('[DEBUG] next_action:', JSON.stringify(pi.next_action, null, 2));
+    console.log('[DEBUG] merchant_order_id:', pi.merchant_order_id);
+
+    res.json(pi);
+  } catch (error) {
+    console.error('[DEBUG] Error retrieving PaymentIntent:', error.message);
+    console.error('[DEBUG] Error response:', error.response?.data);
+    res.status(500).json({ 
+      error: 'Failed to retrieve PaymentIntent', 
+      details: error.response?.data || error.message 
+    });
+  }
+});
+
 // Serve static files (the calculator)
 app.use(express.static(path.join(__dirname)));
 
