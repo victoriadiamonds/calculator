@@ -259,7 +259,16 @@ app.post('/create-payment-intent', async (req, res) => {
 // Create Payment Link endpoint
 app.post('/create-payment-link', async (req, res) => {
   try {
+    console.log('[PaymentLink] ===== CREATE PAYMENT LINK REQUEST =====');
+    console.log('[PaymentLink] Environment:', AIRWALLEX_ENV === 'production' ? 'production' : 'sandbox (demo)');
+    console.log('[PaymentLink] Credentials:', {
+      clientId: AIRWALLEX_CLIENT_ID ? 'SET' : 'NOT SET',
+      apiKey: AIRWALLEX_API_KEY ? 'SET' : 'NOT SET'
+    });
+    console.log('[PaymentLink] Request body keys:', Object.keys(req.body));
+
     if (!AIRWALLEX_CLIENT_ID || !AIRWALLEX_API_KEY) {
+      console.error('[PaymentLink] ERROR: Missing Airwallex credentials');
       return res.status(503).json({ error: 'Payments are not configured. Add Airwallex API credentials on the server.' });
     }
     const {
@@ -280,11 +289,13 @@ app.post('/create-payment-link', async (req, res) => {
 
     // Validate required fields
     if (!productId || !collection || !metal || !customerName || !customerEmail) {
+      console.error('[PaymentLink] ERROR: Missing required fields');
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
     // Validate email format
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) {
+      console.error('[PaymentLink] ERROR: Invalid email format');
       return res.status(400).json({ error: 'Invalid email format' });
     }
 
@@ -306,22 +317,35 @@ app.post('/create-payment-link', async (req, res) => {
     const pricingResult = pricing.computePricing(pricingParams);
 
     if (!pricingResult) {
+      console.error('[PaymentLink] ERROR: Invalid product or configuration');
       return res.status(400).json({ error: 'Invalid product or configuration' });
     }
 
     if (pricingResult.priceOnRequest) {
+      console.error('[PaymentLink] ERROR: Price on request');
       return res.status(400).json({ error: 'This item is priced on request and cannot be paid online' });
     }
 
     const amount = Math.round(pricingResult.finalTotal * 100) / 100; // GBP with 2 decimal places
 
     if (amount <= 0) {
+      console.error('[PaymentLink] ERROR: Invalid amount');
       return res.status(400).json({ error: 'Invalid amount' });
     }
 
     // Generate unique merchant order ID
     const merchantOrderId = generateMerchantOrderId();
     const requestId = uuidv4();
+
+    console.log('[PaymentLink] Order details:', {
+      requestId,
+      merchantOrderId,
+      amount,
+      currency: 'GBP',
+      productId,
+      collection,
+      customerEmail
+    });
 
     const firstName = customerName.split(/\s+/, 1)[0];
     const lastName = customerName.split(/\s+/).slice(1).join(' ') || undefined;
@@ -352,26 +376,15 @@ app.post('/create-payment-link', async (req, res) => {
 
     console.log('[PaymentLink] Creating Payment Link:', JSON.stringify(paymentLinkData, null, 2));
 
-    // Use the Airwallex client to create Payment Link
-    // The SDK may not have a direct method, so use axios to call the API directly
-    const axios = require('axios');
-    const baseUrl = AIRWALLEX_ENV === 'production' 
-      ? 'https://api.airwallex.com' 
-      : 'https://api-demo.airwallex.com';
-    
-    const auth = Buffer.from(`${AIRWALLEX_CLIENT_ID}:${AIRWALLEX_API_KEY}`).toString('base64');
-    
+    // Use the existing airwallexClient which handles OAuth2 Bearer token authentication automatically
+    // This matches the working PaymentIntent flow authentication
+    console.log('[PaymentLink] Calling Airwallex Payment Links API via SDK client');
+
     // Create Payment Link
-    const createResponse = await axios.post(
-      `${baseUrl}/api/v1/pa/payment_links/create`,
-      paymentLinkData,
-      {
-        headers: {
-          'Authorization': `Basic ${auth}`,
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+    const createResponse = await airwallexClient.post('/api/v1/pa/payment_links/create', paymentLinkData);
+
+    console.log('[PaymentLink] Airwallex create response status:', createResponse.status);
+    console.log('[PaymentLink] Airwallex create response data:', JSON.stringify(createResponse.data, null, 2));
 
     const paymentLink = createResponse.data;
     const paymentLinkId = paymentLink.id;
@@ -381,18 +394,14 @@ app.post('/create-payment-link', async (req, res) => {
 
     // Send notification email to shopper
     console.log('[PaymentLink] Sending email notification to:', customerEmail);
-    const notifyResponse = await axios.post(
-      `${baseUrl}/api/v1/pa/payment_links/${paymentLinkId}/notify_shopper`,
-      { shopper_email: customerEmail },
-      {
-        headers: {
-          'Authorization': `Basic ${auth}`,
-          'Content-Type': 'application/json'
-        }
-      }
+    const notifyResponse = await airwallexClient.post(
+      `/api/v1/pa/payment_links/${paymentLinkId}/notify_shopper`,
+      { shopper_email: customerEmail }
     );
 
-    console.log('[PaymentLink] Email notification sent:', notifyResponse.data);
+    console.log('[PaymentLink] Email notification response status:', notifyResponse.status);
+    console.log('[PaymentLink] Email notification response data:', JSON.stringify(notifyResponse.data, null, 2));
+    console.log('[PaymentLink] Email notification sent');
 
     // Store order (similar to PaymentIntent but with paymentLinkId)
     storeOrder(merchantOrderId, {
@@ -407,6 +416,7 @@ app.post('/create-payment-link', async (req, res) => {
       pricing: pricingResult
     });
 
+    console.log('[PaymentLink] ===== CREATE PAYMENT LINK SUCCESS =====');
     res.json({
       paymentLinkId,
       paymentLinkUrl,
@@ -416,11 +426,32 @@ app.post('/create-payment-link', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('PaymentLink creation failed:');
-    console.error('  Status:', error.response?.status);
-    console.error('  Data:', JSON.stringify(error.response?.data, null, 2));
-    console.error('  Message:', error.message);
-    res.status(500).json({ error: 'Failed to create payment link' });
+    console.error('[PaymentLink] ===== CREATE PAYMENT LINK ERROR =====');
+    console.error('[PaymentLink] Error message:', error.message);
+    console.error('[PaymentLink] Error response status:', error.response?.status);
+    console.error('[PaymentLink] Error response statusText:', error.response?.statusText);
+    console.error('[PaymentLink] Error response headers:', JSON.stringify(error.response?.headers, null, 2));
+    console.error('[PaymentLink] Error response data:', JSON.stringify(error.response?.data, null, 2));
+    console.error('[PaymentLink] Request config URL:', error.config?.url);
+    console.error('[PaymentLink] Request config method:', error.config?.method);
+    console.error('[PaymentLink] Request config data:', error.config?.data ? JSON.stringify(error.config.data, null, 2) : 'undefined');
+    
+    // Return actual Airwallex error to frontend for diagnosis (temporary)
+    const airwallexError = error.response?.data;
+    let errorMessage = 'Failed to create payment link';
+    if (airwallexError) {
+      // Extract safe error message from Airwallex response
+      if (airwallexError.message) {
+        errorMessage = `Airwallex: ${airwallexError.message}`;
+      } else if (airwallexError.error) {
+        errorMessage = `Airwallex: ${airwallexError.error}`;
+      } else if (airwallexError.code) {
+        errorMessage = `Airwallex error code: ${airwallexError.code}`;
+      } else {
+        errorMessage = `Airwallex error: ${JSON.stringify(airwallexError).slice(0, 200)}`;
+      }
+    }
+    res.status(500).json({ error: errorMessage, details: airwallexError || error.message });
   }
 });
 
