@@ -156,6 +156,7 @@ app.post('/create-payment-intent', async (req, res) => {
       currency: 'GBP',
       merchant_order_id: merchantOrderId,
       request_id: requestId,
+      return_url: 'https://calculator-oofl.onrender.com/',
       metadata: {
         collection: collection,
         product_id: productId,
