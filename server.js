@@ -8,7 +8,10 @@ require('dotenv').config();
 const pricing = require('./pricing');
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: ['https://victoriadiamonds.github.io', 'http://localhost:3000'],
+  credentials: true
+}));
 // Airwallex signatures cover the original payload, not a re-serialized object.
 app.use(express.json({
   verify: (req, res, buffer) => {

@@ -257,6 +257,8 @@
   <script>
     // Airwallex environment configuration (synced with backend)
     window.AIRWALLEX_ENV = 'sandbox';
+    // Backend API base URL (production Render backend)
+    window.API_BASE_URL = 'https://calculator-oofl.onrender.com';
   </script>
 
   <script>
@@ -1164,7 +1166,7 @@
       status.textContent = 'Creating payment session...';
 
       try {
-        const resp = await fetch('/create-payment-intent', {
+        const resp = await fetch(`${window.API_BASE_URL}/create-payment-intent`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(orderData)
@@ -1232,7 +1234,7 @@
         }
 
         console.log('[createPaymentLink] Calling /create-payment-link');
-        const resp = await fetch('/create-payment-link', {
+        const resp = await fetch(`${window.API_BASE_URL}/create-payment-link`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(orderData)
