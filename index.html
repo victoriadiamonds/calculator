@@ -1070,14 +1070,18 @@
           document.getElementById('submitPayment').disabled = true;
         });
         airwallexDropin.on('success', () => {
+          console.log('[Airwallex EVENT] SUCCESS fired', new Date().toISOString());
           document.getElementById('paymentStatus').textContent = 'Payment successful! Confirming your order...';
           document.getElementById('submitPayment').disabled = true;
+          console.log('[Airwallex EVENT] SUCCESS scheduling close');
           setTimeout(() => {
+            console.log('[Airwallex EVENT] SUCCESS timeout executing');
             closePaymentModal();
             alert('Payment successful! Your order has been confirmed.');
           }, 500);
         });
         airwallexDropin.on('error', (error) => {
+          console.log('[Airwallex EVENT] ERROR fired', new Date().toISOString(), error);
           console.error('[Airwallex] error event:', error);
           document.getElementById('paymentStatus').textContent = 'Payment error. Please review your details and try again.';
           document.getElementById('submitPayment').disabled = false;
