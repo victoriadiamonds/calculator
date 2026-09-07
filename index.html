@@ -59,6 +59,23 @@
       </div>
     </div>
 
+    <div class="row" id="braceletTierRow" hidden>
+      <div style="flex:1">
+        <label for="braceletMetalTier">Bracelet specification</label>
+        <select id="braceletMetalTier">
+          <option value="essential">Essential — 2.5g</option>
+          <option value="signature">Signature — 4g</option>
+          <option value="atelier">Atelier — 5.5g</option>
+          <option value="premium">Premium — 8g</option>
+          <option value="supreme">Supreme — 16g</option>
+        </select>
+      </div>
+      <div style="flex:1" id="braceletSpecHint">
+        <label class="label-placeholder">&nbsp;</label>
+        <div class="muted" style="padding-top:10px">Choose the bracelet specification/metal weight.</div>
+      </div>
+    </div>
+
     <div class="diamond-block">
       <div class="diamond-section-title">
         Main Diamond
@@ -70,6 +87,7 @@
           <select id="dq0" class="diamond-quality">
             <option value="select" selected>Select</option>
             <option value="luxe">Luxe</option>
+            <option value="elite">Elite</option>
           </select>
         </div>
         <div style="flex:1">
@@ -94,6 +112,7 @@
           <select id="dq1" class="diamond-quality">
             <option value="select" selected>Select</option>
             <option value="luxe">Luxe</option>
+            <option value="elite">Elite</option>
           </select>
         </div>
         <div style="flex:1">
@@ -118,6 +137,7 @@
           <select id="dq2" class="diamond-quality">
             <option value="select" selected>Select</option>
             <option value="luxe">Luxe</option>
+            <option value="elite">Elite</option>
           </select>
         </div>
         <div style="flex:1">
@@ -142,6 +162,7 @@
           <select id="dq3" class="diamond-quality">
             <option value="select" selected>Select</option>
             <option value="luxe">Luxe</option>
+            <option value="elite">Elite</option>
           </select>
         </div>
         <div style="flex:1">
@@ -266,6 +287,17 @@
     const DIAMOND_CARATS = ['0.05','0.1','0.15','0.25','0.50','0.75','1.00','2.00','3.00','4.00','5.00'];
 
     const DIAMOND_PRICES = {
+      elite: {
+        '0.1': 100,
+        '0.15': 150,
+        '0.25': 300,
+        '0.50': 700,
+        '1.00': 1200,
+        '2.00': 2200,
+        '3.00': 3400,
+        '4.00': 4000,
+        '5.00': 5200
+      },
       luxe: {
         '0.05': 16.50,
         '0.1': 59,
@@ -295,20 +327,29 @@
     };
 
     const PRICING_PACKAGE_MATRIX = {
-      basic: {
-        '22K': 1325,
-        '18K': 1125,
-        '14K': 850,
-        '9K': 575,
-        'platinum': 575
+      essential: {
+        '22K': 1325, '18K': 1125, '14K': 850, '9K': 575, 'platinum': 575, 'silver': 24
       },
       signature: {
-        '22K': 1855,
-        '18K': 1575,
-        '14K': 1190,
-        '9K': 805,
-        'platinum': 805
+        '22K': 1855, '18K': 1575, '14K': 1190, '9K': 805, 'platinum': 805, 'silver': 32
+      },
+      atelier: {
+        '22K': 2120, '18K': 1800, '14K': 1360, '9K': 920, 'platinum': 920, 'silver': 48
+      },
+      premium: {
+        '22K': 2968, '18K': 2520, '14K': 1904, '9K': 1288, 'platinum': 1288, 'silver': 51.2
+      },
+      supreme: {
+        '22K': 4749, '18K': 4032, '14K': 3046, '9K': 2061, 'platinum': 2061, 'silver': 82
       }
+    };
+
+    const BRACELET_TIERS = {
+      essential: { label: 'Essential', weight: '2.5g' },
+      signature: { label: 'Signature', weight: '4g' },
+      atelier: { label: 'Atelier', weight: '5.5g' },
+      premium: { label: 'Premium', weight: '8g' },
+      supreme: { label: 'Supreme', weight: '16g' }
     };
 
     const TIERS = {
@@ -317,7 +358,7 @@
     };
 
     const TIER_TO_PACKAGE = {
-      essentials: 'basic',
+      essentials: 'essential',
       signature: 'signature'
     };
 
@@ -567,6 +608,18 @@
       updateModelName();
     }
 
+    function renderBraceletTierControl(){
+      const prod = getCurrentProduct();
+      const row = document.getElementById('braceletTierRow');
+      if(!row) return;
+      row.hidden = !(prod && prod.type === 'bracelet');
+    }
+
+    function getSelectedBraceletTier(){
+      const sel = document.getElementById('braceletMetalTier');
+      return sel ? sel.value : 'essential';
+    }
+
     function renderMetalExtras(){
       const metal = document.getElementById('metal').value;
       const container = document.getElementById('metalExtras');
@@ -691,9 +744,10 @@
         };
       }
 
-      let packageKey = TIER_TO_PACKAGE[tierKey] || 'basic';
-      if(prod.type === 'bracelet'){
-        packageKey = 'basic';
+      let packageKey = TIER_TO_PACKAGE[tierKey] || 'essential';
+      const braceletTierKey = prod.type === 'bracelet' ? getSelectedBraceletTier() : null;
+      if(braceletTierKey){
+        packageKey = braceletTierKey;
       }
       const metal = document.getElementById('metal').value;
 
@@ -703,7 +757,7 @@
       } else if(metal === 'gold'){
         metalKey = document.getElementById('karat').value + 'K';
       } else {
-        metalKey = '9K';
+        metalKey = 'silver';
       }
 
       const designComplexityFee = (PRICING_PACKAGE_MATRIX[packageKey] && PRICING_PACKAGE_MATRIX[packageKey][metalKey]) || 0;
@@ -737,6 +791,8 @@
         collection: collection,
         tierKey: tierKey,
         packageKey: packageKey,
+        braceletTierKey: braceletTierKey,
+        braceletTier: braceletTierKey ? BRACELET_TIERS[braceletTierKey] : null,
         metal: metal,
         metalKey: metalKey,
         designComplexityFee: designComplexityFee,
@@ -777,11 +833,30 @@
     }
 
     function buildResultMarkup(prod, p){
+      if(prod.type === 'bracelet'){
+        const metalLabel = p.metal === 'gold'
+          ? document.getElementById('karat').value + 'K gold'
+          : (p.metal === 'silver' ? document.getElementById('purity').value + ' silver' : '950 platinum');
+        const qualityLabels = { elite: 'Elite', luxe: 'Luxe', select: 'Select' };
+        let html = '<div><strong>Collection:</strong> ' + getCollectionName(p.collection) + '</div>' +
+          '<div><strong>Bracelet:</strong> ' + prod.name + '</div>' +
+          '<div><strong>Metal:</strong> ' + metalLabel + '</div>' +
+          '<div><strong>Specification:</strong> ' + (p.braceletTier ? p.braceletTier.label + ' — ' + p.braceletTier.weight : '-') + '</div>';
+        p.entries.forEach(function(e, idx){
+          if(e.caratNum > 0){
+            html += '<div class="small"><strong>' + DIAMOND_SECTION_NAMES[idx] + ':</strong> ' + qualityLabels[e.quality] + ', ' + e.carat + ' ct × ' + e.qty + '</div>';
+          }
+        });
+        html += '<hr /><div style="font-size:1.2rem;margin-top:12px"><strong>Final price: ' + formatGBP(p.finalTotal) + '</strong></div>' +
+          '<div class="small" style="margin-top:8px">Final price includes the selected diamonds and metal specification.</div>' +
+          '<div class="small" style="margin-top:8px">Notes: ' + (document.getElementById('notes').value.trim() || '-') + '</div>';
+        return html;
+      }
       const collectionName = getCollectionName(p.collection);
       const tierInfo = TIERS[p.tierKey];
       const metal = p.metal;
       const metalLabel = metal === 'gold' ? document.getElementById('karat').value + 'K gold' : (metal === 'silver' ? document.getElementById('purity').value + ' silver' : '950 platinum');
-      const qualityLabels = { luxe: 'Luxe', select: 'Select' };
+      const qualityLabels = { elite: 'Elite', luxe: 'Luxe', select: 'Select' };
 
       var html = '<div class="result-tier-badge" style="--tier-color:' + tierInfo.color + '">' + tierInfo.label + '</div>' +
         '<div><strong>Collection:</strong> ' + collectionName + '</div>' +
@@ -844,7 +919,7 @@
 
     function buildBreakdownMarkup(p){
       const packageLabels = { basic: 'Essential design', signature: 'Signature design' };
-      const qualityLabels = { luxe: 'Luxe', select: 'Select' };
+      const qualityLabels = { elite: 'Elite', luxe: 'Luxe', select: 'Select' };
       let lines = '<div class="breakdown-title">How this was calculated</div>';
       lines += '<div class="breakdown-line"><span>Design/labor fee — ' + (packageLabels[p.packageKey] || p.packageKey) + '</span><span>' + formatGBP(p.designComplexityFee) + '</span></div>';
       p.entries.forEach(function(e, idx){
@@ -913,10 +988,16 @@
       const popupBody = document.getElementById('resultPopupBody');
       popupBody.innerHTML = buildResultMarkup(p.prod, p);
 
-      breakdownPanel.innerHTML = buildBreakdownMarkup(p);
-      breakdownPanel.hidden = true;
-      breakdownBtn.hidden = false;
-      breakdownBtn.textContent = 'Check breakdown';
+      if(p.prod.type === 'bracelet'){
+        breakdownPanel.hidden = true;
+        breakdownPanel.innerHTML = '';
+        breakdownBtn.hidden = true;
+      } else {
+        breakdownPanel.innerHTML = buildBreakdownMarkup(p);
+        breakdownPanel.hidden = true;
+        breakdownBtn.hidden = false;
+        breakdownBtn.textContent = 'Check breakdown';
+      }
 
       proceedBtn.disabled = false;
       proceedBtn.textContent = 'Proceed to Payment';
@@ -949,6 +1030,8 @@
       populateProducts();
       document.getElementById('metal').value = 'gold';
       renderMetalExtras();
+      renderBraceletTierControl();
+      document.getElementById('braceletMetalTier').value = 'essential';
       for(var i = 0; i < 4; i++){
         resetDiamondSection(i);
       }
@@ -1188,25 +1271,34 @@
       populateDiamondCarats();
       populateProducts();
       renderMetalExtras();
+      renderBraceletTierControl();
       updateLiveTotal();
 
       document.getElementById('collection').addEventListener('change', function() {
         populateProducts();
+        renderBraceletTierControl();
         updateLiveTotal();
         destroyAirwallexDropin();
       });
       document.getElementById('typeFilter').addEventListener('change', function() {
         populateProducts();
+        renderBraceletTierControl();
         updateLiveTotal();
         destroyAirwallexDropin();
       });
       document.getElementById('product').addEventListener('change', function() {
         renderProductInfo();
+        renderBraceletTierControl();
         updateLiveTotal();
         destroyAirwallexDropin();
       });
       document.getElementById('metal').addEventListener('change', function() {
         renderMetalExtras();
+        updateLiveTotal();
+        destroyAirwallexDropin();
+      });
+
+      document.getElementById('braceletMetalTier').addEventListener('change', function(){
         updateLiveTotal();
         destroyAirwallexDropin();
       });
