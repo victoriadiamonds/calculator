@@ -257,8 +257,6 @@
   <script>
     // Airwallex environment configuration (synced with backend)
     window.AIRWALLEX_ENV = 'sandbox';
-    // Backend API base URL (production Render backend)
-    window.API_BASE_URL = 'https://calculator-oofl.onrender.com';
   </script>
 
   <script>
@@ -703,8 +701,7 @@
       if(metal === 'platinum'){
         metalKey = 'platinum';
       } else if(metal === 'gold'){
-        const karatEl = document.getElementById('karat');
-        metalKey = karatEl ? karatEl.value + 'K' : '18K';
+        metalKey = document.getElementById('karat').value + 'K';
       } else {
         metalKey = '9K';
       }
@@ -981,8 +978,6 @@
       document.getElementById('totalPrice').textContent = formatGBP(currentOrderTotal);
       document.getElementById('paymentStatus').textContent = '';
       document.getElementById('submitPayment').disabled = false;
-      document.getElementById('submitPayment').style.display = '';
-      document.getElementById('cancelCheckout').textContent = 'Cancel';
 
       // Clear any existing dropin
       destroyAirwallexDropin();
@@ -993,9 +988,6 @@
       document.getElementById('paymentStatus').textContent = '';
       document.getElementById('fullName').value = '';
       document.getElementById('email').value = '';
-      document.getElementById('submitPayment').disabled = false;
-      document.getElementById('submitPayment').style.display = '';
-      document.getElementById('cancelCheckout').textContent = 'Cancel';
       destroyAirwallexDropin();
     }
 
@@ -1044,75 +1036,38 @@
     }
 
     async function initializeAirwallexDropin(clientSecret) {
-      console.log('[Airwallex] init starting');
       if (!window.AirwallexComponentsSDK) {
         throw new Error('Airwallex SDK not loaded');
       }
-
-      const paymentIntentId = currentPaymentIntent?.paymentIntentId;
-      destroyAirwallexDropin();
 
       const container = document.getElementById('airwallex-dropin');
       container.innerHTML = '';
 
       try {
-        console.log('[Airwallex] calling SDK.init()');
         await window.AirwallexComponentsSDK.init({
           env: (window.AIRWALLEX_ENV === 'production') ? 'prod' : 'demo',
           enabledElements: ['payments']
         });
-        console.log('[Airwallex] SDK initialized');
-
-        console.log('[Airwallex] creating Drop-in element');
         airwallexDropin = await window.AirwallexComponentsSDK.createElement('dropIn', {
-          intent_id: paymentIntentId,
+          intent_id: currentPaymentIntent.paymentIntentId,
           client_secret: clientSecret,
           currency: 'GBP'
         });
-        console.log('[Airwallex] Drop-in created');
-
-        console.log('[Airwallex] mounting Drop-in');
         airwallexDropin.mount('airwallex-dropin');
-        console.log('[Airwallex] Drop-in mounted');
-
         airwallexDropin.on('ready', () => {
-          console.log('[Airwallex] ready event fired');
           document.getElementById('paymentStatus').textContent = 'Enter your payment details below.';
           document.getElementById('submitPayment').disabled = true;
         });
         airwallexDropin.on('success', () => {
-          console.log('[Airwallex EVENT] SUCCESS fired', new Date().toISOString());
-          document.getElementById('paymentStatus').textContent = 'Payment successful! Confirming your order...';
+          document.getElementById('paymentStatus').textContent = 'Payment successful. Confirming your order…';
           document.getElementById('submitPayment').disabled = true;
-          console.log('[Airwallex EVENT] SUCCESS scheduling close');
-          setTimeout(() => {
-            console.log('[Airwallex EVENT] SUCCESS timeout executing');
-            closePaymentModal();
-            alert('Payment successful! Your order has been confirmed.');
-          }, 500);
         });
         airwallexDropin.on('error', (error) => {
-          console.log('[Airwallex EVENT] ERROR fired', new Date().toISOString(), error);
-          console.error('[Airwallex] error event:', error);
-          console.error('[Airwallex] FULL error event:', error);
-          console.error('[Airwallex] error.detail:', error?.detail);
-          try {
-            console.error(
-              '[Airwallex] error.detail JSON:',
-              JSON.stringify(error?.detail, null, 2)
-            );
-          } catch (e) {
-            console.error('[Airwallex] Could not stringify error.detail:', e);
-          }
-          if (currentPaymentIntent?.paymentIntentId) {
-            console.error('[Airwallex] PaymentIntent ID:', currentPaymentIntent.paymentIntentId);
-          }
+          console.error('Airwallex Drop-in error:', error);
           document.getElementById('paymentStatus').textContent = 'Payment error. Please review your details and try again.';
-          document.getElementById('submitPayment').disabled = false;
         });
-        console.log('[Airwallex] event listeners registered');
       } catch (error) {
-        console.error('[Airwallex] initialization failed:', error);
+        console.error('Failed to initialize Airwallex Drop-in:', error);
         document.getElementById('paymentStatus').textContent = 'Unable to load payment form. Please try again.';
         throw error;
       }
@@ -1166,7 +1121,7 @@
       status.textContent = 'Creating payment session...';
 
       try {
-        const resp = await fetch(`${window.API_BASE_URL}/create-payment-intent`, {
+        const resp = await fetch('/create-payment-intent', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(orderData)
@@ -1193,124 +1148,39 @@
       }
     }
 
-    // NEW: Payment Link flow (replaces embedded Drop-in)
-    async function createPaymentLink() {
-      if (window.__paymentProcessing) {
-        return;
-      }
-      window.__paymentProcessing = true;
-
-      console.log('[createPaymentLink] Starting');
-      const name = document.getElementById('fullName').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const status = document.getElementById('paymentStatus');
-      const submitBtn = document.getElementById('submitPayment');
-
-      if (!name || !email) {
-        status.textContent = 'Please enter name and email.';
-        window.__paymentProcessing = false;
-        return;
-      }
-
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        status.textContent = 'Please enter a valid email address.';
-        window.__paymentProcessing = false;
-        return;
-      }
-
-      if (currentIsPriceOnRequest) {
-        status.textContent = 'This item is priced on request and cannot be paid online.';
-        window.__paymentProcessing = false;
-        return;
-      }
-
-      submitBtn.disabled = true;
-      status.textContent = 'Creating payment link...';
-
-      try {
-        const orderData = getOrderDataForPayment();
-        if (!orderData) {
-          throw new Error('Invalid order data');
-        }
-
-        console.log('[createPaymentLink] Calling /create-payment-link');
-        const resp = await fetch(`${window.API_BASE_URL}/create-payment-link`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(orderData)
-        });
-
-        const json = await resp.json();
-
-        if (!resp.ok) {
-          throw new Error(json.error || 'Failed to create payment link');
-        }
-
-        console.log('[createPaymentLink] Payment Link created:', json.paymentLinkId);
-
-        // Success - show confirmation message
-        status.textContent = `Payment link sent to ${email}. Please check your inbox to complete your payment.`;
-        submitBtn.style.display = 'none';
-        document.getElementById('cancelCheckout').textContent = 'Close';
-
-      } catch (error) {
-        console.error('[createPaymentLink] error:', error);
-        status.textContent = 'Error creating payment link: ' + error.message;
-        submitBtn.disabled = false;
-      } finally {
-        window.__paymentProcessing = false;
-      }
-    }
-
-    // OLD: PaymentIntent + Drop-in flow (kept for rollback)
     async function processPayment() {
-      if (window.__paymentProcessing) {
-        return;
-      }
-      window.__paymentProcessing = true;
-
-      console.log('[processPayment] Starting');
       const name = document.getElementById('fullName').value.trim();
       const email = document.getElementById('email').value.trim();
       const status = document.getElementById('paymentStatus');
 
       if (!name || !email) {
         status.textContent = 'Please enter name and email.';
-        window.__paymentProcessing = false;
         return;
       }
 
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         status.textContent = 'Please enter a valid email address.';
-        window.__paymentProcessing = false;
         return;
       }
 
       if (currentIsPriceOnRequest) {
         status.textContent = 'This item is priced on request and cannot be paid online.';
-        window.__paymentProcessing = false;
         return;
       }
 
       try {
         // Create PaymentIntent if not already created or if amount changed
         if (!currentPaymentIntent) {
-          console.log('[processPayment] Calling createPaymentIntent');
           await createPaymentIntent();
-          console.log('[processPayment] createPaymentIntent returned');
         }
 
         // Initialize Drop-in with client secret
         if (currentPaymentIntent && currentPaymentIntent.clientSecret) {
-          console.log('[processPayment] Calling initializeAirwallexDropin');
           await initializeAirwallexDropin(currentPaymentIntent.clientSecret);
-          console.log('[processPayment] initializeAirwallexDropin returned');
         }
       } catch (error) {
-        console.error('[processPayment] error:', error);
+        console.error('Payment processing error:', error);
         status.textContent = 'Error starting payment: ' + error.message;
-      } finally {
-        window.__paymentProcessing = false;
       }
     }
 
@@ -1377,7 +1247,7 @@
 
       document.getElementById('closeModal').addEventListener('click', closePaymentModal);
       document.getElementById('cancelCheckout').addEventListener('click', closePaymentModal);
-      document.getElementById('submitPayment').addEventListener('click', createPaymentLink);
+      document.getElementById('submitPayment').addEventListener('click', processPayment);
 
     });
   </script>

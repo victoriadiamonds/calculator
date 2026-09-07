@@ -9,7 +9,11 @@ const pricing = require('./pricing');
 
 const app = express();
 app.use(cors({
-  origin: ['https://victoriadiamonds.github.io', 'http://localhost:3000'],
+  origin: [
+    'https://victoriadiamonds.github.io',
+    'https://calculator-9do.pages.dev',
+    'http://localhost:3000'
+  ],
   credentials: true
 }));
 // Airwallex signatures cover the original payload, not a re-serialized object.
