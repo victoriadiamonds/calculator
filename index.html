@@ -273,8 +273,8 @@
     </div>
   </div>
 
-  <!-- Airwallex JS SDK -->
-  <script src="https://static.airwallex.com/components/sdk/v1/index.js"></script>
+  <!-- Airwallex JS SDK removed to keep the UI in email-payment mode.
+       Re-add the SDK only if you want to offer on-page card payments. -->
   <script>
     // Airwallex environment configuration (synced with backend)
     window.AIRWALLEX_ENV = 'sandbox';
@@ -1231,6 +1231,47 @@
       }
     }
 
+    async function createPaymentLink() {
+      const status = document.getElementById('paymentStatus');
+      status.textContent = 'Creating payment link and sending to your email...';
+
+      const orderData = getOrderDataForPayment();
+      if (!orderData) {
+        status.textContent = 'Invalid order data';
+        throw new Error('Invalid order data');
+      }
+
+      try {
+        const resp = await fetch('/create-payment-link', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderData)
+        });
+
+        const json = await resp.json();
+
+        if (!resp.ok) {
+          console.error('Create payment link failed:', json);
+          status.textContent = json.error || 'Failed to create payment link';
+          return null;
+        }
+
+        // Inform the user that an email was sent
+        status.textContent = `Payment link sent to ${orderData.customerEmail}. Please check your inbox.`;
+
+        // Optionally close modal after a short delay
+        setTimeout(() => {
+          closePaymentModal();
+        }, 2000);
+
+        return json;
+      } catch (err) {
+        console.error('Error creating payment link:', err);
+        status.textContent = 'Failed to create payment link. Please try again.';
+        throw err;
+      }
+    }
+
     async function processPayment() {
       const name = document.getElementById('fullName').value.trim();
       const email = document.getElementById('email').value.trim();
@@ -1251,19 +1292,12 @@
         return;
       }
 
+      // Create and send a payment link to the buyer's email instead of loading the Drop-in
       try {
-        // Create PaymentIntent if not already created or if amount changed
-        if (!currentPaymentIntent) {
-          await createPaymentIntent();
-        }
-
-        // Initialize Drop-in with client secret
-        if (currentPaymentIntent && currentPaymentIntent.clientSecret) {
-          await initializeAirwallexDropin(currentPaymentIntent.clientSecret);
-        }
+        await createPaymentLink();
       } catch (error) {
         console.error('Payment processing error:', error);
-        status.textContent = 'Error starting payment: ' + error.message;
+        status.textContent = 'Error starting payment: ' + (error.message || error);
       }
     }
 
