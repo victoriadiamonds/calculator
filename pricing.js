@@ -211,6 +211,11 @@ const COLLECTION_TIERS = {
   foreverBond: [
     'essentials',
     'signature'
+  ],
+
+  singleLady: [
+    'essentials',
+    'signature'
   ]
 };
 
@@ -881,6 +886,47 @@ const PRODUCTS_BY_COLLECTION = {
           c: '0.50',
           qty: 10
         }
+      },
+      {
+        id: 'ow_l_marquise_round_alternating_tennis',
+        name: 'Marquise & Round Alternating Tennis Bracelet',
+        weight: 14.0,
+        labor: 88,
+        stones: 20,
+        type: 'bracelet',
+        defaultBraceletTier: 'premium',
+        diamondPreset: {
+          q: 'select',
+          c: '0.50',
+          qty: 20
+        }
+      },
+      {
+        id: 'ow_l_classic_round_tennis_gold',
+        name: 'Classic Round Tennis Bracelet (Gold)',
+        weight: 14.0,
+        labor: 88,
+        stones: 12,
+        type: 'bracelet',
+        defaultBraceletTier: 'premium'
+      },
+      {
+        id: 'ow_l_emerald_cut_tennis',
+        name: 'Emerald-Cut Tennis Bracelet',
+        weight: 14.0,
+        labor: 88,
+        stones: 12,
+        type: 'bracelet',
+        defaultBraceletTier: 'premium'
+      },
+      {
+        id: 'ow_l_pear_cut_tennis_gold',
+        name: 'Pear-Cut Tennis Bracelet (Gold)',
+        weight: 14.0,
+        labor: 88,
+        stones: 12,
+        type: 'bracelet',
+        defaultBraceletTier: 'premium'
       }
     ]
   },
@@ -1078,6 +1124,174 @@ const PRODUCTS_BY_COLLECTION = {
         type: 'ring'
       }
     ]
+  },
+
+
+  /* =======================================================
+     SINGLE LADY COLLECTION
+  ======================================================= */
+
+  singleLady: {
+    essentials: [
+      {
+        id: 'sl_r_three_stone_round_classic',
+        name: 'Three-Stone Round Classic Ring',
+        weight: 4.0,
+        labor: 35,
+        stones: 1,
+        type: 'ring'
+      },
+      {
+        id: 'sl_r_marquise_crown_cluster',
+        name: 'Marquise Crown Cluster Ring',
+        weight: 4.2,
+        labor: 38,
+        stones: 1,
+        type: 'ring'
+      },
+      {
+        id: 'sl_r_cushion_bypass_swirl',
+        name: 'Cushion Bypass Swirl Ring',
+        weight: 3.8,
+        labor: 34,
+        stones: 1,
+        type: 'ring'
+      },
+      {
+        id: 'sl_r_pear_solitaire_tapered',
+        name: 'Pear Solitaire Tapered Ring',
+        weight: 4.5,
+        labor: 40,
+        stones: 1,
+        type: 'ring'
+      },
+      {
+        id: 'sl_r_oval_halo_pave',
+        name: 'Oval Halo Pavé Ring',
+        weight: 4.0,
+        labor: 38,
+        stones: 1,
+        type: 'ring'
+      },
+      {
+        id: 'sl_r_marquise_round_alternating_band',
+        name: 'Marquise & Round Alternating Band',
+        weight: 4.2,
+        labor: 39,
+        stones: 1,
+        type: 'ring'
+      },
+      {
+        id: 'sl_r_pear_solitaire_chevron',
+        name: 'Pear Solitaire Chevron Ring',
+        weight: 4.8,
+        labor: 42,
+        stones: 1,
+        type: 'ring'
+      },
+      {
+        id: 'sl_r_round_nature_vine',
+        name: 'Round Nature Vine Ring',
+        weight: 3.8,
+        labor: 34,
+        stones: 1,
+        type: 'ring'
+      },
+      {
+        id: 'sl_r_marquise_pear_three_stone',
+        name: 'Marquise & Pear Three-Stone Ring',
+        weight: 4.6,
+        labor: 40,
+        stones: 1,
+        type: 'ring'
+      },
+      {
+        id: 'sl_r_curved_chevron_pave_band',
+        name: 'Curved Chevron Pavé Band',
+        weight: 3.7,
+        labor: 32,
+        stones: 1,
+        type: 'ring'
+      },
+      {
+        id: 'sl_r_marquise_halo_infinity_twist',
+        name: 'Marquise Halo Infinity Twist Ring',
+        weight: 4.9,
+        labor: 42,
+        stones: 1,
+        type: 'ring'
+      },
+      {
+        id: 'sl_r_marquise_bypass_pave',
+        name: 'Marquise Bypass Pavé Ring',
+        weight: 5.8,
+        labor: 46,
+        stones: 1,
+        type: 'ring'
+      },
+      {
+        id: 'sl_r_oval_east_west_solitaire',
+        name: 'Oval East-West Solitaire Ring',
+        weight: 6.2,
+        labor: 48,
+        stones: 1,
+        type: 'ring'
+      },
+      {
+        id: 'sl_r_round_vintage_milgrain',
+        name: 'Round Vintage Milgrain Ring',
+        weight: 3.9,
+        labor: 35,
+        stones: 1,
+        type: 'ring'
+      },
+      {
+        id: 'sl_r_oval_halo_twist_petite',
+        name: 'Oval Halo Twist Petite Ring',
+        weight: 5.1,
+        labor: 44,
+        stones: 1,
+        type: 'ring'
+      },
+      {
+        id: 'sl_r_three_stone_round_classic_ii',
+        name: 'Three-Stone Round Classic Ring II',
+        weight: 4.0,
+        labor: 35,
+        stones: 1,
+        type: 'ring'
+      },
+      {
+        id: 'sl_b_diamond_paperclip_link_bracelet',
+        name: 'Diamond Paperclip Link Bracelet',
+        weight: 8.0,
+        labor: 54,
+        stones: 7,
+        type: 'bracelet',
+        defaultBraceletTier: 'premium',
+        diamondPreset: {
+          q: 'select',
+          c: '0.25',
+          qty: 7
+        }
+      },
+      {
+        id: 'sl_n_pear_cluster_drop_necklace',
+        name: 'Pear Cluster Drop Necklace',
+        weight: 11.5,
+        labor: 70,
+        stones: 5,
+        type: 'necklace'
+      },
+      {
+        id: 'sl_n_pear_drop_station_necklace',
+        name: 'Pear Drop Station Necklace',
+        weight: 13.0,
+        labor: 78,
+        stones: 6,
+        type: 'necklace'
+      }
+    ]
   }
 };
 
@@ -1103,7 +1317,8 @@ function getCollectionName(id) {
   const names = {
     dailySparkle: 'Daily Sparkle',
     occasionWear: 'Occasion Wear',
-    foreverBond: 'Forever Bond'
+    foreverBond: 'Forever Bond',
+    singleLady: 'Single Lady Collection'
   };
 
   return names[id] || id;
