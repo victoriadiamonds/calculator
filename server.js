@@ -8,16 +8,13 @@ const { Airwallex } = require('@airwallex/node-sdk');
 require('dotenv').config();
 const pricing = require('./pricing');
 
-function normalizeAirwallexEnvironment(value) {
-  const normalized = String(value || '').trim().toLowerCase();
-  if (normalized === 'production' || normalized === 'prod') return 'production';
-  if (normalized === 'sandbox' || normalized === 'demo') return 'sandbox';
-  return 'sandbox';
-}
-
 const app = express();
 app.use(cors({
-  origin: ['https://victoriadiamonds.github.io', 'http://localhost:3000'],
+  origin: [
+    'https://victoriadiamonds.github.io',
+    'https://calculator-9do.pages.dev',
+    'http://localhost:3000'
+  ],
   credentials: true
 }));
 // Airwallex signatures cover the original payload, not a re-serialized object.
@@ -44,7 +41,7 @@ app.get('/debug/payment-intent/:id', async (req, res) => {
     console.log('[DEBUG] Using Airwallex client config:', {
       clientId: AIRWALLEX_CLIENT_ID ? 'SET' : 'NOT SET',
       apiKey: AIRWALLEX_API_KEY ? 'SET' : 'NOT SET',
-      env: AIRWALLEX_SDK_ENV
+      env: AIRWALLEX_ENV === 'production' ? 'prod' : 'demo'
     });
 
     const response = await airwallexClient.paymentAcceptance.paymentIntents.retrievePaymentIntent(paymentIntentId);
@@ -76,24 +73,25 @@ app.get('/debug/payment-intent/:id', async (req, res) => {
   }
 });
 
+// Airwallex Configuration
 const AIRWALLEX_CLIENT_ID = process.env.AIRWALLEX_CLIENT_ID;
 const AIRWALLEX_API_KEY = process.env.AIRWALLEX_API_KEY;
 const AIRWALLEX_WEBHOOK_SECRET = process.env.AIRWALLEX_WEBHOOK_SECRET;
-const AIRWALLEX_ENV = normalizeAirwallexEnvironment(process.env.AIRWALLEX_ENV);
+let AIRWALLEX_ENV = process.env.AIRWALLEX_ENV || 'sandbox';
+AIRWALLEX_ENV = (String(AIRWALLEX_ENV).trim().toLowerCase() === 'production' || String(AIRWALLEX_ENV).trim().toLowerCase() === 'prod') ? 'production' : 'sandbox';
 const AIRWALLEX_SDK_ENV = AIRWALLEX_ENV === 'production' ? 'prod' : 'demo';
 
-function logAirwallexStartupDiagnostics() {
-  console.log('[Airwallex Startup] clientId:', AIRWALLEX_CLIENT_ID ? 'SET' : 'NOT SET');
-  console.log('[Airwallex Startup] apiKey:', AIRWALLEX_API_KEY ? 'SET' : 'NOT SET');
-  console.log('[Airwallex Startup] selected environment:', AIRWALLEX_ENV);
-}
-
-const indexHtmlPath = path.join(__dirname, 'index.html');
-const indexTemplate = fs.readFileSync(indexHtmlPath, 'utf8');
-const injectedIndexHtml = indexTemplate.replace("window.AIRWALLEX_ENV = 'sandbox';", `window.AIRWALLEX_ENV = '${AIRWALLEX_ENV}';`);
-
+// Serve index with injected environment so frontend SDK matches backend
 app.get(['/', '/index.html'], (req, res) => {
-  res.send(injectedIndexHtml);
+  try {
+    const indexPath = path.join(__dirname, 'index.html');
+    let html = fs.readFileSync(indexPath, 'utf8');
+    html = html.replace(/window\.AIRWALLEX_ENV\s*=\s*'[^']*';/, `window.AIRWALLEX_ENV = '${AIRWALLEX_ENV}';`);
+    res.send(html);
+  } catch (e) {
+    // fallback to static
+    res.sendFile(path.join(__dirname, 'index.html'));
+  }
 });
 
 // Serve static files (the calculator)
@@ -105,6 +103,11 @@ const airwallexClient = new Airwallex({
   apiKey: AIRWALLEX_API_KEY,
   env: AIRWALLEX_SDK_ENV
 });
+
+// Safe startup diagnostics
+console.log('[Airwallex Startup] clientId:', AIRWALLEX_CLIENT_ID ? 'SET' : 'NOT SET');
+console.log('[Airwallex Startup] apiKey:', AIRWALLEX_API_KEY ? 'SET' : 'NOT SET');
+console.log('[Airwallex Startup] selected environment:', AIRWALLEX_ENV);
 
 // In-memory order store (replace with database in production)
 const orders = new Map();
@@ -248,7 +251,7 @@ app.post('/create-payment-intent', async (req, res) => {
     console.log('[CREATE] Using Airwallex client config:', {
       clientId: AIRWALLEX_CLIENT_ID ? 'SET' : 'NOT SET',
       apiKey: AIRWALLEX_API_KEY ? 'SET' : 'NOT SET',
-      env: AIRWALLEX_SDK_ENV
+      env: AIRWALLEX_ENV === 'production' ? 'prod' : 'demo'
     });
 
     // Store order
@@ -285,7 +288,7 @@ app.post('/create-payment-intent', async (req, res) => {
 app.post('/create-payment-link', async (req, res) => {
   try {
     console.log('[PaymentLink] ===== CREATE PAYMENT LINK REQUEST =====');
-    console.log('[PaymentLink] Environment:', AIRWALLEX_ENV);
+    console.log('[PaymentLink] Environment:', AIRWALLEX_ENV === 'production' ? 'production' : 'sandbox (demo)');
     console.log('[PaymentLink] Credentials:', {
       clientId: AIRWALLEX_CLIENT_ID ? 'SET' : 'NOT SET',
       apiKey: AIRWALLEX_API_KEY ? 'SET' : 'NOT SET'
@@ -626,5 +629,4 @@ app.post('/airwallex/webhook', async (req, res) => {
 });
 
 const port = process.env.PORT || 3000;
-logAirwallexStartupDiagnostics();
 app.listen(port, '0.0.0.0', () => console.log(`Server running on http://localhost:${port}`));
