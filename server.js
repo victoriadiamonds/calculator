@@ -382,6 +382,14 @@ function validateCheckoutRequest(body) {
     return 'Invalid email address';
   }
 
+  // Validate payment percentage if provided
+  if (body.paymentPercentage !== undefined && body.paymentPercentage !== null) {
+    const percentage = Number(body.paymentPercentage);
+    if (!Number.isFinite(percentage) || percentage < 30 || percentage > 100) {
+      return 'Payment percentage must be between 30 and 100';
+    }
+  }
+
   return null;
 }
 
@@ -476,12 +484,10 @@ app.post(
         });
       }
 
-      const amount =
-        Math.round(
-          Number(
-            pricingResult.finalTotal
-          ) * 100
-        ) / 100;
+      // Calculate payment amount based on percentage (30-100%, default 100%)
+      const paymentPercentage = Math.max(30, Math.min(100, Number(req.body.paymentPercentage) || 100));
+      const fullAmount = Math.round(Number(pricingResult.finalTotal) * 100) / 100;
+      const amount = Math.round(fullAmount * (paymentPercentage / 100) * 100) / 100;
 
       if (
         !Number.isFinite(amount) ||
@@ -496,6 +502,9 @@ app.post(
       const merchantOrderId =
         generateMerchantOrderId();
 
+      const isDeposit = paymentPercentage < 100;
+      const paymentTypeLabel = isDeposit ? `Deposit (${paymentPercentage}%)` : 'Full Payment';
+
       const paymentLinkData = {
 
         amount,
@@ -505,10 +514,10 @@ app.post(
         reusable: false,
 
         title:
-          `Victoria Diamonds — ${pricingResult.prod.name}`,
+          `Victoria Diamonds — ${pricingResult.prod.name} — ${paymentTypeLabel}`,
 
         description:
-          `Secure payment for order ${merchantOrderId}`,
+          `${paymentTypeLabel} for order ${merchantOrderId}`,
 
         reference:
           merchantOrderId,
@@ -535,7 +544,16 @@ app.post(
               req.body.braceletMetalTier ||
               pricingResult.braceletTierKey ||
               ''
-            )
+            ),
+
+          payment_percentage:
+            String(paymentPercentage),
+
+          is_deposit:
+            String(isDeposit),
+
+          full_amount:
+            String(fullAmount)
         },
 
         collectable_shopper_info: {
@@ -555,7 +573,6 @@ app.post(
       console.log(
         '[PaymentLink] Creating link:',
         {
-
           environment:
             IS_PRODUCTION
               ? 'production'
@@ -564,6 +581,10 @@ app.post(
           merchantOrderId,
 
           amount,
+
+          fullAmount,
+
+          paymentPercentage,
 
           currency: 'GBP',
 
@@ -639,6 +660,12 @@ app.post(
 
           amount,
 
+          fullAmount,
+
+          paymentPercentage,
+
+          isDeposit,
+
           currency: 'GBP',
 
           customerName,
@@ -666,10 +693,18 @@ app.post(
 
         amount,
 
+        fullAmount,
+
+        paymentPercentage,
+
+        isDeposit,
+
         currency: 'GBP',
 
         message:
-          'Payment link sent successfully.'
+          isDeposit
+            ? `Deposit payment link (${paymentPercentage}%) sent successfully.`
+            : 'Payment link sent successfully.'
       });
 
     } catch (error) {

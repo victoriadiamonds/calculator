@@ -249,6 +249,21 @@
           </div>
 
           <div class="form-group">
+            <label for="paymentPercentage">Payment Amount</label>
+            <select id="paymentPercentage">
+              <option value="30">30% Deposit</option>
+              <option value="40">40% Deposit</option>
+              <option value="50" selected>50% Deposit</option>
+              <option value="60">60% Deposit</option>
+              <option value="70">70% Deposit</option>
+              <option value="80">80% Deposit</option>
+              <option value="90">90% Deposit</option>
+              <option value="100">100% - Full Payment</option>
+            </select>
+            <div class="small muted" id="depositAmountHint" style="margin-top:4px"></div>
+          </div>
+
+          <div class="form-group">
             <label for="fullName">Full Name</label>
             <input id="fullName" type="text" placeholder="John Doe" />
           </div>
@@ -510,6 +525,7 @@
     let currentIsPriceOnRequest = false;
     let currentPaymentIntent = null;
     let airwallexDropin = null;
+    let currentPaymentPercentage = 50;
 
     function formatGBP(v){ return '£' + Math.round(v).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0}); }
 
@@ -1097,8 +1113,20 @@
       document.getElementById('paymentStatus').textContent = '';
       document.getElementById('submitPayment').disabled = false;
 
+      updateDepositHint();
+
       // Clear any existing dropin
       destroyAirwallexDropin();
+    }
+
+    function updateDepositHint() {
+      const percentage = Number(document.getElementById('paymentPercentage').value) || 50;
+      currentPaymentPercentage = percentage;
+      const depositAmount = Math.round(currentOrderTotal * percentage / 100);
+      const hint = document.getElementById('depositAmountHint');
+      if (hint) {
+        hint.textContent = 'You will pay: ' + formatGBP(depositAmount) + ' (' + percentage + '% of ' + formatGBP(currentOrderTotal) + ')';
+      }
     }
 
     function closePaymentModal(){
@@ -1136,6 +1164,8 @@
         });
       }
 
+      const paymentPercentage = Number(document.getElementById('paymentPercentage').value) || 50;
+
       return {
         productId: document.getElementById('product').value,
         collection: document.getElementById('collection').value,
@@ -1149,7 +1179,8 @@
         profit: Number(document.getElementById('profit').value) || 0,
         designFee: Number(document.getElementById('designFee').value) || 0,
         customerName: document.getElementById('fullName').value.trim(),
-        customerEmail: document.getElementById('email').value.trim()
+        customerEmail: document.getElementById('email').value.trim(),
+        paymentPercentage: paymentPercentage
       };
     }
 
@@ -1409,6 +1440,7 @@
       document.getElementById('closeModal').addEventListener('click', closePaymentModal);
       document.getElementById('cancelCheckout').addEventListener('click', closePaymentModal);
       document.getElementById('submitPayment').addEventListener('click', processPayment);
+      document.getElementById('paymentPercentage').addEventListener('change', updateDepositHint);
 
     });
   </script>
