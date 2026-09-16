@@ -1322,8 +1322,14 @@
           return null;
         }
 
+        // Store merchantOrderId for receipt access
+        window.currentMerchantOrderId = json.merchantOrderId;
+
         // Inform the user that an email was sent
-        status.textContent = `Payment link sent to ${orderData.customerEmail}. Please check your inbox.`;
+        status.innerHTML = `Payment link sent to ${orderData.customerEmail}. Please check your inbox.<br><br>
+          <a href="/order-receipt/${json.merchantOrderId}" target="_blank" class="btn" style="display:inline-block;margin-top:8px;">View Order Receipt</a>
+          <a href="/order-receipt/${json.merchantOrderId}?format=pdf" class="btn secondary" style="display:inline-block;margin-top:8px;margin-left:8px;">Download Receipt (PDF)</a>
+        `;
 
         // Optionally close modal after a short delay
         setTimeout(() => {
