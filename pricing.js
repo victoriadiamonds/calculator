@@ -216,6 +216,10 @@ const COLLECTION_TIERS = {
   singleLady: [
     'essentials',
     'signature'
+  ],
+
+  silver: [
+    'essentials'
   ]
 };
 
@@ -1292,6 +1296,258 @@ const PRODUCTS_BY_COLLECTION = {
         type: 'necklace'
       }
     ]
+  },
+
+
+  /* =======================================================
+     SILVER COLLECTION
+     Fixed retail prices - computePricing will return fixedPrice directly
+  ======================================================= */
+
+  silver: {
+
+    essentials: [
+
+      {
+        id: 'silver_everyday_ring',
+        name: 'Everyday Silver Ring',
+        weight: 2.0,
+        labor: 0,
+        stones: 1,
+        type: 'ring',
+        fixedPrice: 79,
+        diamondPreset: {
+          q: 'select',
+          c: '0.25',
+          qty: 1
+        }
+      },
+
+      {
+        id: 'silver_twisted_band',
+        name: 'Twisted Silver Band',
+        weight: 2.5,
+        labor: 0,
+        stones: 1,
+        type: 'ring',
+        fixedPrice: 142,
+        diamondPreset: {
+          q: 'select',
+          c: '0.50',
+          qty: 1
+        }
+      },
+
+      {
+        id: 'silver_round_ring',
+        name: 'Round Silver Ring',
+        weight: 2.0,
+        labor: 0,
+        stones: 1,
+        type: 'ring',
+        fixedPrice: 79,
+        diamondPreset: {
+          q: 'select',
+          c: '0.25',
+          qty: 1
+        }
+      },
+
+      {
+        id: 'silver_classic_ring',
+        name: 'Classic Silver Ring',
+        weight: 2.2,
+        labor: 0,
+        stones: 1,
+        type: 'ring',
+        fixedPrice: 87,
+        diamondPreset: {
+          q: 'select',
+          c: '0.25',
+          qty: 1
+        }
+      },
+
+      {
+        id: 'silver_curved_band',
+        name: 'Curved Silver Band',
+        weight: 2.3,
+        labor: 0,
+        stones: 1,
+        type: 'ring',
+        fixedPrice: 97,
+        diamondPreset: {
+          q: 'select',
+          c: '0.25',
+          qty: 1
+        }
+      },
+
+      {
+        id: 'silver_dainty_ring',
+        name: 'Dainty Silver Ring',
+        weight: 1.8,
+        labor: 0,
+        stones: 1,
+        type: 'ring',
+        fixedPrice: 79,
+        diamondPreset: {
+          q: 'select',
+          c: '0.25',
+          qty: 1
+        }
+      },
+
+      {
+        id: 'silver_crescent_ring',
+        name: 'Crescent Silver Ring',
+        weight: 2.5,
+        labor: 0,
+        stones: 5,
+        type: 'ring',
+        fixedPrice: 129,
+        diamondPreset: {
+          q: 'select',
+          c: '0.25',
+          qty: 1
+        }
+      },
+
+      {
+        id: 'silver_loop_ring',
+        name: 'Loop Silver Ring',
+        weight: 2.5,
+        labor: 0,
+        stones: 1,
+        type: 'ring',
+        fixedPrice: 134,
+        diamondPreset: {
+          q: 'select',
+          c: '0.50',
+          qty: 1
+        }
+      },
+
+      {
+        id: 'silver_simple_chain',
+        name: 'Simple Chain Necklace',
+        weight: 3.0,
+        labor: 0,
+        stones: 1,
+        type: 'necklace',
+        fixedPrice: 98,
+        diamondPreset: {
+          q: 'select',
+          c: '0.25',
+          qty: 1
+        }
+      },
+
+      {
+        id: 'silver_little_drop',
+        name: 'Little Drop Necklace',
+        weight: 2.5,
+        labor: 0,
+        stones: 1,
+        type: 'necklace',
+        fixedPrice: 87,
+        diamondPreset: {
+          q: 'select',
+          c: '0.25',
+          qty: 1
+        }
+      },
+
+      {
+        id: 'silver_everyday_pendant',
+        name: 'Everyday Pendant Necklace',
+        weight: 2.5,
+        labor: 0,
+        stones: 1,
+        type: 'necklace',
+        fixedPrice: 87,
+        diamondPreset: {
+          q: 'select',
+          c: '0.25',
+          qty: 1
+        }
+      },
+
+      {
+        id: 'silver_open_cuff',
+        name: 'Open Cuff Bracelet',
+        weight: 5.0,
+        labor: 0,
+        stones: 1,
+        type: 'bracelet',
+        fixedPrice: 87,
+        diamondPreset: {
+          q: 'select',
+          c: '0.25',
+          qty: 1
+        }
+      },
+
+      {
+        id: 'silver_link_charm',
+        name: 'Link Charm Bracelet',
+        weight: 6.0,
+        labor: 0,
+        stones: 2,
+        type: 'bracelet',
+        fixedPrice: 131,
+        diamondPreset: {
+          q: 'select',
+          c: '0.25',
+          qty: 2
+        }
+      },
+
+      {
+        id: 'silver_round_studs',
+        name: 'Round Stud Earrings',
+        weight: 3.0,
+        labor: 0,
+        stones: 2,
+        type: 'earrings',
+        fixedPrice: 134,
+        diamondPreset: {
+          q: 'select',
+          c: '0.25',
+          qty: 2
+        }
+      },
+
+      {
+        id: 'silver_flower_drop',
+        name: 'Flower Drop Earrings',
+        weight: 3.5,
+        labor: 0,
+        stones: 2,
+        type: 'earrings',
+        fixedPrice: 134,
+        diamondPreset: {
+          q: 'select',
+          c: '0.25',
+          qty: 2
+        }
+      },
+
+      {
+        id: 'silver_anklet',
+        name: 'Everyday Silver Anklet',
+        weight: 4.0,
+        labor: 0,
+        stones: 3,
+        type: 'anklet',
+        fixedPrice: 131,
+        diamondPreset: {
+          q: 'select',
+          c: '0.25',
+          qty: 3
+        }
+      }
+    ]
   }
 };
 
@@ -1473,6 +1729,74 @@ function computePricing(params) {
       collection: collection,
       tierKey: tierKey,
       type: prod.type
+    };
+  }
+
+
+  if (prod.fixedPrice !== undefined && metal === 'silver') {
+
+    const qty = Number(quantity) || 1;
+    const profitPct = Number(profit) || 0;
+    const designFeeAmt = Number(designFee) || 0;
+    let discountPct = Number(discount) || 0;
+    discountPct = Math.min(Math.max(discountPct, 0), 100);
+
+    const subtotal = prod.fixedPrice + designFeeAmt;
+    const profitAmount = subtotal * (profitPct / 100);
+    const unitTotal = subtotal + profitAmount;
+    const grandTotal = unitTotal * qty;
+    const discountAmount = grandTotal * (discountPct / 100);
+    const finalTotal = grandTotal - discountAmount;
+
+    return {
+
+      priceOnRequest: false,
+
+      prod: prod,
+
+      collection: collection,
+
+      tierKey: tierKey,
+
+      packageKey: 'essential',
+
+      packageName: 'Essential',
+
+      metal: metal,
+
+      metalKey: 'silver',
+
+      designComplexityFee: 0,
+
+      jewelleryPrice: 0,
+
+      ringPrice: 0,
+
+      entries: [],
+
+      diamondPrice: 0,
+
+      hasUnpricedDiamond: false,
+
+      qty: qty,
+
+      profitPct: profitPct,
+
+      designFee: designFeeAmt,
+
+      discount: discountPct,
+
+      subtotal: subtotal,
+
+      profitAmount: profitAmount,
+
+      unitTotal: unitTotal,
+
+      grandTotal: grandTotal,
+
+      discountAmount: discountAmount,
+
+      finalTotal: finalTotal
     };
   }
 
