@@ -326,6 +326,26 @@
     </div>
   </div>
 
+  <div id="emailSentModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="emailSentTitle">
+    <div class="modal-content email-sent-content">
+      <div class="sent-animation" aria-hidden="true"><span class="sent-envelope"></span><span class="sent-check">✓</span></div>
+      <p class="salon-eyebrow">Check your inbox</p>
+      <h2 id="emailSentTitle" tabindex="-1">Your payment link is on its way.</h2>
+      <p>We've sent your secure payment link to <strong id="sentEmail"></strong>.</p>
+      <p class="muted">Complete payment using the link in your email. This order receipt does not confirm payment.</p>
+      <div class="receipt-wait">
+        <p id="receiptCountdown">Receipt download available in 30 seconds.</p>
+        <progress id="receiptProgress" max="30" value="0" aria-label="Receipt waiting period"></progress>
+        <p id="receiptReady" role="status" aria-live="polite"></p>
+      </div>
+      <div class="buttons receipt-actions">
+        <a id="viewSentReceipt" class="btn secondary" aria-disabled="true">View order receipt</a>
+        <a id="downloadSentReceipt" class="btn" aria-disabled="true">Download receipt (PDF)</a>
+        <button type="button" id="closeEmailSent" class="btn secondary">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Airwallex JS SDK removed to keep the UI in email-payment mode.
        Re-add the SDK only if you want to offer on-page card payments. -->
   <script>
@@ -1334,6 +1354,58 @@
       }
     }
 
+    let receiptWaitTimer;
+    let paymentLinkSending = false;
+
+    function showEmailSent(email, orderId) {
+      clearInterval(receiptWaitTimer);
+      const modal = document.getElementById('emailSentModal');
+      const view = document.getElementById('viewSentReceipt');
+      const download = document.getElementById('downloadSentReceipt');
+      const countdown = document.getElementById('receiptCountdown');
+      const progress = document.getElementById('receiptProgress');
+      const ready = document.getElementById('receiptReady');
+      document.getElementById('sentEmail').textContent = email;
+      ready.textContent = '';
+      [view, download].forEach(link => { link.removeAttribute('href'); link.setAttribute('aria-disabled', 'true'); });
+      const receiptUrl = '/order-receipt/' + encodeURIComponent(orderId);
+      const availableAt = Date.now() + 30000;
+      function updateReceiptWait() {
+        const remaining = Math.max(0, Math.ceil((availableAt - Date.now()) / 1000));
+        progress.value = 30 - remaining;
+        countdown.textContent = remaining ? 'Receipt download available in ' + remaining + ' seconds.' : 'Your order receipt is ready.';
+        if (!remaining) {
+          clearInterval(receiptWaitTimer);
+          view.href = receiptUrl;
+          view.target = '_blank';
+          view.rel = 'noopener';
+          download.href = receiptUrl + '?format=pdf';
+          [view, download].forEach(link => link.removeAttribute('aria-disabled'));
+          ready.textContent = 'You can now view or download your order receipt.';
+        }
+      }
+      closePaymentModal();
+      modal.classList.add('open');
+      const receiptAccess = document.createElement('button');
+      receiptAccess.type = 'button';
+      receiptAccess.className = 'btn secondary';
+      receiptAccess.textContent = 'View emailed order receipt';
+      receiptAccess.addEventListener('click', () => {
+        modal.classList.add('open');
+        updateReceiptWait();
+        document.getElementById('emailSentTitle').focus();
+      });
+      document.getElementById('out').replaceChildren(receiptAccess);
+      updateReceiptWait();
+      receiptWaitTimer = setInterval(updateReceiptWait, 250);
+      document.getElementById('emailSentTitle').focus();
+    }
+
+    function closeEmailSent() {
+      document.getElementById('emailSentModal').classList.remove('open');
+      document.getElementById('calc').focus();
+    }
+
     async function createPaymentLink() {
       const status = document.getElementById('paymentStatus');
       status.textContent = 'Creating payment link and sending to your email...';
@@ -1362,16 +1434,7 @@
         // Store merchantOrderId for receipt access
         window.currentMerchantOrderId = json.merchantOrderId;
 
-        // Inform the user that an email was sent
-        status.innerHTML = `Payment link sent to ${orderData.customerEmail}. Please check your inbox.<br><br>
-          <a href="/order-receipt/${json.merchantOrderId}" target="_blank" class="btn" style="display:inline-block;margin-top:8px;">View Order Receipt</a>
-          <a href="/order-receipt/${json.merchantOrderId}?format=pdf" class="btn secondary" style="display:inline-block;margin-top:8px;margin-left:8px;">Download Receipt (PDF)</a>
-        `;
-
-        // Optionally close modal after a short delay
-        setTimeout(() => {
-          closePaymentModal();
-        }, 2000);
+        showEmailSent(orderData.customerEmail, json.merchantOrderId);
 
         return json;
       } catch (err) {
@@ -1382,6 +1445,7 @@
     }
 
     async function processPayment() {
+      if (paymentLinkSending) return;
       const name = document.getElementById('fullName').value.trim();
       const email = document.getElementById('email').value.trim();
       const status = document.getElementById('paymentStatus');
@@ -1402,15 +1466,33 @@
       }
 
       // Create and send a payment link to the buyer's email instead of loading the Drop-in
+      paymentLinkSending = true;
+      const submit = document.getElementById('submitPayment');
+      submit.disabled = true;
+      submit.textContent = 'Sending payment link…';
       try {
         await createPaymentLink();
       } catch (error) {
         console.error('Payment processing error:', error);
         status.textContent = 'Error starting payment: ' + (error.message || error);
+      } finally {
+        paymentLinkSending = false;
+        submit.disabled = false;
+        submit.textContent = 'Continue to payment';
       }
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('closeEmailSent').addEventListener('click', closeEmailSent);
+      document.getElementById('emailSentModal').addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') closeEmailSent();
+        if (event.key === 'Tab') {
+          const controls = Array.from(this.querySelectorAll('a[href], button'));
+          const first = controls[0], last = controls[controls.length - 1];
+          if (event.shiftKey && (document.activeElement === first || document.activeElement.id === 'emailSentTitle')) { event.preventDefault(); last.focus(); }
+          else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+        }
+      });
       populateDiamondCarats();
       populateProducts();
       renderMetalExtras();

@@ -1171,6 +1171,25 @@ button:focus-visible, summary:focus-visible, a:focus-visible { outline: 2px soli
   .salon-footer { align-items: flex-start; flex-direction: column; gap: 8px; }
   .modal-content, .result-popup-content { padding: 16px; }
 }
+.email-sent-content { width: min(100%, 520px); text-align: center; }
+.email-sent-content h2 { font-size: clamp(25px, 5vw, 34px); line-height: 1.2; margin: 12px 0 20px; }
+#emailSentTitle:focus { outline: none; }
+.email-sent-content p { font-size: 14px; line-height: 1.6; }
+#sentEmail { overflow-wrap: anywhere; color: var(--accent); }
+.receipt-wait { margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--stroke); }
+.receipt-wait progress { width: 100%; height: 6px; accent-color: var(--accent); }
+.receipt-actions { display: grid; grid-template-columns: 1fr; }
+.receipt-actions a { text-decoration: none; }
+.receipt-actions [aria-disabled="true"], .btn:disabled { opacity: .5; cursor: not-allowed; pointer-events: none; }
+.sent-animation { position: relative; width: 96px; height: 88px; margin: 12px auto 28px; }
+.sent-envelope { position: absolute; width: 66px; height: 44px; left: 10px; top: 23px; border: 2px solid var(--accent); border-radius: 5px; }
+.sent-envelope::after { content: ''; position: absolute; width: 42px; height: 42px; top: -25px; left: 10px; border-left: 2px solid var(--accent); border-bottom: 2px solid var(--accent); transform: rotate(-45deg); }
+.sent-check { position: absolute; right: 0; bottom: 9px; width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: #201d15; font-size: 21px; line-height: 32px; }
+.email-sent-content .salon-eyebrow { font-size: 11px; }
+.modal.open .sent-envelope { animation: mail-arrive .7s ease-out both; }
+.modal.open .sent-check { animation: mail-confirm .4s .55s ease-out both; }
+@keyframes mail-arrive { from { opacity: 0; transform: translate(-25px, 12px) rotate(-12deg); } to { opacity: 1; transform: translate(0, 0) rotate(0); } }
+@keyframes mail-confirm { from { opacity: 0; transform: scale(.3); } to { opacity: 1; transform: scale(1); } }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
