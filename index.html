@@ -7,9 +7,20 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <header class="salon-header">
+    <div class="salon-brand">VICTORIA<span>DIAMONDS</span></div>
+    <div class="salon-context">Jewelry Calculator<span>GBP · Private Salon</span></div>
+  </header>
   <main class="card">
-    <h1>Jewelry Calculator</h1>
-    <p class="tagline">Luxury collection pricing</p>
+    <div class="salon-intro">
+      <p class="salon-eyebrow">Luxury collection pricing</p>
+      <h1>A piece, uniquely yours.</h1>
+      <p class="tagline">Choose a design and refine every detail.</p>
+    </div>
+    <div class="salon-layout">
+    <div class="salon-form">
+    <section class="salon-section" aria-labelledby="pieceHeading">
+    <h2 id="pieceHeading"><span>01</span> Your piece</h2>
 
     <div class="row">
       <div style="flex:1">
@@ -46,6 +57,9 @@
       </div>
     </div>
 
+    </section>
+    <section class="salon-section" aria-labelledby="metalHeading">
+    <h2 id="metalHeading"><span>02</span> Precious metal</h2>
     <div class="row">
       <div style="flex:1">
         <label for="metal">Metal</label>
@@ -77,6 +91,9 @@
       </div>
     </div>
 
+    </section>
+    <section class="salon-section" aria-labelledby="diamondHeading">
+    <h2 id="diamondHeading"><span>03</span> Diamonds</h2>
     <div class="diamond-block">
       <div class="diamond-section-title">
         Main Diamond
@@ -102,6 +119,8 @@
       </div>
     </div>
 
+    <details id="additionalDiamonds" class="salon-disclosure">
+    <summary>Additional diamonds <span>Up to 3 more specifications</span></summary>
     <div class="diamond-block">
       <div class="diamond-section-title">
         Diamond 2
@@ -177,6 +196,10 @@
       </div>
     </div>
 
+    </details>
+    </section>
+    <details class="salon-disclosure salon-adjustments">
+    <summary>Quantity &amp; pricing adjustments <span>Discount, margin, design fee &amp; notes</span></summary>
     <div class="row">
       <div style="flex:1">
         <label for="quantity">Quantity</label>
@@ -210,17 +233,31 @@
       </div>
     </div>
 
+    </details>
+    </div>
+    <aside class="salon-quote" aria-label="Your quote">
+    <p class="salon-eyebrow">Your selection</p>
+    <h2 id="selectionName">Your piece</h2>
+    <p id="selectionCollection" class="muted"></p>
+    <dl class="selection-details">
+      <div><dt>Metal</dt><dd id="selectionMetal"></dd></div>
+      <div id="selectionBraceletRow" hidden><dt>Specification</dt><dd id="selectionBracelet"></dd></div>
+      <div><dt>Diamonds</dt><dd id="selectionDiamonds"></dd></div>
+      <div><dt>Quantity</dt><dd id="selectionQuantity"></dd></div>
+    </dl>
+    <div id="liveTotal" class="live-total muted" aria-live="polite"></div>
     <div class="buttons">
       <button id="calc" class="btn">Calculate price</button>
       <button id="reset" class="btn secondary">Reset</button>
     </div>
 
-    <div id="liveTotal" class="live-total muted" aria-live="polite"></div>
-
     <div id="out" class="result" aria-live="polite">
       <div class="muted">Choose product and options, then press Calculate.</div>
     </div>
+    </aside>
+    </div>
   </main>
+  <footer class="salon-footer"><span>VICTORIA DIAMONDS</span><span>Every detail, considered.</span></footer>
 
   <div id="resultPopup" class="result-popup" hidden>
     <div class="result-popup-content" role="dialog" aria-modal="true" aria-labelledby="resultPopupTitle">
@@ -240,7 +277,7 @@
   <!-- Payment Modal -->
   <div id="paymentModal" class="modal">
     <div class="modal-content">
-      <span class="modal-close" id="closeModal">&times;</span>
+      <button type="button" class="modal-close" id="closeModal" aria-label="Close checkout">&times;</button>
       <div id="modalBody">
         <h2>Checkout</h2>
         <div class="modal-body">
@@ -1448,6 +1485,40 @@
       document.getElementById('submitPayment').addEventListener('click', processPayment);
       document.getElementById('paymentPercentage').addEventListener('change', updateDepositHint);
 
+    });
+  </script>
+  <script>
+    // Presentation only: mirror existing controls without recalculating prices.
+    document.addEventListener('DOMContentLoaded', function () {
+      const byId = id => document.getElementById(id);
+      const selectedText = id => {
+        const control = byId(id);
+        return control && control.selectedOptions ? (control.selectedOptions[0]?.textContent || '') : '';
+      };
+      function syncSelection() {
+        byId('selectionName').textContent = byId('modelName').value || 'Your piece';
+        byId('selectionCollection').textContent = selectedText('collection');
+        byId('selectionMetal').textContent = [selectedText('metal'), selectedText('karat') || selectedText('purity')].filter(Boolean).join(' · ');
+        byId('selectionBraceletRow').hidden = byId('braceletTierRow').hidden;
+        byId('selectionBracelet').textContent = selectedText('braceletMetalTier');
+        byId('selectionQuantity').textContent = byId('quantity').value || '0';
+        const diamonds = [];
+        for (let i = 0; i < 4; i++) {
+          if (Number(byId('dc' + i).value) > 0) {
+            diamonds.push(byId('dqt' + i).value + ' × ' + byId('dc' + i).value + ' ct · ' + selectedText('dq' + i));
+            if (i > 0) byId('additionalDiamonds').open = true;
+          }
+        }
+        byId('selectionDiamonds').textContent = diamonds.join(' / ') || 'None selected';
+        byId('metalExtras').querySelectorAll('label').forEach(label => {
+          const control = byId('metalExtras').querySelector('select, input');
+          if (control) label.htmlFor = control.id;
+        });
+      }
+      new MutationObserver(syncSelection).observe(byId('liveTotal'), { childList: true, subtree: true, characterData: true });
+      document.querySelector('.salon-form').addEventListener('input', syncSelection);
+      document.querySelector('.salon-form').addEventListener('change', syncSelection);
+      syncSelection();
     });
   </script>
 </body>
