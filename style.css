@@ -1127,7 +1127,13 @@ button:focus-visible, summary:focus-visible, a:focus-visible { outline: 2px soli
 .btn.secondary:hover { background: #303831; color: var(--ink); }
 .salon-quote .buttons { display: grid; grid-template-columns: 1fr; }
 .result, .breakdown, .summary, .payment, .cost-breakdown { background: transparent; border-color: var(--stroke); color: var(--ink); box-shadow: none; }
-.result { font-size: 13px; padding: 15px 0 0; }
+.result { font-size: 13px; padding: 20px; border-width: 1px; border-radius: 4px; overflow-wrap: anywhere; animation: none; }
+.result > :first-child { margin-top: 0; }
+.result > :last-child { margin-bottom: 0; }
+.salon-quote > .result { margin-top: 18px; padding: 14px 16px; }
+.salon-quote > .result .muted { font-size: 13px; }
+.result-popup-header { gap: 16px; margin-bottom: 20px; }
+.result-popup-header .btn { flex-shrink: 0; }
 .result div, .result strong, .summary h3, .breakdown-title, .breakdown-line, .breakdown-formula { color: var(--ink); }
 .result hr, .breakdown hr { border-color: var(--stroke); }
 .result .muted, .result .small { color: var(--muted); }
@@ -1154,12 +1160,16 @@ button:focus-visible, summary:focus-visible, a:focus-visible { outline: 2px soli
   .salon-context { font-size: 11px; }
   .salon-context span { font-size: 10px; }
   .modal-content, .result-popup-content { padding: 22px; }
+  .result-popup-content > .buttons, .modal-body > .buttons { display: grid; grid-template-columns: 1fr; }
+  .result-popup-content .result { padding: 16px; }
+  .result-popup, .modal { padding: 12px; }
 }
 @media (max-width: 400px) {
   main.card { padding: 28px 18px 36px; }
   .salon-header, .salon-footer { padding: 20px 18px; }
   .row, .diamond-block .row { grid-template-columns: 1fr; }
   .salon-footer { align-items: flex-start; flex-direction: column; gap: 8px; }
+  .modal-content, .result-popup-content { padding: 16px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
