@@ -971,7 +971,6 @@
         '<div><strong>Product:</strong> ' + prod.name + '</div>' +
         '<div><strong>Model name:</strong> ' + (document.getElementById('modelName').value.trim() || '(none)') + '</div>' +
         '<div><strong>Metal:</strong> ' + metalLabel + '</div>' +
-        '<div><strong>Design/labor fee:</strong> ' + formatGBP(p.designComplexityFee) + '</div>' +
         '<div><strong>Base price (design):</strong> ' + formatGBP(p.ringPrice) + '</div>';
 
       p.entries.forEach(function(e, idx){
@@ -1029,7 +1028,7 @@
       const packageLabels = { basic: 'Essential design', signature: 'Signature design' };
       const qualityLabels = { elite: 'Elite', luxe: 'Luxe', select: 'Select' };
       let lines = '<div class="breakdown-title">How this was calculated</div>';
-      lines += '<div class="breakdown-line"><span>Design/labor fee — ' + (packageLabels[p.packageKey] || p.packageKey) + '</span><span>' + formatGBP(p.designComplexityFee) + '</span></div>';
+      lines += '<div class="breakdown-line"><span>Base price (design) — ' + (packageLabels[p.packageKey] || p.packageKey) + '</span><span>' + formatGBP(p.designComplexityFee) + '</span></div>';
       p.entries.forEach(function(e, idx){
         if(e.caratNum > 0){
           if(e.unpriced){
