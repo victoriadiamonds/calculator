@@ -30,6 +30,7 @@
           <option value="occasionWear">Occasion Wear</option>
           <option value="foreverBond">Forever Bond</option>
           <option value="singleLady">Single Lady Collection</option>
+          <option value="silver">Silver Collection</option>
         </select>
       </div>
       <div style="flex:1">
@@ -40,6 +41,7 @@
           <option value="necklace">Necklaces</option>
           <option value="earrings">Earrings</option>
           <option value="bracelet">Bracelets</option>
+          <option value="anklet">Anklets</option>
           <option value="brooch">Brooch</option>
           <option value="tiara">Tiara</option>
         </select>
@@ -58,6 +60,7 @@
     </div>
 
     </section>
+    <p id="fixedPriceNotice" class="fixed-price-notice" hidden>Fixed-price Silver Collection. Sterling 925 and the listed stones are included. Material, diamond and pricing adjustments are locked.</p>
     <section class="salon-section" aria-labelledby="metalHeading">
     <h2 id="metalHeading"><span>02</span> Precious metal</h2>
     <div class="row">
@@ -425,6 +428,7 @@
       necklace: 'Necklace',
       bracelet: 'Bracelet',
       earrings: 'Earrings',
+      anklet: 'Anklet',
       tiara: 'Tiara',
       brooch: 'Brooch'
     };
@@ -434,10 +438,30 @@
       dailySparkle: ['essentials', 'signature'],
       occasionWear: ['essentials', 'signature'],
       foreverBond: ['essentials', 'signature'],
-      singleLady: ['essentials', 'signature']
+      singleLady: ['essentials', 'signature'],
+      silver: ['essentials']
     };
 
     const PRODUCTS_BY_COLLECTION = {
+      // Fixed retail prices verified against victoria-diamonds.com/silver-collection.
+      silver: { essentials: [
+        { id: 'silver_everyday_ring', name: 'Everyday Silver Ring', type: 'ring', fixedPrice: 79, diamondPreset: { q: 'select', c: '0.25', qty: 1 } },
+        { id: 'silver_twisted_band', name: 'Twisted Silver Band', type: 'ring', fixedPrice: 142, diamondPreset: { q: 'select', c: '0.50', qty: 1 } },
+        { id: 'silver_round_ring', name: 'Round Silver Ring', type: 'ring', fixedPrice: 79, diamondPreset: { q: 'select', c: '0.25', qty: 1 } },
+        { id: 'silver_classic_ring', name: 'Classic Silver Ring', type: 'ring', fixedPrice: 87, diamondPreset: { q: 'select', c: '0.25', qty: 1 } },
+        { id: 'silver_curved_band', name: 'Curved Silver Band', type: 'ring', fixedPrice: 97, diamondPreset: { q: 'select', c: '0.25', qty: 1 } },
+        { id: 'silver_dainty_ring', name: 'Dainty Silver Ring', type: 'ring', fixedPrice: 79, diamondPreset: { q: 'select', c: '0.25', qty: 1 } },
+        { id: 'silver_crescent_ring', name: 'Crescent Silver Ring', type: 'ring', fixedPrice: 129, diamondPreset: { q: 'select', c: '0.25', qty: 1 } },
+        { id: 'silver_loop_ring', name: 'Loop Silver Ring', type: 'ring', fixedPrice: 134, diamondPreset: { q: 'select', c: '0.50', qty: 1 } },
+        { id: 'silver_simple_chain', name: 'Simple Chain Necklace', type: 'necklace', fixedPrice: 98, diamondPreset: { q: 'select', c: '0.25', qty: 1 } },
+        { id: 'silver_little_drop', name: 'Little Drop Necklace', type: 'necklace', fixedPrice: 87, diamondPreset: { q: 'select', c: '0.25', qty: 1 } },
+        { id: 'silver_everyday_pendant', name: 'Everyday Pendant Necklace', type: 'necklace', fixedPrice: 87, diamondPreset: { q: 'select', c: '0.25', qty: 1 } },
+        { id: 'silver_open_cuff', name: 'Open Cuff Bracelet', type: 'bracelet', fixedPrice: 87, diamondPreset: { q: 'select', c: '0.25', qty: 1 } },
+        { id: 'silver_link_charm', name: 'Link Charm Bracelet', type: 'bracelet', fixedPrice: 131, diamondPreset: { q: 'select', c: '0.25', qty: 2 } },
+        { id: 'silver_round_studs', name: 'Round Stud Earrings', type: 'earrings', fixedPrice: 134, diamondPreset: { q: 'select', c: '0.25', qty: 2 } },
+        { id: 'silver_flower_drop', name: 'Flower Drop Earrings', type: 'earrings', fixedPrice: 134, diamondPreset: { q: 'select', c: '0.25', qty: 2 } },
+        { id: 'silver_anklet', name: 'Everyday Silver Anklet', type: 'anklet', fixedPrice: 131, diamondPreset: { q: 'select', c: '0.25', qty: 3 } }
+      ] },
       dailySparkle: {
         essentials: [
           { id: 'ds_s_solenne', name: 'Solenne', weight: 3.0, labor: 30, stones: 1, type: 'ring' },
@@ -581,7 +605,7 @@
     }
 
     function getCollectionName(id){
-      const names = { dailySparkle: 'Daily Sparkle', occasionWear: 'Occasion Wear', foreverBond: 'Forever Bond', singleLady: 'Single Lady Collection' };
+      const names = { dailySparkle: 'Daily Sparkle', occasionWear: 'Occasion Wear', foreverBond: 'Forever Bond', singleLady: 'Single Lady Collection', silver: 'Silver Collection' };
       return names[id] || id;
     }
 
@@ -636,6 +660,10 @@
     }
 
     function populateProducts(){
+      const availableTypes = Object.values(PRODUCTS_BY_COLLECTION[document.getElementById('collection').value] || {}).flat().map(p => p.type);
+      const typeFilter = document.getElementById('typeFilter');
+      Array.from(typeFilter.options).forEach(option => { option.disabled = option.value !== 'all' && !availableTypes.includes(option.value); });
+      if (!availableTypes.includes(typeFilter.value) && typeFilter.value !== 'all') typeFilter.value = 'all';
       const products = getProductsForCurrentSelections();
       var sel = document.getElementById('product');
       sel.innerHTML = '';
@@ -652,7 +680,7 @@
           const typeSuffix = TYPE_LABELS[p.type] ? ' (' + TYPE_LABELS[p.type] + ')' : '';
           var opt = document.createElement('option');
           opt.value = p.id;
-          opt.textContent = p.name + typeSuffix + tierSuffix;
+          opt.textContent = p.name + typeSuffix + (p.fixedPrice !== undefined ? ' - ' + formatGBP(p.fixedPrice) : tierSuffix);
           sel.appendChild(opt);
         });
       }
@@ -665,7 +693,7 @@
         const collection = document.getElementById('collection').value;
         const tierKey = getProductInherentTier(collection, prod.id) || 'essentials';
         const tierInfo = TIERS[tierKey];
-        document.getElementById('modelName').value = prod.name + ' (' + tierInfo.tierLabel + ')';
+        document.getElementById('modelName').value = prod.fixedPrice !== undefined ? prod.name : prod.name + ' (' + tierInfo.tierLabel + ')';
       } else {
         document.getElementById('modelName').value = '';
       }
@@ -701,7 +729,7 @@
       const row = document.getElementById('braceletTierRow');
       const sel = document.getElementById('braceletMetalTier');
       if(!row) return;
-      row.hidden = !(prod && prod.type === 'bracelet');
+      row.hidden = !(prod && prod.type === 'bracelet' && prod.fixedPrice === undefined);
       if(!sel) return;
       if(prod && prod.type === 'bracelet' && prod.defaultBraceletTier && sel.querySelector('option[value="' + prod.defaultBraceletTier + '"]')){
         sel.value = prod.defaultBraceletTier;
@@ -818,6 +846,28 @@
       return entries;
     }
 
+    function applyFixedCollectionRestrictions(){
+      const fixed = document.getElementById('collection').value === 'silver';
+      document.getElementById('fixedPriceNotice').hidden = !fixed;
+      if (fixed) {
+        if (document.getElementById('metal').value !== 'silver' || !document.getElementById('purity')) {
+          document.getElementById('metal').value = 'silver';
+          renderMetalExtras();
+        }
+        document.getElementById('purity').value = '925';
+        document.getElementById('quantity').value = '1';
+        ['discount', 'profit', 'designFee'].forEach(id => document.getElementById(id).value = '0');
+        document.getElementById('notes').value = '';
+        const preset = getCurrentProduct()?.diamondPreset;
+        for (let i = 0; i < 4; i++) {
+          document.getElementById('dq' + i).value = 'select';
+          document.getElementById('dc' + i).value = i === 0 && preset ? preset.c : '0';
+          document.getElementById('dqt' + i).value = i === 0 && preset ? preset.qty : 1;
+        }
+      }
+      document.querySelectorAll('.salon-section:not(:first-child) input, .salon-section:not(:first-child) select, .salon-section:not(:first-child) button, .salon-adjustments input, .salon-adjustments select').forEach(control => control.disabled = fixed);
+    }
+
     function computePricing(){
       const products = getProductsForCurrentSelections();
       const pid = document.getElementById('product').value;
@@ -826,6 +876,16 @@
 
       const collection = document.getElementById('collection').value;
       const tierKey = getProductInherentTier(collection, prod.id) || 'essentials';
+
+      if (collection === 'silver' && prod.fixedPrice !== undefined) {
+        return { priceOnRequest: false, fixedPrice: true, prod, collection, tierKey,
+          metal: 'silver', metalKey: 'silver', purity: 925, packageKey: 'essential',
+          braceletTierKey: null, braceletTier: null, designComplexityFee: 0,
+          ringPrice: prod.fixedPrice, entries: [], diamondPrice: 0, hasUnpricedDiamond: false,
+          qty: 1, profitPct: 0, designFee: 0, discount: 0, subtotal: prod.fixedPrice,
+          profitAmount: 0, unitTotal: prod.fixedPrice, grandTotal: prod.fixedPrice,
+          discountAmount: 0, finalTotal: prod.fixedPrice };
+      }
 
       if(isNonCalculatedType(prod.type)){
         return {
@@ -907,6 +967,7 @@
     }
 
     function updateLiveTotal(){
+      applyFixedCollectionRestrictions();
       const el = document.getElementById('liveTotal');
       if(!el) return;
       const p = computePricing();
@@ -915,7 +976,7 @@
         el.textContent = (TYPE_LABELS[p.type] || 'This piece') + ' is priced on request — not auto-calculated.';
         return;
       }
-      var text = 'Estimated total: ' + formatGBP(p.finalTotal);
+      var text = (p.fixedPrice ? 'Fixed price: ' : 'Estimated total: ') + formatGBP(p.finalTotal);
       if(p.discount > 0){
         text += ' (after ' + p.discount + '% discount)';
       }
@@ -926,6 +987,14 @@
     }
 
     function buildResultMarkup(prod, p){
+      if (p.fixedPrice) {
+        return '<div><strong>Collection:</strong> Silver Collection</div>' +
+          '<div><strong>Product:</strong> ' + prod.name + '</div>' +
+          '<div><strong>Metal:</strong> Sterling 925 silver</div>' +
+          '<div><strong>Quantity:</strong> 1</div><hr>' +
+          '<div><strong>Fixed price: ' + formatGBP(p.finalTotal) + '</strong></div>' +
+          '<div class="small">Includes the listed stones and silver specification. No pricing adjustments apply.</div>';
+      }
       if(prod.type === 'bracelet'){
         const metalLabel = p.metal === 'gold'
           ? document.getElementById('karat').value + 'K gold'
@@ -1080,7 +1149,7 @@
       const popupBody = document.getElementById('resultPopupBody');
       popupBody.innerHTML = buildResultMarkup(p.prod, p);
 
-      if(p.prod.type === 'bracelet'){
+      if(p.fixedPrice || p.prod.type === 'bracelet'){
         breakdownPanel.hidden = true;
         breakdownPanel.innerHTML = '';
         breakdownBtn.hidden = true;
@@ -1163,10 +1232,10 @@
     function updateDepositHint() {
       const percentage = Number(document.getElementById('paymentPercentage').value) || 50;
       currentPaymentPercentage = percentage;
-      const depositAmount = Math.round(currentOrderTotal * percentage / 100);
+      const depositAmount = Math.round(currentOrderTotal * percentage) / 100;
       const hint = document.getElementById('depositAmountHint');
       if (hint) {
-        hint.textContent = 'You will pay: ' + formatGBP(depositAmount) + ' (' + percentage + '% of ' + formatGBP(currentOrderTotal) + ')';
+        hint.textContent = 'You will pay: ' + formatGBPRate(depositAmount) + ' (' + percentage + '% of ' + formatGBP(currentOrderTotal) + ')';
       }
     }
 

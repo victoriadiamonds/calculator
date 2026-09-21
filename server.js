@@ -1083,8 +1083,8 @@ function generateOrderReceiptHTML(order) {
     <div class="totals">
       <h3 class="section-title" style="margin-top:0">Price Summary</h3>
       <div class="total-row">
-        <span>Design / Labour Fee</span>
-        <span>${formatCurrency(pricing?.designComplexityFee || 0)}</span>
+        <span>${pricing?.fixedPrice ? 'Fixed collection price (stones included)' : 'Design / Labour Fee'}</span>
+        <span>${formatCurrency(pricing?.fixedPrice ? pricing.ringPrice : (pricing?.designComplexityFee || 0))}</span>
       </div>
       <div class="total-row">
         <span>Diamond Total</span>
@@ -1323,7 +1323,7 @@ function generateOrderReceiptPDF(order, res) {
   doc.moveDown(0.5);
   
   const totals = [
-    ['Design / Labour Fee', formatCurrency(pricing?.designComplexityFee || 0)],
+    [pricing?.fixedPrice ? 'Fixed collection price (stones included)' : 'Design / Labour Fee', formatCurrency(pricing?.fixedPrice ? pricing.ringPrice : (pricing?.designComplexityFee || 0))],
     ['Diamond Total', formatCurrency(pricing?.diamondPrice || 0)],
   ];
   if (pricing && pricing.designFee > 0) totals.push(['Design Customization', formatCurrency(pricing.designFee)]);

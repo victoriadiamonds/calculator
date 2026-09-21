@@ -1704,6 +1704,10 @@ function computePricing(params) {
     typeFilter
   );
 
+  if (collection === 'silver' && !products.some(product => product.id === productId)) {
+    return null;
+  }
+
 
   const prod =
     products.find(function(product) {
@@ -1733,13 +1737,13 @@ function computePricing(params) {
   }
 
 
-  if (prod.fixedPrice !== undefined && metal === 'silver') {
+  if (collection === 'silver' && prod.fixedPrice !== undefined) {
 
-    const qty = Number(quantity) || 1;
-    const profitPct = Number(profit) || 0;
-    const designFeeAmt = Number(designFee) || 0;
-    let discountPct = Number(discount) || 0;
-    discountPct = Math.min(Math.max(discountPct, 0), 100);
+    // Silver Collection is sold as listed: never trust client-side locks alone.
+    const qty = 1;
+    const profitPct = 0;
+    const designFeeAmt = 0;
+    const discountPct = 0;
 
     const subtotal = prod.fixedPrice + designFeeAmt;
     const profitAmount = subtotal * (profitPct / 100);
@@ -1752,17 +1756,21 @@ function computePricing(params) {
 
       priceOnRequest: false,
 
-      prod: prod,
+      prod: { ...prod, metal: 'silver' },
 
       collection: collection,
 
       tierKey: tierKey,
 
+      fixedPrice: true,
+
+      purity: 925,
+
       packageKey: 'essential',
 
       packageName: 'Essential',
 
-      metal: metal,
+      metal: 'silver',
 
       metalKey: 'silver',
 
@@ -1770,7 +1778,7 @@ function computePricing(params) {
 
       jewelleryPrice: 0,
 
-      ringPrice: 0,
+      ringPrice: prod.fixedPrice,
 
       entries: [],
 

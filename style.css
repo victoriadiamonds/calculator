@@ -1086,6 +1086,8 @@ h1 { font: 400 clamp(34px, 4.2vw, 54px)/1.13 Georgia, serif; color: var(--ink); 
 .tagline { font-size: 15px; color: var(--muted); font-weight: 400; }
 .salon-layout { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(280px, 1fr); gap: 48px; align-items: start; }
 .salon-form { min-width: 0; }
+.fixed-price-notice { margin: 0 0 24px; padding: 14px 16px; border-left: 2px solid var(--accent); background: var(--card); color: var(--muted); font-size: 13px; }
+.salon-form input:disabled, .salon-form select:disabled, .salon-form button:disabled { opacity: .55; cursor: not-allowed; }
 .salon-section { border-top: 1px solid var(--stroke); padding: 22px 0 27px; }
 .salon-section h2 { display: flex; align-items: center; gap: 14px; font-size: 17px; font-weight: 500; margin: 0 0 20px; }
 .salon-section h2 span { color: var(--accent); font-size: 11px; letter-spacing: 1px; }
