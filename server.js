@@ -384,6 +384,9 @@ function validateCheckoutRequest(body) {
   }
 
   // Validate payment percentage if provided
+  if (body.collection === 'silver' && body.paymentPercentage != null && Number(body.paymentPercentage) !== 100) {
+    return 'Silver Collection requires full payment. Deposits are not available.';
+  }
   if (body.paymentPercentage !== undefined && body.paymentPercentage !== null) {
     const percentage = Number(body.paymentPercentage);
     if (!Number.isFinite(percentage) || percentage < 30 || percentage > 100) {
@@ -486,7 +489,7 @@ app.post(
       }
 
       // Calculate payment amount based on percentage (30-100%, default 100%)
-      const paymentPercentage = Math.max(30, Math.min(100, Number(req.body.paymentPercentage) || 100));
+      const paymentPercentage = pricingResult.fixedPrice ? 100 : Math.max(30, Math.min(100, Number(req.body.paymentPercentage) || 100));
       const fullAmount = Math.round(Number(pricingResult.finalTotal) * 100) / 100;
       const amount = Math.round(fullAmount * (paymentPercentage / 100) * 100) / 100;
 

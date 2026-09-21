@@ -64,10 +64,32 @@ test('ordinary collection pricing remains configurable', () => {
 });
 
 test('deposit display retains pence for fixed prices', () => {
+  controls.collection = { value: 'dailySparkle' };
   controls.paymentPercentage = { value: '50' };
   vm.runInContext('currentOrderTotal = 131; updateDepositHint()', context);
   assert.match(controls.depositAmountHint.textContent, /£65\.50/);
   controls.paymentPercentage.value = '30';
   vm.runInContext('currentOrderTotal = 79; updateDepositHint()', context);
   assert.match(controls.depositAmountHint.textContent, /£23\.70/);
+});
+
+test('Silver checkout requires full payment on frontend and server', () => {
+  controls.collection = { value: 'silver' };
+  controls.typeFilter = { value: 'all' };
+  controls.product = { value: 'silver_everyday_ring' };
+  controls.paymentPercentage = { value: '30' };
+  vm.runInContext('currentOrderTotal = 79; updateDepositHint()', context);
+  assert.match(controls.depositAmountHint.textContent, /£79 \(100%/);
+  assert.equal(vm.runInContext('getOrderDataForPayment().paymentPercentage', context), 100);
+  const server = fs.readFileSync(path.join(__dirname, '../server.js'), 'utf8');
+  const validation = server.slice(server.indexOf('function validateCheckoutRequest(body)'), server.indexOf('// HEALTH CHECK'));
+  const serverContext = vm.createContext({});
+  vm.runInContext(validation, serverContext);
+  const request = { productId: 'silver_everyday_ring', collection: 'silver', metal: 'silver', customerName: 'Test', customerEmail: 'test@example.com' };
+  for (const paymentPercentage of [30, 50, 90]) {
+    assert.match(serverContext.validateCheckoutRequest({ ...request, paymentPercentage }), /requires full payment/);
+  }
+  assert.equal(serverContext.validateCheckoutRequest({ ...request, paymentPercentage: 100 }), null);
+  assert.equal(serverContext.validateCheckoutRequest(request), null);
+  assert.equal(serverContext.validateCheckoutRequest({ ...request, collection: 'dailySparkle', paymentPercentage: 50 }), null);
 });

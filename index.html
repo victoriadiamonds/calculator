@@ -1217,6 +1217,18 @@
 
     function openPaymentModal(){
       if(currentIsPriceOnRequest) return;
+      const fullPaymentOnly = document.getElementById('collection').value === 'silver';
+      const paymentSelect = document.getElementById('paymentPercentage');
+      const previousPercentage = paymentSelect.value;
+      paymentSelect.replaceChildren();
+      (fullPaymentOnly ? [100] : [30, 40, 50, 60, 70, 80, 90, 100]).forEach(percentage => {
+        const option = document.createElement('option');
+        option.value = String(percentage);
+        option.textContent = percentage === 100 ? '100% - Full Payment' : percentage + '% Deposit';
+        paymentSelect.appendChild(option);
+      });
+      paymentSelect.value = fullPaymentOnly ? '100' : (previousPercentage || '50');
+      paymentSelect.disabled = fullPaymentOnly;
       closeResultPopup();
       document.getElementById('paymentModal').classList.add('open');
       document.getElementById('totalPrice').textContent = formatGBP(currentOrderTotal);
@@ -1230,7 +1242,7 @@
     }
 
     function updateDepositHint() {
-      const percentage = Number(document.getElementById('paymentPercentage').value) || 50;
+      const percentage = document.getElementById('collection').value === 'silver' ? 100 : (Number(document.getElementById('paymentPercentage').value) || 50);
       currentPaymentPercentage = percentage;
       const depositAmount = Math.round(currentOrderTotal * percentage) / 100;
       const hint = document.getElementById('depositAmountHint');
@@ -1274,7 +1286,7 @@
         });
       }
 
-      const paymentPercentage = Number(document.getElementById('paymentPercentage').value) || 50;
+      const paymentPercentage = p.fixedPrice ? 100 : (Number(document.getElementById('paymentPercentage').value) || 50);
 
       return {
         productId: document.getElementById('product').value,
