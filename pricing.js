@@ -1495,7 +1495,22 @@ const PRODUCTS_BY_COLLECTION = {
         labor: 0,
         stones: 2,
         type: 'bracelet',
-        fixedPrice: 185,
+        fixedPrice: 113,
+        diamondPreset: {
+          q: 'select',
+          c: '0.25',
+          qty: 2
+        }
+      },
+
+      {
+        id: 'silver_link_charm_ii',
+        name: 'Link Charm Bracelet II',
+        weight: 6.0,
+        labor: 0,
+        stones: 2,
+        type: 'bracelet',
+        fixedPrice: 159,
         diamondPreset: {
           q: 'select',
           c: '0.25',

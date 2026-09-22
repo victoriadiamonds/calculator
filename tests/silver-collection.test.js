@@ -5,8 +5,8 @@ const path = require('node:path');
 const vm = require('node:vm');
 const pricing = require('../pricing');
 
-// Published prices verified on 2026-09-21; Link Charm updated by owner on 2026-09-22.
-const expected = [79, 142, 79, 87, 97, 79, 129, 134, 98, 87, 87, 87, 185, 134, 134, 131];
+// Published prices verified on 2026-09-21; owner split Link Charm into two versions on 2026-09-22.
+const expected = [79, 142, 79, 87, 97, 79, 129, 134, 98, 87, 87, 87, 113, 159, 134, 134, 131];
 const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
 const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(match => match[1]);
 const controls = {};
@@ -18,8 +18,8 @@ scripts.forEach(script => vm.runInContext(script, context));
 const frontend = vm.runInContext('PRODUCTS_BY_COLLECTION.silver.essentials', context);
 const backend = pricing.PRODUCTS_BY_COLLECTION.silver.essentials;
 
-test('all 16 published products and prices agree across frontend and checkout', () => {
-  assert.equal(backend.length, 16);
+test('all 17 Silver products and prices agree across frontend and checkout', () => {
+  assert.equal(backend.length, 17);
   assert.deepEqual(backend.map(product => product.fixedPrice), expected);
   assert.deepEqual(JSON.parse(JSON.stringify(frontend.map(({ id, name, type, fixedPrice, diamondPreset }) => ({ id, name, type, fixedPrice, diamondPreset })))),
     backend.map(({ id, name, type, fixedPrice, diamondPreset }) => ({ id, name, type, fixedPrice, diamondPreset })));
@@ -52,6 +52,16 @@ test('server enforces Silver specifications despite altered checkout input', () 
     assert.equal(result.designFee, 0);
   }
   assert.equal(pricing.computePricing({ collection: 'silver', productId: 'missing', typeFilter: 'all' }), null);
+});
+
+test('Link Charm versions have distinct identities and fixed prices', () => {
+  const original = backend.find(product => product.id === 'silver_link_charm');
+  const newer = backend.find(product => product.id === 'silver_link_charm_ii');
+  assert.equal(original.name, 'Link Charm Bracelet');
+  assert.equal(original.fixedPrice, 113);
+  assert.equal(newer.name, 'Link Charm Bracelet II');
+  assert.equal(newer.fixedPrice, 159);
+  assert.equal(new Set(backend.map(product => product.id)).size, backend.length);
 });
 
 test('ordinary collection pricing remains configurable', () => {
