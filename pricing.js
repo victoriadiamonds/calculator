@@ -1495,7 +1495,7 @@ const PRODUCTS_BY_COLLECTION = {
         labor: 0,
         stones: 2,
         type: 'bracelet',
-        fixedPrice: 131,
+        fixedPrice: 185,
         diamondPreset: {
           q: 'select',
           c: '0.25',

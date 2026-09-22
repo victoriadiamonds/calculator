@@ -5,8 +5,8 @@ const path = require('node:path');
 const vm = require('node:vm');
 const pricing = require('../pricing');
 
-// Published Silver Collection prices verified on 2026-09-21.
-const expected = [79, 142, 79, 87, 97, 79, 129, 134, 98, 87, 87, 87, 131, 134, 134, 131];
+// Published prices verified on 2026-09-21; Link Charm updated by owner on 2026-09-22.
+const expected = [79, 142, 79, 87, 97, 79, 129, 134, 98, 87, 87, 87, 185, 134, 134, 131];
 const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
 const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(match => match[1]);
 const controls = {};
