@@ -6,7 +6,8 @@ const vm = require('node:vm');
 const pricing = require('../pricing');
 
 // Published prices verified on 2026-09-21; owner split Link Charm into two versions on 2026-09-22.
-const expected = [79, 142, 79, 87, 97, 79, 129, 134, 98, 87, 87, 87, 113, 159, 134, 134, 131];
+// Everyday Silver Anklet updated to £179 by owner on 2026-09-23.
+const expected = [79, 142, 79, 87, 97, 79, 129, 134, 98, 87, 87, 87, 113, 159, 134, 134, 179];
 const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
 const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(match => match[1]);
 const controls = {};
