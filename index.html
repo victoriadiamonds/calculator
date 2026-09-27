@@ -47,6 +47,9 @@
         </select>
       </div>
       <div style="flex:1">
+        <label for="pieceSearch">Search piece</label>
+        <input id="pieceSearch" type="search" placeholder="Search this collection and type" autocomplete="off" aria-describedby="pieceSearchStatus" />
+        <p id="pieceSearchStatus" class="small muted" role="status"></p>
         <label for="product">Choose product / design</label>
         <select id="product"></select>
       </div>
@@ -406,11 +409,11 @@
     };
 
     const BRACELET_TIERS = {
-      essential: { label: 'Essential', weight: '2.5g' },
-      signature: { label: 'Signature', weight: '4g' },
-      atelier: { label: 'Atelier', weight: '5.5g' },
-      premium: { label: 'Premium', weight: '8g' },
-      supreme: { label: 'Supreme', weight: '16g' }
+      essential: { label: 'Essential', weight: '2.5-4 grams' },
+      signature: { label: 'Signature', weight: '4-5.5 grams' },
+      atelier: { label: 'Atelier', weight: '5.5-8 grams' },
+      premium: { label: 'Premium', weight: '8-19 grams' },
+      supreme: { label: 'Supreme', weight: '16+ grams' }
     };
 
     const TIERS = {
@@ -635,7 +638,9 @@
           allProducts = allProducts.concat(tierProducts);
         }
       }
-      return allProducts;
+      const query = document.getElementById('pieceSearch').value.trim().toLowerCase();
+      const terms = query.split(/\s+/).filter(Boolean);
+      return allProducts.filter(product => terms.every(term => product.name.toLowerCase().includes(term)));
     }
 
     function getCurrentProduct(){
@@ -667,7 +672,11 @@
       if (!availableTypes.includes(typeFilter.value) && typeFilter.value !== 'all') typeFilter.value = 'all';
       const products = getProductsForCurrentSelections();
       var sel = document.getElementById('product');
+      const previousProduct = sel.value;
       sel.innerHTML = '';
+      sel.disabled = products.length === 0;
+      document.getElementById('calc').disabled = products.length === 0;
+      document.getElementById('pieceSearchStatus').textContent = products.length ? products.length + (products.length === 1 ? ' matching piece' : ' matching pieces') : 'No matching pieces. Clear your search or change the collection/type.';
       if(!products || products.length === 0){
         var opt = document.createElement('option');
         opt.textContent = '— No products —';
@@ -685,7 +694,8 @@
           sel.appendChild(opt);
         });
       }
-      renderProductInfo();
+      if (products.some(product => product.id === previousProduct)) sel.value = previousProduct;
+      if (sel.value !== previousProduct || products.length === 0) renderProductInfo();
     }
 
     function updateModelName(){
@@ -974,7 +984,7 @@
       const el = document.getElementById('liveTotal');
       if(!el) return;
       const p = computePricing();
-      if(!p){ el.textContent = ''; return; }
+      if(!p){ el.textContent = 'No matching piece selected.'; return; }
       if(p.priceOnRequest){
         el.textContent = (TYPE_LABELS[p.type] || 'This piece') + ' is priced on request — not auto-calculated.';
         return;
@@ -1189,6 +1199,7 @@
     }
 
     function resetAll(){
+      document.getElementById('pieceSearch').value = '';
       document.getElementById('collection').value = 'dailySparkle';
       document.getElementById('typeFilter').value = 'all';
       populateProducts();
@@ -1561,6 +1572,12 @@
           if (event.shiftKey && (document.activeElement === first || document.activeElement.id === 'emailSentTitle')) { event.preventDefault(); last.focus(); }
           else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
         }
+      });
+      document.getElementById('pieceSearch').addEventListener('input', function() {
+        populateProducts();
+        renderBraceletTierControl();
+        updateLiveTotal();
+        destroyAirwallexDropin();
       });
       populateDiamondCarats();
       populateProducts();

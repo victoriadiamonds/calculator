@@ -19,6 +19,20 @@ scripts.forEach(script => vm.runInContext(script, context));
 const frontend = vm.runInContext('PRODUCTS_BY_COLLECTION.silver.essentials', context);
 const backend = pricing.PRODUCTS_BY_COLLECTION.silver.essentials;
 
+test('piece search handles case, multiple terms, type filters and no matches', () => {
+  controls.collection = { value: 'silver' };
+  controls.typeFilter = { value: 'all' };
+  controls.pieceSearch = { value: '  CHARM link  ' };
+  assert.equal(vm.runInContext('getProductsForCurrentSelections().length', context), 2);
+  controls.typeFilter.value = 'ring';
+  assert.equal(vm.runInContext('getProductsForCurrentSelections().length', context), 0);
+  controls.typeFilter.value = 'all';
+  controls.pieceSearch.value = 'no such jewelry';
+  assert.equal(vm.runInContext('computePricing()', context), null);
+  controls.pieceSearch.value = '';
+  assert.equal(vm.runInContext('getProductsForCurrentSelections().length', context), 17);
+});
+
 test('all 17 Silver products and prices agree across frontend and checkout', () => {
   assert.equal(backend.length, 17);
   assert.deepEqual(backend.map(product => product.fixedPrice), expected);
