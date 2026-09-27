@@ -475,8 +475,8 @@
           { id: 'ds_s_timeless', name: 'Timeless Classic', weight: 3.8, labor: 33, stones: 0, type: 'ring' },
           { id: 'ds_m_eternity', name: 'Eternity Ring', weight: 5.5, labor: 45, stones: 2, type: 'ring' },
           { id: 'ds_m_splendor', name: 'Splendor Rings', weight: 6.0, labor: 48, stones: 2, type: 'ring' },
-          { id: 'ds_s_fiora', name: 'Fiora Earrings', weight: 5.7, labor: 30, stones: 8, type: 'earrings', diamondPreset: { q: 'select', c: '0.25', qty: 8 } },
-          { id: 'ds_s_luminea', name: 'Luminea Earrings', weight: 5.23, labor: 30, stones: 6, type: 'earrings', diamondPreset: { q: 'select', c: '0.25', qty: 6 } },
+          { id: 'ds_s_fiora', name: 'Fiora Earrings', weight: 5.7, labor: 30, stones: 8, type: 'earrings', diamondPreset: { q: 'select', c: '0.25', qty: 4, additional: [{ q: 'select', c: '0.15', qty: 4 }] } },
+          { id: 'ds_s_luminea', name: 'Luminea Earrings', weight: 5.23, labor: 30, stones: 6, type: 'earrings', diamondPreset: { q: 'select', c: '0.1', qty: 6 } },
           { id: 'ds_s_martini', name: 'Martini Studs', weight: 5.0, labor: 40, stones: 2, type: 'earrings' },
           { id: 'ds_s_diamond_dust', name: 'Diamond Dust', weight: 3.0, labor: 30, stones: 1, type: 'ring' },
           { id: 'ds_s_nocturne', name: 'Nocturne', weight: 3.2, labor: 30, stones: 1, type: 'ring' },
@@ -707,9 +707,11 @@
         document.getElementById('dc' + i).value = '0';
         document.getElementById('dqt' + i).value = '1';
       }
-      document.getElementById('dq0').value = preset.q || 'select';
-      document.getElementById('dc0').value = String(preset.c || '0');
-      document.getElementById('dqt0').value = String(preset.qty != null ? preset.qty : 1);
+      [preset, ...(preset.additional || [])].slice(0, 4).forEach(function(stone, i){
+        document.getElementById('dq' + i).value = stone.q || 'select';
+        document.getElementById('dc' + i).value = String(stone.c || '0');
+        document.getElementById('dqt' + i).value = String(stone.qty != null ? stone.qty : 1);
+      });
       updateLiveTotal();
     }
 
@@ -1296,6 +1298,7 @@
         metal: document.getElementById('metal').value,
         karat: document.getElementById('karat') ? Number(document.getElementById('karat').value) : 18,
         purity: document.getElementById('purity') ? Number(document.getElementById('purity').value) : 999,
+        braceletMetalTier: document.getElementById('braceletMetalTier').value,
         diamonds: diamonds,
         quantity: Number(document.getElementById('quantity').value) || 1,
         discount: Number(document.getElementById('discount').value) || 0,

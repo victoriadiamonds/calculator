@@ -338,7 +338,8 @@ const PRODUCTS_BY_COLLECTION = {
         diamondPreset: {
           q: 'select',
           c: '0.25',
-          qty: 8
+          qty: 4,
+          additional: [{ q: 'select', c: '0.15', qty: 4 }]
         }
       },
 
@@ -351,7 +352,7 @@ const PRODUCTS_BY_COLLECTION = {
         type: 'earrings',
         diamondPreset: {
           q: 'select',
-          c: '0.25',
+          c: '0.1',
           qty: 6
         }
       },
@@ -1838,7 +1839,9 @@ function computePricing(params) {
 
   if (prod.type === 'bracelet') {
 
-    packageKey = getPackageFromWeight(prod.weight);
+    // Honour the same specification selected in the customer calculator.
+    packageKey = Object.hasOwn(PRICING_PACKAGE_MATRIX, params.braceletMetalTier)
+      ? params.braceletMetalTier : getPackageFromWeight(prod.weight);
 
   } else {
 
@@ -2054,7 +2057,7 @@ function computePricing(params) {
 
     priceOnRequest: false,
 
-    prod: prod,
+    prod: { ...prod, metal },
 
     collection: collection,
 
@@ -2068,6 +2071,10 @@ function computePricing(params) {
         : packageKey,
 
     metal: metal,
+
+    karat: Number(karat),
+
+    purity: Number(purity),
 
     metalKey: metalKey,
 

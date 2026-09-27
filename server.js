@@ -7,6 +7,7 @@ const PDFDocument = require('pdfkit');
 require('dotenv').config();
 
 const pricing = require('./pricing');
+const { quoteDaily } = require('./daily-checkout');
 
 const app = express();
 
@@ -421,8 +422,16 @@ app.get('/health', (req, res) => {
 // CREATE + EMAIL PAYMENT LINK
 // =========================
 
+// Quotes never create payment links or send customer emails.
+app.post('/daily-sparkle/quote', (req, res) => {
+  try {
+    const { params, ...quote } = quoteDaily(req.body);
+    res.set('Cache-Control', 'no-store').json(quote);
+  } catch (error) { res.status(400).json({ error: error.message }); }
+});
+
 app.post(
-  '/create-payment-link',
+  ['/create-payment-link', '/daily-sparkle/payment-link'],
   async (req, res) => {
 
     console.log(
@@ -430,6 +439,17 @@ app.post(
     );
 
     try {
+
+      if (req.path === '/daily-sparkle/payment-link') {
+        let dailyQuote;
+        try { dailyQuote = quoteDaily(req.body); }
+        catch (error) { return res.status(400).json({ error: error.message }); }
+        if (Number(req.body.expectedTotal) !== dailyQuote.total) {
+          return res.status(409).json({ error: 'The price has changed. Please review a fresh quote before continuing.' });
+        }
+        req.body = { ...dailyQuote.params, paymentPercentage: dailyQuote.paymentPercentage,
+          customerName: req.body.customerName, customerEmail: req.body.customerEmail };
+      }
 
       if (!hasAirwallexCredentials()) {
 
