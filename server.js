@@ -422,16 +422,19 @@ app.get('/health', (req, res) => {
 // CREATE + EMAIL PAYMENT LINK
 // =========================
 
+// Routes determine the collection; a customer cannot switch it in the request body.
+const onlineCollections = { 'daily-sparkle': 'dailySparkle', 'high-note': 'occasionWear', 'forever-bond': 'foreverBond', aura: 'singleLady' };
+const onlineCollection = route => onlineCollections[route.split('/')[1]];
 // Quotes never create payment links or send customer emails.
-app.post('/daily-sparkle/quote', (req, res) => {
+app.post(Object.keys(onlineCollections).map(route => `/${route}/quote`), (req, res) => {
   try {
-    const { params, ...quote } = quoteDaily(req.body);
+    const { params, ...quote } = quoteDaily(req.body, onlineCollection(req.path));
     res.set('Cache-Control', 'no-store').json(quote);
   } catch (error) { res.status(400).json({ error: error.message }); }
 });
 
 app.post(
-  ['/create-payment-link', '/daily-sparkle/payment-link'],
+  ['/create-payment-link', ...Object.keys(onlineCollections).map(route => `/${route}/payment-link`)],
   async (req, res) => {
 
     console.log(
@@ -440,9 +443,9 @@ app.post(
 
     try {
 
-      if (req.path === '/daily-sparkle/payment-link') {
+      if (Boolean(onlineCollection(req.path))) {
         let dailyQuote;
-        try { dailyQuote = quoteDaily(req.body); }
+        try { dailyQuote = quoteDaily(req.body, onlineCollection(req.path)); }
         catch (error) { return res.status(400).json({ error: error.message }); }
         if (Number(req.body.expectedTotal) !== dailyQuote.total) {
           return res.status(409).json({ error: 'The price has changed. Please review a fresh quote before continuing.' });
@@ -952,9 +955,9 @@ function formatCurrencyDecimal(value) {
 function getCollectionDisplayName(collection) {
   const names = {
     dailySparkle: 'Daily Sparkle',
-    occasionWear: 'Occasion Wear',
+    occasionWear: 'High Note',
     foreverBond: 'Forever Bond',
-    singleLady: 'Single Lady Collection'
+    singleLady: 'Aura'
   };
   return names[collection] || collection;
 }

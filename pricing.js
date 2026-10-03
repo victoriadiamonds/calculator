@@ -1588,9 +1588,9 @@ function getCollectionName(id) {
 
   const names = {
     dailySparkle: 'Daily Sparkle',
-    occasionWear: 'Occasion Wear',
+    occasionWear: 'High Note',
     foreverBond: 'Forever Bond',
-    singleLady: 'Single Lady Collection'
+    singleLady: 'Aura'
   };
 
   return names[id] || id;
