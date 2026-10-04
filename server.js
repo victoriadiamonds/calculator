@@ -957,7 +957,8 @@ function getCollectionDisplayName(collection) {
     dailySparkle: 'Daily Sparkle',
     occasionWear: 'High Note',
     foreverBond: 'Forever Bond',
-    singleLady: 'Aura'
+    singleLady: 'Aura',
+    mens: "Men's Collection"
   };
   return names[collection] || collection;
 }

@@ -31,6 +31,7 @@
           <option value="foreverBond">Forever Bond</option>
           <option value="singleLady">Aura</option>
           <option value="silver">Silver Collection</option>
+          <option value="mens">Men's Collection</option>
         </select>
       </div>
       <div style="flex:1">
@@ -39,6 +40,7 @@
           <option value="all" selected>All Types</option>
           <option value="ring">Rings</option>
           <option value="necklace">Necklaces</option>
+          <option value="pendant">Pendants</option>
           <option value="earrings">Earrings</option>
           <option value="bracelet">Bracelets</option>
           <option value="anklet">Anklets</option>
@@ -427,6 +429,7 @@
     };
 
     const TYPE_LABELS = {
+      pendant: 'Pendant',
       ring: 'Ring',
       necklace: 'Necklace',
       bracelet: 'Bracelet',
@@ -442,10 +445,319 @@
       occasionWear: ['essentials', 'signature'],
       foreverBond: ['essentials', 'signature'],
       singleLady: ['essentials', 'signature'],
-      silver: ['essentials']
+      silver: ['essentials'],
+      mens: ['essentials']
     };
 
     const PRODUCTS_BY_COLLECTION = {
+  mens: {
+  "essentials": [
+    {
+      "id": "mens_atlas_band",
+      "name": "Atlas Band",
+      "type": "ring",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.25",
+        "qty": 5
+      },
+      "stones": 5
+    },
+    {
+      "id": "mens_sterling_signet_ring",
+      "name": "Sterling Signet Ring",
+      "type": "ring",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "platinum",
+      "diamondPreset": {
+        "q": "select",
+        "c": "5.00",
+        "qty": 1
+      },
+      "stones": 1
+    },
+    {
+      "id": "mens_sentinel_band",
+      "name": "Sentinel Band",
+      "type": "ring",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.50",
+        "qty": 3
+      },
+      "stones": 3
+    },
+    {
+      "id": "mens_bastion_signet_ring",
+      "name": "Bastion Signet Ring",
+      "type": "ring",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "1.00",
+        "qty": 1
+      },
+      "stones": 1
+    },
+    {
+      "id": "mens_current_band",
+      "name": "Current Band",
+      "type": "ring",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.75",
+        "qty": 1,
+        "additional": [
+          {
+            "q": "select",
+            "c": "0.50",
+            "qty": 2
+          }
+        ]
+      },
+      "stones": 3
+    },
+    {
+      "id": "mens_regent_band",
+      "name": "Regent Band",
+      "type": "ring",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.50",
+        "qty": 13
+      },
+      "stones": 13
+    },
+    {
+      "id": "mens_helios_signet_ring",
+      "name": "Helios Signet Ring",
+      "type": "ring",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "3.00",
+        "qty": 1
+      },
+      "stones": 1
+    },
+    {
+      "id": "mens_citadel_band",
+      "name": "Citadel Band",
+      "type": "ring",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "1.00",
+        "qty": 3
+      },
+      "stones": 3
+    },
+    {
+      "id": "mens_axis_band",
+      "name": "Axis Band",
+      "type": "ring",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.50",
+        "qty": 3
+      },
+      "stones": 3
+    },
+    {
+      "id": "mens_sovereign_signet_ring",
+      "name": "Sovereign Signet Ring",
+      "type": "ring",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "3.00",
+        "qty": 1,
+        "additional": [
+          {
+            "q": "select",
+            "c": "0.75",
+            "qty": 2
+          }
+        ]
+      },
+      "stones": 3
+    },
+    {
+      "id": "mens_apex_tennis_bracelet",
+      "name": "Apex Tennis Bracelet",
+      "type": "bracelet",
+      "weight": 8,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.75",
+        "qty": 29
+      },
+      "stones": 29,
+      "defaultBraceletTier": "premium",
+      "minBraceletTier": "premium"
+    },
+    {
+      "id": "mens_pillar_tennis_bracelet",
+      "name": "Pillar Tennis Bracelet",
+      "type": "bracelet",
+      "weight": 16,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.75",
+        "qty": 29
+      },
+      "stones": 29,
+      "defaultBraceletTier": "supreme",
+      "minBraceletTier": "supreme"
+    },
+    {
+      "id": "mens_anchor_link_bracelet",
+      "name": "Anchor Link Bracelet",
+      "type": "bracelet",
+      "weight": 16,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.75",
+        "qty": 3
+      },
+      "stones": 3,
+      "defaultBraceletTier": "supreme",
+      "minBraceletTier": "supreme"
+    },
+    {
+      "id": "mens_vanguard_cuff",
+      "name": "Vanguard Cuff",
+      "type": "bracelet",
+      "weight": 16,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.75",
+        "qty": 3
+      },
+      "stones": 3,
+      "defaultBraceletTier": "supreme",
+      "minBraceletTier": "supreme"
+    },
+    {
+      "id": "mens_foundry_link_bracelet",
+      "name": "Foundry Link Bracelet",
+      "type": "bracelet",
+      "weight": 16,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.75",
+        "qty": 1
+      },
+      "stones": 1,
+      "defaultBraceletTier": "supreme",
+      "minBraceletTier": "supreme"
+    },
+    {
+      "id": "mens_obelisk_pendant",
+      "name": "Obelisk Pendant",
+      "type": "pendant",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "2.00",
+        "qty": 1
+      },
+      "stones": 1
+    },
+    {
+      "id": "mens_horizon_pendant",
+      "name": "Horizon Pendant",
+      "type": "pendant",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "3.00",
+        "qty": 1
+      },
+      "stones": 1
+    },
+    {
+      "id": "mens_shield_pendant",
+      "name": "Shield Pendant",
+      "type": "pendant",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "1.00",
+        "qty": 1
+      },
+      "stones": 1
+    },
+    {
+      "id": "mens_solstice_medallion_pendant",
+      "name": "Solstice Medallion Pendant",
+      "type": "pendant",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "1.00",
+        "qty": 1
+      },
+      "stones": 1
+    },
+    {
+      "id": "mens_keystone_link_pendant",
+      "name": "Keystone Link Pendant",
+      "type": "pendant",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "1.00",
+        "qty": 3
+      },
+      "stones": 3
+    }
+  ]
+},
       // Fixed retail prices verified against victoria-diamonds.com/silver-collection.
       silver: { essentials: [
         { id: 'silver_everyday_ring', name: 'Everyday Silver Ring', type: 'ring', fixedPrice: 79, diamondPreset: { q: 'select', c: '0.25', qty: 1 } },
@@ -609,7 +921,7 @@
     }
 
     function getCollectionName(id){
-      const names = { dailySparkle: 'Daily Sparkle', occasionWear: 'High Note', foreverBond: 'Forever Bond', singleLady: 'Aura', silver: 'Silver Collection' };
+      const names = { dailySparkle: 'Daily Sparkle', occasionWear: 'High Note', foreverBond: 'Forever Bond', singleLady: 'Aura', silver: 'Silver Collection', mens: "Men's Collection" };
       return names[id] || id;
     }
 
@@ -732,6 +1044,10 @@
         document.getElementById('product').dataset.labor = prod.labor;
         document.getElementById('product').dataset.type = prod.type;
       }
+      if (prod && document.getElementById('collection').value === 'mens') {
+        document.getElementById('metal').value = prod.defaultMetal;
+        renderMetalExtras();
+      }
       applyDiamondPreset(prod && prod.diamondPreset);
       renderTierBadge();
       updateModelName();
@@ -744,6 +1060,8 @@
       if(!row) return;
       row.hidden = !(prod && prod.type === 'bracelet' && prod.fixedPrice === undefined);
       if(!sel) return;
+      const tiers = ['essential', 'signature', 'atelier', 'premium', 'supreme'];
+      Array.from(sel.options).forEach(option => option.disabled = !!prod?.minBraceletTier && tiers.indexOf(option.value) < tiers.indexOf(prod.minBraceletTier));
       if(prod && prod.type === 'bracelet' && prod.defaultBraceletTier && sel.querySelector('option[value="' + prod.defaultBraceletTier + '"]')){
         sel.value = prod.defaultBraceletTier;
       }
@@ -751,7 +1069,10 @@
 
     function getSelectedBraceletTier(){
       const sel = document.getElementById('braceletMetalTier');
-      return sel ? sel.value : 'essential';
+      const selected = sel ? sel.value : 'essential';
+      const minimum = getCurrentProduct()?.minBraceletTier;
+      const tiers = ['essential', 'signature', 'atelier', 'premium', 'supreme'];
+      return minimum && tiers.indexOf(selected) < tiers.indexOf(minimum) ? minimum : selected;
     }
 
     function renderMetalExtras(){

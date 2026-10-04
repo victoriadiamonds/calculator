@@ -178,6 +178,7 @@ const TIER_TO_PACKAGE = {
 
 
 const TYPE_LABELS = {
+  pendant: 'Pendant',
   ring: 'Ring',
   necklace: 'Necklace',
   bracelet: 'Bracelet',
@@ -198,6 +199,7 @@ const NON_CALCULATED_TYPES = [
 ========================================================= */
 
 const COLLECTION_TIERS = {
+  mens: ['essentials'],
   dailySparkle: [
     'essentials',
     'signature'
@@ -229,6 +231,314 @@ const COLLECTION_TIERS = {
 ========================================================= */
 
 const PRODUCTS_BY_COLLECTION = {
+  mens: {
+  "essentials": [
+    {
+      "id": "mens_atlas_band",
+      "name": "Atlas Band",
+      "type": "ring",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.25",
+        "qty": 5
+      },
+      "stones": 5
+    },
+    {
+      "id": "mens_sterling_signet_ring",
+      "name": "Sterling Signet Ring",
+      "type": "ring",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "platinum",
+      "diamondPreset": {
+        "q": "select",
+        "c": "5.00",
+        "qty": 1
+      },
+      "stones": 1
+    },
+    {
+      "id": "mens_sentinel_band",
+      "name": "Sentinel Band",
+      "type": "ring",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.50",
+        "qty": 3
+      },
+      "stones": 3
+    },
+    {
+      "id": "mens_bastion_signet_ring",
+      "name": "Bastion Signet Ring",
+      "type": "ring",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "1.00",
+        "qty": 1
+      },
+      "stones": 1
+    },
+    {
+      "id": "mens_current_band",
+      "name": "Current Band",
+      "type": "ring",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.75",
+        "qty": 1,
+        "additional": [
+          {
+            "q": "select",
+            "c": "0.50",
+            "qty": 2
+          }
+        ]
+      },
+      "stones": 3
+    },
+    {
+      "id": "mens_regent_band",
+      "name": "Regent Band",
+      "type": "ring",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.50",
+        "qty": 13
+      },
+      "stones": 13
+    },
+    {
+      "id": "mens_helios_signet_ring",
+      "name": "Helios Signet Ring",
+      "type": "ring",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "3.00",
+        "qty": 1
+      },
+      "stones": 1
+    },
+    {
+      "id": "mens_citadel_band",
+      "name": "Citadel Band",
+      "type": "ring",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "1.00",
+        "qty": 3
+      },
+      "stones": 3
+    },
+    {
+      "id": "mens_axis_band",
+      "name": "Axis Band",
+      "type": "ring",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.50",
+        "qty": 3
+      },
+      "stones": 3
+    },
+    {
+      "id": "mens_sovereign_signet_ring",
+      "name": "Sovereign Signet Ring",
+      "type": "ring",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "3.00",
+        "qty": 1,
+        "additional": [
+          {
+            "q": "select",
+            "c": "0.75",
+            "qty": 2
+          }
+        ]
+      },
+      "stones": 3
+    },
+    {
+      "id": "mens_apex_tennis_bracelet",
+      "name": "Apex Tennis Bracelet",
+      "type": "bracelet",
+      "weight": 8,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.75",
+        "qty": 29
+      },
+      "stones": 29,
+      "defaultBraceletTier": "premium",
+      "minBraceletTier": "premium"
+    },
+    {
+      "id": "mens_pillar_tennis_bracelet",
+      "name": "Pillar Tennis Bracelet",
+      "type": "bracelet",
+      "weight": 16,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.75",
+        "qty": 29
+      },
+      "stones": 29,
+      "defaultBraceletTier": "supreme",
+      "minBraceletTier": "supreme"
+    },
+    {
+      "id": "mens_anchor_link_bracelet",
+      "name": "Anchor Link Bracelet",
+      "type": "bracelet",
+      "weight": 16,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.75",
+        "qty": 3
+      },
+      "stones": 3,
+      "defaultBraceletTier": "supreme",
+      "minBraceletTier": "supreme"
+    },
+    {
+      "id": "mens_vanguard_cuff",
+      "name": "Vanguard Cuff",
+      "type": "bracelet",
+      "weight": 16,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.75",
+        "qty": 3
+      },
+      "stones": 3,
+      "defaultBraceletTier": "supreme",
+      "minBraceletTier": "supreme"
+    },
+    {
+      "id": "mens_foundry_link_bracelet",
+      "name": "Foundry Link Bracelet",
+      "type": "bracelet",
+      "weight": 16,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.75",
+        "qty": 1
+      },
+      "stones": 1,
+      "defaultBraceletTier": "supreme",
+      "minBraceletTier": "supreme"
+    },
+    {
+      "id": "mens_obelisk_pendant",
+      "name": "Obelisk Pendant",
+      "type": "pendant",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "2.00",
+        "qty": 1
+      },
+      "stones": 1
+    },
+    {
+      "id": "mens_horizon_pendant",
+      "name": "Horizon Pendant",
+      "type": "pendant",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "3.00",
+        "qty": 1
+      },
+      "stones": 1
+    },
+    {
+      "id": "mens_shield_pendant",
+      "name": "Shield Pendant",
+      "type": "pendant",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "1.00",
+        "qty": 1
+      },
+      "stones": 1
+    },
+    {
+      "id": "mens_solstice_medallion_pendant",
+      "name": "Solstice Medallion Pendant",
+      "type": "pendant",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "1.00",
+        "qty": 1
+      },
+      "stones": 1
+    },
+    {
+      "id": "mens_keystone_link_pendant",
+      "name": "Keystone Link Pendant",
+      "type": "pendant",
+      "weight": 2.5,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "1.00",
+        "qty": 3
+      },
+      "stones": 3
+    }
+  ]
+},
 
   /* =======================================================
      DAILY SPARKLE
@@ -1590,7 +1900,8 @@ function getCollectionName(id) {
     dailySparkle: 'Daily Sparkle',
     occasionWear: 'High Note',
     foreverBond: 'Forever Bond',
-    singleLady: 'Aura'
+    singleLady: 'Aura',
+    mens: "Men's Collection"
   };
 
   return names[id] || id;
@@ -1841,7 +2152,9 @@ function computePricing(params) {
 
     // Honour the same specification selected in the customer calculator.
     packageKey = Object.hasOwn(PRICING_PACKAGE_MATRIX, params.braceletMetalTier)
-      ? params.braceletMetalTier : getPackageFromWeight(prod.weight);
+      ? params.braceletMetalTier : (prod.defaultBraceletTier || getPackageFromWeight(prod.weight));
+    const packageOrder = ['essential', 'signature', 'atelier', 'premium', 'supreme'];
+    if (prod.minBraceletTier && packageOrder.indexOf(packageKey) < packageOrder.indexOf(prod.minBraceletTier)) packageKey = prod.minBraceletTier;
 
   } else {
 
