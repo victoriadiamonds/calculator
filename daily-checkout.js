@@ -1,7 +1,7 @@
 // This module belongs in the calculator repository as daily-checkout.js.
 const pricing=require('./pricing');
 function quoteDaily(body={}, collection='dailySparkle') {
- if(!['dailySparkle','occasionWear','foreverBond','singleLady'].includes(collection))throw new Error('Unsupported online collection.');
+ if(!['dailySparkle','occasionWear','foreverBond','singleLady','mens'].includes(collection))throw new Error('Unsupported online collection.');
  const product=pricing.getProductsForCollection(collection,'all').find(p=>p.id===body.productId);
  if(!product)throw new Error('Please choose a valid piece from this collection.');
  if(!['gold','silver','platinum'].includes(body.metal))throw new Error('Please choose a valid metal.');
