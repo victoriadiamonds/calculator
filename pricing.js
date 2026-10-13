@@ -2339,10 +2339,11 @@ function computePricing(params) {
     cost breakdown.
   */
 
+  // These three-ring stacking sets cost three complete finished pieces.
+  // Server-owned: request fields cannot override the set multiplier.
+  const stackingSetMultiplier = ['ow_s_promise', 'fb_s_unbreakable_hearts', 'fb_s_bound_by_destiny'].includes(prod.id) ? 3 : 1;
   const subtotal =
-    jewelleryPrice +
-    diamondPrice +
-    designFeeAmt;
+    (jewelleryPrice + diamondPrice + designFeeAmt) * stackingSetMultiplier;
 
 
   const profitAmount =
@@ -2425,6 +2426,8 @@ function computePricing(params) {
 
     profitAmount:
       profitAmount,
+
+    stackingSetMultiplier,
 
     unitTotal:
       unitTotal,
