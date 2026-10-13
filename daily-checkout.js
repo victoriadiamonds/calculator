@@ -7,7 +7,7 @@ function quoteDaily(body={}, collection='dailySparkle') {
  if(!['gold','silver','platinum'].includes(body.metal))throw new Error('Please choose a valid metal.');
  const karat=Number(body.karat),purity=Number(body.purity);
  if(body.metal==='gold'&&![9,14,18,22].includes(karat))throw new Error('Please choose a valid gold karat.');
- if(body.metal==='silver'&&![925,990,999].includes(purity))throw new Error('Please choose a valid silver purity.');
+ if(body.metal==='silver'&&purity!==925)throw new Error('Please choose a valid silver purity.');
  const quantity=Number(body.quantity),paymentPercentage=Number(body.paymentPercentage);
  if(!Number.isInteger(quantity)||quantity<1||quantity>10)throw new Error('Quantity must be between 1 and 10.');
  if(![30,50,100].includes(paymentPercentage))throw new Error('Choose a 30% deposit, 50% deposit, or full payment.');
