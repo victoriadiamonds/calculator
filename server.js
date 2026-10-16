@@ -317,6 +317,7 @@ function buildPricingParams(body) {
   return {
     collection: body.collection,
     productId: body.productId,
+    initial: body.initial,
     typeFilter: body.typeFilter || 'all',
 
     braceletMetalTier:
@@ -423,7 +424,7 @@ app.get('/health', (req, res) => {
 // =========================
 
 // Routes determine the collection; a customer cannot switch it in the request body.
-const onlineCollections = { 'daily-sparkle': 'dailySparkle', 'high-note': 'occasionWear', 'forever-bond': 'foreverBond', aura: 'singleLady', mens: 'mens' };
+const onlineCollections = { 'daily-sparkle': 'dailySparkle', 'high-note': 'occasionWear', 'forever-bond': 'foreverBond', aura: 'singleLady', mens: 'mens', keepsake: 'keepsake' };
 const onlineCollection = route => onlineCollections[route.split('/')[1]];
 // Quotes never create payment links or send customer emails.
 app.post(Object.keys(onlineCollections).map(route => `/${route}/quote`), (req, res) => {

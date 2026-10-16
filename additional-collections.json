@@ -1,0 +1,715 @@
+{
+  "singleLady": {
+    "essentials": [
+      {
+        "id": "aura_lunara_pear_pendant",
+        "name": "Lunara Pear Pendant",
+        "type": "pendant",
+        "weight": 0,
+        "labor": 0,
+        "stones": 2,
+        "diamondPreset": {
+          "q": "select",
+          "c": "2.00",
+          "qty": 1,
+          "additional": [
+            {
+              "q": "select",
+              "c": "0.25",
+              "qty": 1
+            }
+          ]
+        }
+      },
+      {
+        "id": "aura_virelia_leaf_pendant",
+        "name": "Virelia Leaf Pendant",
+        "type": "pendant",
+        "weight": 0,
+        "labor": 0,
+        "stones": 3,
+        "diamondPreset": {
+          "q": "select",
+          "c": "1.00",
+          "qty": 1,
+          "additional": [
+            {
+              "q": "select",
+              "c": "0.25",
+              "qty": 2
+            }
+          ]
+        }
+      },
+      {
+        "id": "aura_oriana_oval_pendant",
+        "name": "Oriana Oval Pendant",
+        "type": "pendant",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "diamondPreset": {
+          "q": "select",
+          "c": "3.00",
+          "qty": 1,
+          "additional": []
+        }
+      },
+      {
+        "id": "aura_estelle_trio_pendant",
+        "name": "Estelle Trio Pendant",
+        "type": "pendant",
+        "weight": 0,
+        "labor": 0,
+        "stones": 3,
+        "diamondPreset": {
+          "q": "select",
+          "c": "1.00",
+          "qty": 1,
+          "additional": [
+            {
+              "q": "select",
+              "c": "0.50",
+              "qty": 1
+            },
+            {
+              "q": "select",
+              "c": "0.25",
+              "qty": 1
+            }
+          ]
+        }
+      },
+      {
+        "id": "aura_amelie_heart_pendant",
+        "name": "Amelie Heart Pendant",
+        "type": "pendant",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "diamondPreset": {
+          "q": "select",
+          "c": "1.00",
+          "qty": 1,
+          "additional": []
+        }
+      },
+      {
+        "id": "aura_lunara_pear_earrings",
+        "name": "Lunara Pear Earrings",
+        "type": "earrings",
+        "weight": 0,
+        "labor": 0,
+        "stones": 4,
+        "diamondPreset": {
+          "q": "select",
+          "c": "2.00",
+          "qty": 2,
+          "additional": [
+            {
+              "q": "select",
+              "c": "0.25",
+              "qty": 2
+            }
+          ]
+        }
+      },
+      {
+        "id": "aura_virelia_leaf_earrings",
+        "name": "Virelia Leaf Earrings",
+        "type": "earrings",
+        "weight": 0,
+        "labor": 0,
+        "stones": 6,
+        "diamondPreset": {
+          "q": "select",
+          "c": "1.00",
+          "qty": 2,
+          "additional": [
+            {
+              "q": "select",
+              "c": "0.50",
+              "qty": 4
+            }
+          ]
+        }
+      },
+      {
+        "id": "aura_oriana_oval_earrings",
+        "name": "Oriana Oval Earrings",
+        "type": "earrings",
+        "weight": 0,
+        "labor": 0,
+        "stones": 2,
+        "diamondPreset": {
+          "q": "select",
+          "c": "2.00",
+          "qty": 2,
+          "additional": []
+        }
+      },
+      {
+        "id": "aura_estelle_trio_earrings",
+        "name": "Estelle Trio Earrings",
+        "type": "earrings",
+        "weight": 0,
+        "labor": 0,
+        "stones": 6,
+        "diamondPreset": {
+          "q": "select",
+          "c": "1.00",
+          "qty": 2,
+          "additional": [
+            {
+              "q": "select",
+              "c": "0.50",
+              "qty": 2
+            },
+            {
+              "q": "select",
+              "c": "0.25",
+              "qty": 2
+            }
+          ]
+        }
+      },
+      {
+        "id": "aura_amelie_heart_earrings",
+        "name": "Amelie Heart Earrings",
+        "type": "earrings",
+        "weight": 0,
+        "labor": 0,
+        "stones": 2,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.50",
+          "qty": 2,
+          "additional": []
+        }
+      },
+      {
+        "id": "aura_lunara_pear_bracelet",
+        "name": "Lunara Pear Bracelet",
+        "type": "bracelet",
+        "weight": 0,
+        "labor": 0,
+        "stones": 5,
+        "defaultBraceletTier": "supreme",
+        "diamondPreset": {
+          "q": "select",
+          "c": "3.00",
+          "qty": 1,
+          "additional": [
+            {
+              "q": "select",
+              "c": "1.00",
+              "qty": 4
+            }
+          ]
+        }
+      },
+      {
+        "id": "aura_virelia_leaf_bracelet",
+        "name": "Virelia Leaf Bracelet",
+        "type": "bracelet",
+        "weight": 0,
+        "labor": 0,
+        "stones": 5,
+        "defaultBraceletTier": "premium",
+        "diamondPreset": {
+          "q": "select",
+          "c": "2.00",
+          "qty": 1,
+          "additional": [
+            {
+              "q": "select",
+              "c": "1.00",
+              "qty": 4
+            }
+          ]
+        }
+      },
+      {
+        "id": "aura_oriana_oval_bracelet",
+        "name": "Oriana Oval Bracelet",
+        "type": "bracelet",
+        "weight": 0,
+        "labor": 0,
+        "stones": 5,
+        "defaultBraceletTier": "supreme",
+        "diamondPreset": {
+          "q": "select",
+          "c": "3.00",
+          "qty": 1,
+          "additional": [
+            {
+              "q": "select",
+              "c": "1.00",
+              "qty": 4
+            }
+          ]
+        }
+      },
+      {
+        "id": "aura_estelle_trio_bracelet",
+        "name": "Estelle Trio Bracelet",
+        "type": "bracelet",
+        "weight": 0,
+        "labor": 0,
+        "stones": 5,
+        "defaultBraceletTier": "supreme",
+        "diamondPreset": {
+          "q": "select",
+          "c": "3.00",
+          "qty": 1,
+          "additional": [
+            {
+              "q": "select",
+              "c": "1.00",
+              "qty": 4
+            }
+          ]
+        }
+      },
+      {
+        "id": "aura_amelie_heart_bracelet",
+        "name": "Amelie Heart Bracelet",
+        "type": "bracelet",
+        "weight": 0,
+        "labor": 0,
+        "stones": 5,
+        "defaultBraceletTier": "premium",
+        "diamondPreset": {
+          "q": "select",
+          "c": "2.00",
+          "qty": 1,
+          "additional": [
+            {
+              "q": "select",
+              "c": "1.00",
+              "qty": 4
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "silver": {
+    "essentials": [
+      {
+        "id": "keepsake_amelie_heart_key_ring",
+        "name": "Amelie Heart Key Ring",
+        "type": "keyring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "fixedPrice": 62,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.1",
+          "qty": 1,
+          "additional": []
+        }
+      },
+      {
+        "id": "keepsake_lunara_crescent_key_ring",
+        "name": "Lunara Crescent Key Ring",
+        "type": "keyring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "fixedPrice": 62,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.1",
+          "qty": 1,
+          "additional": []
+        }
+      },
+      {
+        "id": "keepsake_estelle_star_key_ring",
+        "name": "Estelle Star Key Ring",
+        "type": "keyring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "fixedPrice": 62,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.1",
+          "qty": 1,
+          "additional": []
+        }
+      },
+      {
+        "id": "keepsake_virelia_leaf_key_ring",
+        "name": "Virelia Leaf Key Ring",
+        "type": "keyring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "fixedPrice": 62,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.1",
+          "qty": 1,
+          "additional": []
+        }
+      },
+      {
+        "id": "keepsake_oriana_oval_key_ring",
+        "name": "Oriana Oval Key Ring",
+        "type": "keyring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "fixedPrice": 82,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.25",
+          "qty": 1,
+          "additional": []
+        }
+      },
+      {
+        "id": "keepsake_clara_clover_key_ring",
+        "name": "Clara Clover Key Ring",
+        "type": "keyring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "fixedPrice": 62,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.1",
+          "qty": 1,
+          "additional": []
+        }
+      },
+      {
+        "id": "keepsake_marina_shell_key_ring",
+        "name": "Marina Shell Key Ring",
+        "type": "keyring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "fixedPrice": 62,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.1",
+          "qty": 1,
+          "additional": []
+        }
+      },
+      {
+        "id": "keepsake_alina_butterfly_key_ring",
+        "name": "Alina Butterfly Key Ring",
+        "type": "keyring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "fixedPrice": 62,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.1",
+          "qty": 1,
+          "additional": []
+        }
+      },
+      {
+        "id": "keepsake_serena_infinity_key_ring",
+        "name": "Serena Infinity Key Ring",
+        "type": "keyring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "fixedPrice": 62,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.1",
+          "qty": 1,
+          "additional": []
+        }
+      },
+      {
+        "id": "keepsake_celia_teardrop_key_ring",
+        "name": "Celia Teardrop Key Ring",
+        "type": "keyring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "fixedPrice": 82,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.25",
+          "qty": 1,
+          "additional": []
+        }
+      },
+      {
+        "id": "silver_new_amelie_petite_heart_pendant",
+        "name": "Amelie Petite Heart Pendant",
+        "type": "pendant",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "fixedPrice": 62,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.1",
+          "qty": 1,
+          "additional": []
+        }
+      },
+      {
+        "id": "silver_new_lunara_crescent_pendant",
+        "name": "Lunara Crescent Pendant",
+        "type": "pendant",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "fixedPrice": 62,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.1",
+          "qty": 1,
+          "additional": []
+        }
+      },
+      {
+        "id": "silver_new_estelle_petite_star_pendant",
+        "name": "Estelle Petite Star Pendant",
+        "type": "pendant",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "fixedPrice": 62,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.1",
+          "qty": 1,
+          "additional": []
+        }
+      },
+      {
+        "id": "silver_new_virelia_leaf_pendant",
+        "name": "Virelia Leaf Pendant",
+        "type": "pendant",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "fixedPrice": 82,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.25",
+          "qty": 1,
+          "additional": []
+        }
+      },
+      {
+        "id": "silver_new_oriana_oval_pendant",
+        "name": "Oriana Oval Pendant",
+        "type": "pendant",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "fixedPrice": 82,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.25",
+          "qty": 1,
+          "additional": []
+        }
+      },
+      {
+        "id": "silver_new_amelie_petite_heart_earrings",
+        "name": "Amelie Petite Heart Earrings",
+        "type": "earrings",
+        "weight": 0,
+        "labor": 0,
+        "stones": 2,
+        "fixedPrice": 92,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.1",
+          "qty": 2,
+          "additional": []
+        }
+      },
+      {
+        "id": "silver_new_lunara_crescent_earrings",
+        "name": "Lunara Crescent Earrings",
+        "type": "earrings",
+        "weight": 0,
+        "labor": 0,
+        "stones": 2,
+        "fixedPrice": 92,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.1",
+          "qty": 2,
+          "additional": []
+        }
+      },
+      {
+        "id": "silver_new_estelle_petite_star_earrings",
+        "name": "Estelle Petite Star Earrings",
+        "type": "earrings",
+        "weight": 0,
+        "labor": 0,
+        "stones": 2,
+        "fixedPrice": 92,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.1",
+          "qty": 2,
+          "additional": []
+        }
+      },
+      {
+        "id": "silver_new_virelia_leaf_earrings",
+        "name": "Virelia Leaf Earrings",
+        "type": "earrings",
+        "weight": 0,
+        "labor": 0,
+        "stones": 2,
+        "fixedPrice": 134,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.25",
+          "qty": 2,
+          "additional": []
+        }
+      },
+      {
+        "id": "silver_new_oriana_oval_earrings",
+        "name": "Oriana Oval Earrings",
+        "type": "earrings",
+        "weight": 0,
+        "labor": 0,
+        "stones": 2,
+        "fixedPrice": 134,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.25",
+          "qty": 2,
+          "additional": []
+        }
+      },
+      {
+        "id": "silver_new_amelie_petite_heart_bracelet",
+        "name": "Amelie Petite Heart Bracelet",
+        "type": "bracelet",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "fixedPrice": 72,
+        "defaultBraceletTier": "essential",
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.1",
+          "qty": 1,
+          "additional": []
+        }
+      },
+      {
+        "id": "silver_new_lunara_crescent_bracelet",
+        "name": "Lunara Crescent Bracelet",
+        "type": "bracelet",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "fixedPrice": 72,
+        "defaultBraceletTier": "essential",
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.1",
+          "qty": 1,
+          "additional": []
+        }
+      },
+      {
+        "id": "silver_new_estelle_petite_star_bracelet",
+        "name": "Estelle Petite Star Bracelet",
+        "type": "bracelet",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "fixedPrice": 72,
+        "defaultBraceletTier": "essential",
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.1",
+          "qty": 1,
+          "additional": []
+        }
+      },
+      {
+        "id": "silver_new_virelia_leaf_bracelet",
+        "name": "Virelia Leaf Bracelet",
+        "type": "bracelet",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "fixedPrice": 87,
+        "defaultBraceletTier": "essential",
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.25",
+          "qty": 1,
+          "additional": []
+        }
+      },
+      {
+        "id": "silver_new_oriana_oval_bracelet",
+        "name": "Oriana Oval Bracelet",
+        "type": "bracelet",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "fixedPrice": 87,
+        "defaultBraceletTier": "essential",
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.25",
+          "qty": 1,
+          "additional": []
+        }
+      }
+    ]
+  },
+  "keepsake": {
+    "essentials": [
+      {
+        "id": "keepsake_amelie_heart_initial_key_charm",
+        "name": "Amelie Heart Initial Key Charm",
+        "type": "keycharm",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "initialRequired": true,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.25",
+          "qty": 1,
+          "additional": []
+        }
+      },
+      {
+        "id": "keepsake_atlas_circle_initial_key_charm",
+        "name": "Atlas Circle Initial Key Charm",
+        "type": "keycharm",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "initialRequired": true,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.25",
+          "qty": 1,
+          "additional": []
+        }
+      }
+    ]
+  }
+}

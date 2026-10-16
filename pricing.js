@@ -179,7 +179,7 @@ const TIER_TO_PACKAGE = {
 };
 
 
-const TYPE_LABELS = {
+const TYPE_LABELS = {keyring:'Key Ring',keycharm:'Initial Key Charm',
   pendant: 'Pendant',
   ring: 'Ring',
   necklace: 'Necklace',
@@ -1896,9 +1896,18 @@ const DIAMOND_SECTION_NAMES = [
    HELPER FUNCTIONS
 ========================================================= */
 
+// Additional document-approved products share the existing pricing engine.
+const additionalCollections = require('./additional-collections.json');
+for (const [collection,tiers] of Object.entries(additionalCollections)) {
+  PRODUCTS_BY_COLLECTION[collection] ||= {};
+  COLLECTION_TIERS[collection] ||= Object.keys(tiers);
+  for (const [tier,products] of Object.entries(tiers)) (PRODUCTS_BY_COLLECTION[collection][tier] ||= []).push(...products);
+}
+
 function getCollectionName(id) {
 
   const names = {
+    keepsake: 'Keepsake Collection',
     dailySparkle: 'Daily Sparkle',
     occasionWear: 'High Note',
     foreverBond: 'Forever Bond',
@@ -2013,6 +2022,9 @@ function getMetalPricePerGram(metal, karat, purity) {
 
 function computePricing(params) {
   const rule = ORDER_CONFIGURATION_RULES[params.productId];
+  if(rule?.labOnly && params.diamondOrigin === 'natural') throw new Error('This design uses its listed lab-grown diamonds.');
+  if(rule?.initialRequired && !/^[A-Z]$/.test(String(params.initial||''))) throw new Error('Choose one initial from A to Z.');
+  if(rule?.braceletMetalTier) params={...params,braceletMetalTier:rule.braceletMetalTier};
   if (rule?.fixedDiamonds) params = {...params, diamonds: rule.fixedDiamonds};
   if (rule?.diamondPriceOptions) {
     const carat = Number(params.diamonds?.[0]?.carat).toFixed(2);
@@ -2045,7 +2057,7 @@ function computePricing(params) {
   }
 
 
-  const prod =
+  let prod =
     products.find(function(product) {
       return product.id === productId;
     }) || products[0];
@@ -2055,6 +2067,8 @@ function computePricing(params) {
     return null;
   }
 
+
+  if(rule?.initialRequired) prod={...prod,name:prod.name+' — Initial '+params.initial};
 
   const tierKey =
     getProductInherentTier(collection, prod.id) ||

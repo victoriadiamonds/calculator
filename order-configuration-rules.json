@@ -183,5 +183,192 @@
       "0.75": 2700,
       "1.00": 3000
     }
+  },
+  "keepsake_amelie_heart_initial_key_charm": {
+    "labOnly": true,
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "0.25",
+        "qty": 1
+      }
+    ],
+    "initialRequired": true
+  },
+  "keepsake_atlas_circle_initial_key_charm": {
+    "labOnly": true,
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "0.25",
+        "qty": 1
+      }
+    ],
+    "initialRequired": true
+  },
+  "aura_lunara_pear_pendant": {
+    "labOnly": true
+  },
+  "aura_virelia_leaf_pendant": {
+    "labOnly": true
+  },
+  "aura_oriana_oval_pendant": {
+    "labOnly": true
+  },
+  "aura_estelle_trio_pendant": {
+    "labOnly": true
+  },
+  "aura_amelie_heart_pendant": {
+    "labOnly": true
+  },
+  "aura_lunara_pear_earrings": {
+    "labOnly": true,
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "2.00",
+        "qty": 2
+      },
+      {
+        "quality": "select",
+        "carat": "0.25",
+        "qty": 2
+      }
+    ]
+  },
+  "aura_virelia_leaf_earrings": {
+    "labOnly": true,
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "1.00",
+        "qty": 2
+      },
+      {
+        "quality": "select",
+        "carat": "0.50",
+        "qty": 4
+      }
+    ]
+  },
+  "aura_oriana_oval_earrings": {
+    "labOnly": true,
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "2.00",
+        "qty": 2
+      }
+    ]
+  },
+  "aura_estelle_trio_earrings": {
+    "labOnly": true,
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "1.00",
+        "qty": 2
+      },
+      {
+        "quality": "select",
+        "carat": "0.50",
+        "qty": 2
+      },
+      {
+        "quality": "select",
+        "carat": "0.25",
+        "qty": 2
+      }
+    ]
+  },
+  "aura_amelie_heart_earrings": {
+    "labOnly": true,
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "0.50",
+        "qty": 2
+      }
+    ]
+  },
+  "aura_lunara_pear_bracelet": {
+    "labOnly": true,
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "3.00",
+        "qty": 1
+      },
+      {
+        "quality": "select",
+        "carat": "1.00",
+        "qty": 4
+      }
+    ],
+    "braceletMetalTier": "supreme"
+  },
+  "aura_virelia_leaf_bracelet": {
+    "labOnly": true,
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "2.00",
+        "qty": 1
+      },
+      {
+        "quality": "select",
+        "carat": "1.00",
+        "qty": 4
+      }
+    ],
+    "braceletMetalTier": "premium"
+  },
+  "aura_oriana_oval_bracelet": {
+    "labOnly": true,
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "3.00",
+        "qty": 1
+      },
+      {
+        "quality": "select",
+        "carat": "1.00",
+        "qty": 4
+      }
+    ],
+    "braceletMetalTier": "supreme"
+  },
+  "aura_estelle_trio_bracelet": {
+    "labOnly": true,
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "3.00",
+        "qty": 1
+      },
+      {
+        "quality": "select",
+        "carat": "1.00",
+        "qty": 4
+      }
+    ],
+    "braceletMetalTier": "supreme"
+  },
+  "aura_amelie_heart_bracelet": {
+    "labOnly": true,
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "2.00",
+        "qty": 1
+      },
+      {
+        "quality": "select",
+        "carat": "1.00",
+        "qty": 4
+      }
+    ],
+    "braceletMetalTier": "premium"
   }
 }
