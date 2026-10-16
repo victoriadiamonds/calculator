@@ -835,7 +835,7 @@
           { id: 'ow_m_celestia_brooch', name: 'Celestia Brooch', weight: 7.0, labor: 50, stones: 3, type: 'brooch' },
           { id: 'ow_m_eternelle_brooch', name: 'Eternelle Brooch', weight: 7.5, labor: 52, stones: 3, type: 'brooch' },
           { id: 'ow_m_illusion', name: 'Round Illusion', weight: 8.0, labor: 55, stones: 2, type: 'earrings' },
-          { id: 'ow_m_fiora', name: 'Fiora', weight: 9.0, labor: 60, stones: 4, type: 'earrings', diamondPreset: { q: 'select', c: '0.50', qty: 4 } },
+          { id: 'ow_m_fiora', name: 'Fiora', weight: 9.0, labor: 60, stones: 2, type: 'earrings', diamondPreset: { q: 'select', c: '0.50', qty: 2 } },
           { id: 'ow_m_luminia_tiara', name: 'Luminia Tiara', weight: 12.0, labor: 75, stones: 6, type: 'tiara' },
           { id: 'ow_l_lumina', name: 'Lumina', weight: 18.0, labor: 88, stones: 7, type: 'bracelet', diamondPreset: { q: 'select', c: '0.50', qty: 7 } },
           { id: 'ow_l_arabella', name: 'Arabella', weight: 20.0, labor: 95, stones: 8, type: 'bracelet', diamondPreset: { q: 'select', c: '0.50', qty: 8 } }
@@ -911,6 +911,7 @@
         }
       });
     });
+    const ORDER_CONFIGURATION_RULES = {"ds_s_luminea":{"fixedDiamonds":[{"quality":"select","carat":"0.1","qty":6}]},"ds_s_fiora":{"fixedDiamonds":[{"quality":"select","carat":"0.25","qty":4},{"quality":"select","carat":"0.15","qty":4}]},"ds_m_aurea_bracelet":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"ds_m_solenne_bracelet":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"ds_m_liora_bracelet":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"ds_m_celeste_bracelet":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"ds_m_lumiere_bracelet":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"ow_m_fiora":{"fixedDiamonds":[{"quality":"select","carat":"0.50","qty":2}]},"ow_l_lumina":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"ow_l_arabella":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"ow_l_classic_round_tennis_gold":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"ow_l_emerald_cut_tennis":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"ow_l_marquise_round_alternating_tennis":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"ow_l_pear_cut_tennis_gold":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"sl_b_diamond_paperclip_link_bracelet":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"mens_apex_tennis_bracelet":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"mens_pillar_tennis_bracelet":{"braceletMetalTier":"supreme","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"mens_anchor_link_bracelet":{"braceletMetalTier":"supreme","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"mens_vanguard_cuff":{"braceletMetalTier":"supreme","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"mens_foundry_link_bracelet":{"braceletMetalTier":"supreme","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}}};
     const DIAMOND_SECTION_NAMES = ['Main Diamond', 'Diamond 2', 'Diamond 3', 'Diamond 4'];
 
     let currentOrderTotal = 0;
@@ -1058,7 +1059,10 @@
         document.getElementById('metal').value = prod.defaultMetal;
         renderMetalExtras();
       }
-      applyDiamondPreset(prod && prod.diamondPreset);
+      const rule=ORDER_CONFIGURATION_RULES[prod?.id];
+      const fixed=rule?.fixedDiamonds;
+      applyDiamondPreset(fixed?{q:fixed[0].quality,c:fixed[0].carat,qty:fixed[0].qty,additional:fixed.slice(1).map(d=>({q:d.quality,c:d.carat,qty:d.qty}))}:prod && prod.diamondPreset);
+      applyDesignLocks();
       renderTierBadge();
       updateModelName();
     }
@@ -1077,7 +1081,20 @@
       }
     }
 
+    function applyDesignLocks(){
+      const rule=ORDER_CONFIGURATION_RULES[getCurrentProduct()?.id];
+      for(let i=0;i<4;i++){
+        for(const prefix of ['dq','dc','dqt'])document.getElementById(prefix+i).disabled=!!rule?.fixedDiamonds || (!!rule?.diamondPriceOptions && (i>0||prefix!=='dc'));
+      }
+      const options=document.getElementById('dc0');
+      Array.from(options.options).forEach(o=>o.disabled=!!rule?.diamondPriceOptions&&!Object.hasOwn(rule.diamondPriceOptions,Number(o.value).toFixed(2)));
+      if(rule?.diamondPriceOptions&&!Object.hasOwn(rule.diamondPriceOptions,Number(options.value).toFixed(2)))options.value='0.25';
+      const heading=document.querySelector('.diamond-section-title');if(heading)heading.firstChild.textContent=rule?.diamondPriceOptions?'Bracelet diamond size option':'Main Diamond';
+      const tier=document.getElementById('braceletMetalTier');tier.disabled=!!rule?.braceletMetalTier;if(rule?.braceletMetalTier)tier.value=rule.braceletMetalTier;
+    }
+
     function getSelectedBraceletTier(){
+      const rule=ORDER_CONFIGURATION_RULES[getCurrentProduct()?.id];if(rule?.braceletMetalTier)return rule.braceletMetalTier;
       const sel = document.getElementById('braceletMetalTier');
       const selected = sel ? sel.value : 'essential';
       const minimum = getCurrentProduct()?.minBraceletTier;
@@ -1187,6 +1204,9 @@
           total: price * qty
         });
       }
+      const rule=ORDER_CONFIGURATION_RULES[getCurrentProduct()?.id];
+      if(rule?.fixedDiamonds)return rule.fixedDiamonds.map(d=>{const price=DIAMOND_PRICES[d.quality][d.carat];return {...d,caratNum:Number(d.carat),price,total:price*d.qty,unpriced:false};});
+      if(rule?.diamondPriceOptions){const carat=Number(entries[0].carat).toFixed(2),price=rule.diamondPriceOptions[carat];return [{quality:'select',carat,caratNum:Number(carat),qty:1,price:price||0,total:price||0,unpriced:price===undefined}];}
       return entries;
     }
 
@@ -1210,6 +1230,7 @@
         }
       }
       document.querySelectorAll('.salon-section:not(:first-child) input, .salon-section:not(:first-child) select, .salon-section:not(:first-child) button, .salon-adjustments input, .salon-adjustments select').forEach(control => control.disabled = fixed);
+      if(!fixed)applyDesignLocks();
     }
 
     function computePricing(){

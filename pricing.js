@@ -1,3 +1,4 @@
+const ORDER_CONFIGURATION_RULES = require('./order-configuration-rules.json');
 const RING_DESIGN_FEES = require('./ring-design-fees');
 const BASE = {
   gold24: 62.0,
@@ -2011,6 +2012,13 @@ function getMetalPricePerGram(metal, karat, purity) {
 ========================================================= */
 
 function computePricing(params) {
+  const rule = ORDER_CONFIGURATION_RULES[params.productId];
+  if (rule?.fixedDiamonds) params = {...params, diamonds: rule.fixedDiamonds};
+  if (rule?.diamondPriceOptions) {
+    const carat = Number(params.diamonds?.[0]?.carat).toFixed(2);
+    if (!Object.hasOwn(rule.diamondPriceOptions, carat)) throw new Error('Choose an available bracelet diamond size.');
+    params = {...params, braceletMetalTier: rule.braceletMetalTier, diamonds: [{quality:'select',carat,qty:1}]};
+  }
 
   const {
     collection,
@@ -2298,6 +2306,14 @@ function computePricing(params) {
     });
   }
 
+
+  // Bracelet options price the complete diamond portion, not a single main stone.
+  if (rule?.diamondPriceOptions) {
+    diamondPrice = rule.diamondPriceOptions[params.diamonds[0].carat];
+    hasUnpricedDiamond = false;
+    entries[0].price = diamondPrice;
+    entries[0].total = diamondPrice;
+  }
 
   /*
     Quantity / adjustments

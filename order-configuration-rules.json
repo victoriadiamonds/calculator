@@ -1,0 +1,187 @@
+{
+  "ds_s_luminea": {
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "0.1",
+        "qty": 6
+      }
+    ]
+  },
+  "ds_s_fiora": {
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "0.25",
+        "qty": 4
+      },
+      {
+        "quality": "select",
+        "carat": "0.15",
+        "qty": 4
+      }
+    ]
+  },
+  "ds_m_aurea_bracelet": {
+    "braceletMetalTier": "premium",
+    "diamondPriceOptions": {
+      "0.25": 2200,
+      "0.50": 2400,
+      "0.75": 2700,
+      "1.00": 3000
+    }
+  },
+  "ds_m_solenne_bracelet": {
+    "braceletMetalTier": "premium",
+    "diamondPriceOptions": {
+      "0.25": 2200,
+      "0.50": 2400,
+      "0.75": 2700,
+      "1.00": 3000
+    }
+  },
+  "ds_m_liora_bracelet": {
+    "braceletMetalTier": "premium",
+    "diamondPriceOptions": {
+      "0.25": 2200,
+      "0.50": 2400,
+      "0.75": 2700,
+      "1.00": 3000
+    }
+  },
+  "ds_m_celeste_bracelet": {
+    "braceletMetalTier": "premium",
+    "diamondPriceOptions": {
+      "0.25": 2200,
+      "0.50": 2400,
+      "0.75": 2700,
+      "1.00": 3000
+    }
+  },
+  "ds_m_lumiere_bracelet": {
+    "braceletMetalTier": "premium",
+    "diamondPriceOptions": {
+      "0.25": 2200,
+      "0.50": 2400,
+      "0.75": 2700,
+      "1.00": 3000
+    }
+  },
+  "ow_m_fiora": {
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "0.50",
+        "qty": 2
+      }
+    ]
+  },
+  "ow_l_lumina": {
+    "braceletMetalTier": "premium",
+    "diamondPriceOptions": {
+      "0.25": 2200,
+      "0.50": 2400,
+      "0.75": 2700,
+      "1.00": 3000
+    }
+  },
+  "ow_l_arabella": {
+    "braceletMetalTier": "premium",
+    "diamondPriceOptions": {
+      "0.25": 2200,
+      "0.50": 2400,
+      "0.75": 2700,
+      "1.00": 3000
+    }
+  },
+  "ow_l_classic_round_tennis_gold": {
+    "braceletMetalTier": "premium",
+    "diamondPriceOptions": {
+      "0.25": 2200,
+      "0.50": 2400,
+      "0.75": 2700,
+      "1.00": 3000
+    }
+  },
+  "ow_l_emerald_cut_tennis": {
+    "braceletMetalTier": "premium",
+    "diamondPriceOptions": {
+      "0.25": 2200,
+      "0.50": 2400,
+      "0.75": 2700,
+      "1.00": 3000
+    }
+  },
+  "ow_l_marquise_round_alternating_tennis": {
+    "braceletMetalTier": "premium",
+    "diamondPriceOptions": {
+      "0.25": 2200,
+      "0.50": 2400,
+      "0.75": 2700,
+      "1.00": 3000
+    }
+  },
+  "ow_l_pear_cut_tennis_gold": {
+    "braceletMetalTier": "premium",
+    "diamondPriceOptions": {
+      "0.25": 2200,
+      "0.50": 2400,
+      "0.75": 2700,
+      "1.00": 3000
+    }
+  },
+  "sl_b_diamond_paperclip_link_bracelet": {
+    "braceletMetalTier": "premium",
+    "diamondPriceOptions": {
+      "0.25": 2200,
+      "0.50": 2400,
+      "0.75": 2700,
+      "1.00": 3000
+    }
+  },
+  "mens_apex_tennis_bracelet": {
+    "braceletMetalTier": "premium",
+    "diamondPriceOptions": {
+      "0.25": 2200,
+      "0.50": 2400,
+      "0.75": 2700,
+      "1.00": 3000
+    }
+  },
+  "mens_pillar_tennis_bracelet": {
+    "braceletMetalTier": "supreme",
+    "diamondPriceOptions": {
+      "0.25": 2200,
+      "0.50": 2400,
+      "0.75": 2700,
+      "1.00": 3000
+    }
+  },
+  "mens_anchor_link_bracelet": {
+    "braceletMetalTier": "supreme",
+    "diamondPriceOptions": {
+      "0.25": 2200,
+      "0.50": 2400,
+      "0.75": 2700,
+      "1.00": 3000
+    }
+  },
+  "mens_vanguard_cuff": {
+    "braceletMetalTier": "supreme",
+    "diamondPriceOptions": {
+      "0.25": 2200,
+      "0.50": 2400,
+      "0.75": 2700,
+      "1.00": 3000
+    }
+  },
+  "mens_foundry_link_bracelet": {
+    "braceletMetalTier": "supreme",
+    "diamondPriceOptions": {
+      "0.25": 2200,
+      "0.50": 2400,
+      "0.75": 2700,
+      "1.00": 3000
+    }
+  }
+}
