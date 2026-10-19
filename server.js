@@ -32,6 +32,19 @@ app.use(express.json({
 
 app.use(express.static(path.join(__dirname)));
 
+// Natural diamond integration endpoints. Quotes have no payment side effects.
+app.get('/api/v1/natural-diamonds', (req,res) => res.json(require('./natural-diamonds').search(req.query)));
+app.get('/api/v1/natural-diamonds/facets', (req,res) => res.json({currency:'GBP',facets:require('./natural-diamonds').facets}));
+app.get('/api/v1/collections', (req,res) => res.json(Object.keys(pricing.PRODUCTS_BY_COLLECTION).map(id=>({id,name:pricing.getCollectionName(id)}))));
+app.get('/api/v1/pieces', (req,res) => {
+ if(!Object.hasOwn(pricing.PRODUCTS_BY_COLLECTION,req.query.collection))return res.status(400).json({error:'Choose a valid collection.'});
+ res.json(pricing.getProductsForCollection(req.query.collection,req.query.type||'all'));
+});
+app.post('/api/v1/quote', (req,res) => {
+ try {const {params,...quote}=quoteDaily(req.body,req.body.collection);res.set('Cache-Control','no-store').json(quote);}
+ catch(error){res.status(400).json({error:error.message});}
+});
+
 // =========================
 // AIRWALLEX CONFIGURATION
 // =========================
@@ -318,6 +331,7 @@ function buildPricingParams(body) {
     collection: body.collection,
     productId: body.productId,
     initial: body.initial,
+    diamondOrigin: body.diamondOrigin || 'lab',
     typeFilter: body.typeFilter || 'all',
 
     braceletMetalTier:
@@ -435,7 +449,7 @@ app.post(Object.keys(onlineCollections).map(route => `/${route}/quote`), (req, r
 });
 
 app.post(
-  ['/create-payment-link', ...Object.keys(onlineCollections).map(route => `/${route}/payment-link`)],
+  ['/create-payment-link', '/api/v1/payment-link', ...Object.keys(onlineCollections).map(route => `/${route}/payment-link`)],
   async (req, res) => {
 
     console.log(
@@ -444,9 +458,9 @@ app.post(
 
     try {
 
-      if (Boolean(onlineCollection(req.path))) {
+      if (Boolean(onlineCollection(req.path)) || req.path === '/api/v1/payment-link') {
         let dailyQuote;
-        try { dailyQuote = quoteDaily(req.body, onlineCollection(req.path)); }
+        try { dailyQuote = quoteDaily(req.body, req.path === '/api/v1/payment-link' ? req.body.collection : onlineCollection(req.path)); }
         catch (error) { return res.status(400).json({ error: error.message }); }
         if (Number(req.body.expectedTotal) !== dailyQuote.total) {
           return res.status(409).json({ error: 'The price has changed. Please review a fresh quote before continuing.' });
@@ -939,9 +953,10 @@ app.post(
 // =========================
 
 function formatCurrency(value) {
-  return '£' + Math.round(Number(value) || 0).toLocaleString(undefined, {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
+  const rounded = Math.round((Number(value) || 0) * 100) / 100;
+  return '£' + rounded.toLocaleString('en-GB', {
+    minimumFractionDigits: Number.isInteger(rounded) ? 0 : 2,
+    maximumFractionDigits: 2
   });
 }
 

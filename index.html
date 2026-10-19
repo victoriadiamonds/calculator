@@ -31,6 +31,7 @@
           <option value="foreverBond">Forever Bond</option>
           <option value="singleLady">Aura</option>
           <option value="silver">Silver Collection</option>
+          <option value="keepsake">Keepsake Collection</option>
           <option value="mens">Men's Collection</option>
         </select>
       </div>
@@ -45,6 +46,7 @@
           <option value="bracelet">Bracelets</option>
           <option value="anklet">Anklets</option>
           <option value="brooch">Brooch</option>
+          <option value="keyring">Key rings</option><option value="keycharm">Initial key charms</option>
           <option value="tiara">Tiara</option>
         </select>
       </div>
@@ -59,6 +61,7 @@
 
     <div class="row">
       <div style="flex:1">
+        <div id="initialRow" hidden><label for="initial">Personal initial</label><select id="initial"><option value="">Choose an initial</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option><option>I</option><option>J</option><option>K</option><option>L</option><option>M</option><option>N</option><option>O</option><option>P</option><option>Q</option><option>R</option><option>S</option><option>T</option><option>U</option><option>V</option><option>W</option><option>X</option><option>Y</option><option>Z</option></select><p class="small muted">A and B photographs are design examples. Your selected letter is saved with the order.</p></div>
         <label for="modelName">Model name</label>
         <input id="modelName" placeholder="Auto-filled from selection" readonly style="background:rgba(255,255,255,0.05);color:inherit" />
       </div>
@@ -428,7 +431,7 @@
       signature: 'signature'
     };
 
-    const TYPE_LABELS = {
+    const TYPE_LABELS = {keyring:'Key Ring',keycharm:'Initial Key Charm',
       pendant: 'Pendant',
       ring: 'Ring',
       necklace: 'Necklace',
@@ -912,6 +915,13 @@
       });
     });
     const ORDER_CONFIGURATION_RULES = {"ds_s_luminea":{"fixedDiamonds":[{"quality":"select","carat":"0.1","qty":6}]},"ds_s_fiora":{"fixedDiamonds":[{"quality":"select","carat":"0.25","qty":4},{"quality":"select","carat":"0.15","qty":4}]},"ds_m_aurea_bracelet":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"ds_m_solenne_bracelet":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"ds_m_liora_bracelet":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"ds_m_celeste_bracelet":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"ds_m_lumiere_bracelet":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"ow_m_fiora":{"fixedDiamonds":[{"quality":"select","carat":"0.50","qty":2}]},"ow_l_lumina":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"ow_l_arabella":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"ow_l_classic_round_tennis_gold":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"ow_l_emerald_cut_tennis":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"ow_l_marquise_round_alternating_tennis":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"ow_l_pear_cut_tennis_gold":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"sl_b_diamond_paperclip_link_bracelet":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"mens_apex_tennis_bracelet":{"braceletMetalTier":"premium","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"mens_pillar_tennis_bracelet":{"braceletMetalTier":"supreme","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"mens_anchor_link_bracelet":{"braceletMetalTier":"supreme","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"mens_vanguard_cuff":{"braceletMetalTier":"supreme","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}},"mens_foundry_link_bracelet":{"braceletMetalTier":"supreme","diamondPriceOptions":{"0.25":2200,"0.50":2400,"0.75":2700,"1.00":3000}}};
+
+    const ADDITIONAL_COLLECTIONS = {"singleLady":{"essentials":[{"id":"aura_lunara_pear_pendant","name":"Lunara Pear Pendant","type":"pendant","weight":0,"labor":0,"stones":2,"diamondPreset":{"q":"select","c":"2.00","qty":1,"additional":[{"q":"select","c":"0.25","qty":1}]}},{"id":"aura_virelia_leaf_pendant","name":"Virelia Leaf Pendant","type":"pendant","weight":0,"labor":0,"stones":3,"diamondPreset":{"q":"select","c":"1.00","qty":1,"additional":[{"q":"select","c":"0.25","qty":2}]}},{"id":"aura_oriana_oval_pendant","name":"Oriana Oval Pendant","type":"pendant","weight":0,"labor":0,"stones":1,"diamondPreset":{"q":"select","c":"3.00","qty":1,"additional":[]}},{"id":"aura_estelle_trio_pendant","name":"Estelle Trio Pendant","type":"pendant","weight":0,"labor":0,"stones":3,"diamondPreset":{"q":"select","c":"1.00","qty":1,"additional":[{"q":"select","c":"0.50","qty":1},{"q":"select","c":"0.25","qty":1}]}},{"id":"aura_amelie_heart_pendant","name":"Amelie Heart Pendant","type":"pendant","weight":0,"labor":0,"stones":1,"diamondPreset":{"q":"select","c":"1.00","qty":1,"additional":[]}},{"id":"aura_lunara_pear_earrings","name":"Lunara Pear Earrings","type":"earrings","weight":0,"labor":0,"stones":4,"diamondPreset":{"q":"select","c":"2.00","qty":2,"additional":[{"q":"select","c":"0.25","qty":2}]}},{"id":"aura_virelia_leaf_earrings","name":"Virelia Leaf Earrings","type":"earrings","weight":0,"labor":0,"stones":6,"diamondPreset":{"q":"select","c":"1.00","qty":2,"additional":[{"q":"select","c":"0.50","qty":4}]}},{"id":"aura_oriana_oval_earrings","name":"Oriana Oval Earrings","type":"earrings","weight":0,"labor":0,"stones":2,"diamondPreset":{"q":"select","c":"2.00","qty":2,"additional":[]}},{"id":"aura_estelle_trio_earrings","name":"Estelle Trio Earrings","type":"earrings","weight":0,"labor":0,"stones":6,"diamondPreset":{"q":"select","c":"1.00","qty":2,"additional":[{"q":"select","c":"0.50","qty":2},{"q":"select","c":"0.25","qty":2}]}},{"id":"aura_amelie_heart_earrings","name":"Amelie Heart Earrings","type":"earrings","weight":0,"labor":0,"stones":2,"diamondPreset":{"q":"select","c":"0.50","qty":2,"additional":[]}},{"id":"aura_lunara_pear_bracelet","name":"Lunara Pear Bracelet","type":"bracelet","weight":0,"labor":0,"stones":5,"defaultBraceletTier":"supreme","diamondPreset":{"q":"select","c":"3.00","qty":1,"additional":[{"q":"select","c":"1.00","qty":4}]}},{"id":"aura_virelia_leaf_bracelet","name":"Virelia Leaf Bracelet","type":"bracelet","weight":0,"labor":0,"stones":5,"defaultBraceletTier":"premium","diamondPreset":{"q":"select","c":"2.00","qty":1,"additional":[{"q":"select","c":"1.00","qty":4}]}},{"id":"aura_oriana_oval_bracelet","name":"Oriana Oval Bracelet","type":"bracelet","weight":0,"labor":0,"stones":5,"defaultBraceletTier":"supreme","diamondPreset":{"q":"select","c":"3.00","qty":1,"additional":[{"q":"select","c":"1.00","qty":4}]}},{"id":"aura_estelle_trio_bracelet","name":"Estelle Trio Bracelet","type":"bracelet","weight":0,"labor":0,"stones":5,"defaultBraceletTier":"supreme","diamondPreset":{"q":"select","c":"3.00","qty":1,"additional":[{"q":"select","c":"1.00","qty":4}]}},{"id":"aura_amelie_heart_bracelet","name":"Amelie Heart Bracelet","type":"bracelet","weight":0,"labor":0,"stones":5,"defaultBraceletTier":"premium","diamondPreset":{"q":"select","c":"2.00","qty":1,"additional":[{"q":"select","c":"1.00","qty":4}]}}]},"silver":{"essentials":[{"id":"keepsake_amelie_heart_key_ring","name":"Amelie Heart Key Ring","type":"keyring","weight":0,"labor":0,"stones":1,"fixedPrice":62,"diamondPreset":{"q":"select","c":"0.1","qty":1,"additional":[]}},{"id":"keepsake_lunara_crescent_key_ring","name":"Lunara Crescent Key Ring","type":"keyring","weight":0,"labor":0,"stones":1,"fixedPrice":62,"diamondPreset":{"q":"select","c":"0.1","qty":1,"additional":[]}},{"id":"keepsake_estelle_star_key_ring","name":"Estelle Star Key Ring","type":"keyring","weight":0,"labor":0,"stones":1,"fixedPrice":62,"diamondPreset":{"q":"select","c":"0.1","qty":1,"additional":[]}},{"id":"keepsake_virelia_leaf_key_ring","name":"Virelia Leaf Key Ring","type":"keyring","weight":0,"labor":0,"stones":1,"fixedPrice":62,"diamondPreset":{"q":"select","c":"0.1","qty":1,"additional":[]}},{"id":"keepsake_oriana_oval_key_ring","name":"Oriana Oval Key Ring","type":"keyring","weight":0,"labor":0,"stones":1,"fixedPrice":82,"diamondPreset":{"q":"select","c":"0.25","qty":1,"additional":[]}},{"id":"keepsake_clara_clover_key_ring","name":"Clara Clover Key Ring","type":"keyring","weight":0,"labor":0,"stones":1,"fixedPrice":62,"diamondPreset":{"q":"select","c":"0.1","qty":1,"additional":[]}},{"id":"keepsake_marina_shell_key_ring","name":"Marina Shell Key Ring","type":"keyring","weight":0,"labor":0,"stones":1,"fixedPrice":62,"diamondPreset":{"q":"select","c":"0.1","qty":1,"additional":[]}},{"id":"keepsake_alina_butterfly_key_ring","name":"Alina Butterfly Key Ring","type":"keyring","weight":0,"labor":0,"stones":1,"fixedPrice":62,"diamondPreset":{"q":"select","c":"0.1","qty":1,"additional":[]}},{"id":"keepsake_serena_infinity_key_ring","name":"Serena Infinity Key Ring","type":"keyring","weight":0,"labor":0,"stones":1,"fixedPrice":62,"diamondPreset":{"q":"select","c":"0.1","qty":1,"additional":[]}},{"id":"keepsake_celia_teardrop_key_ring","name":"Celia Teardrop Key Ring","type":"keyring","weight":0,"labor":0,"stones":1,"fixedPrice":82,"diamondPreset":{"q":"select","c":"0.25","qty":1,"additional":[]}},{"id":"silver_new_amelie_petite_heart_pendant","name":"Amelie Petite Heart Pendant","type":"pendant","weight":0,"labor":0,"stones":1,"fixedPrice":62,"diamondPreset":{"q":"select","c":"0.1","qty":1,"additional":[]}},{"id":"silver_new_lunara_crescent_pendant","name":"Lunara Crescent Pendant","type":"pendant","weight":0,"labor":0,"stones":1,"fixedPrice":62,"diamondPreset":{"q":"select","c":"0.1","qty":1,"additional":[]}},{"id":"silver_new_estelle_petite_star_pendant","name":"Estelle Petite Star Pendant","type":"pendant","weight":0,"labor":0,"stones":1,"fixedPrice":62,"diamondPreset":{"q":"select","c":"0.1","qty":1,"additional":[]}},{"id":"silver_new_virelia_leaf_pendant","name":"Virelia Leaf Pendant","type":"pendant","weight":0,"labor":0,"stones":1,"fixedPrice":82,"diamondPreset":{"q":"select","c":"0.25","qty":1,"additional":[]}},{"id":"silver_new_oriana_oval_pendant","name":"Oriana Oval Pendant","type":"pendant","weight":0,"labor":0,"stones":1,"fixedPrice":82,"diamondPreset":{"q":"select","c":"0.25","qty":1,"additional":[]}},{"id":"silver_new_amelie_petite_heart_earrings","name":"Amelie Petite Heart Earrings","type":"earrings","weight":0,"labor":0,"stones":2,"fixedPrice":92,"diamondPreset":{"q":"select","c":"0.1","qty":2,"additional":[]}},{"id":"silver_new_lunara_crescent_earrings","name":"Lunara Crescent Earrings","type":"earrings","weight":0,"labor":0,"stones":2,"fixedPrice":92,"diamondPreset":{"q":"select","c":"0.1","qty":2,"additional":[]}},{"id":"silver_new_estelle_petite_star_earrings","name":"Estelle Petite Star Earrings","type":"earrings","weight":0,"labor":0,"stones":2,"fixedPrice":92,"diamondPreset":{"q":"select","c":"0.1","qty":2,"additional":[]}},{"id":"silver_new_virelia_leaf_earrings","name":"Virelia Leaf Earrings","type":"earrings","weight":0,"labor":0,"stones":2,"fixedPrice":134,"diamondPreset":{"q":"select","c":"0.25","qty":2,"additional":[]}},{"id":"silver_new_oriana_oval_earrings","name":"Oriana Oval Earrings","type":"earrings","weight":0,"labor":0,"stones":2,"fixedPrice":134,"diamondPreset":{"q":"select","c":"0.25","qty":2,"additional":[]}},{"id":"silver_new_amelie_petite_heart_bracelet","name":"Amelie Petite Heart Bracelet","type":"bracelet","weight":0,"labor":0,"stones":1,"fixedPrice":72,"defaultBraceletTier":"essential","diamondPreset":{"q":"select","c":"0.1","qty":1,"additional":[]}},{"id":"silver_new_lunara_crescent_bracelet","name":"Lunara Crescent Bracelet","type":"bracelet","weight":0,"labor":0,"stones":1,"fixedPrice":72,"defaultBraceletTier":"essential","diamondPreset":{"q":"select","c":"0.1","qty":1,"additional":[]}},{"id":"silver_new_estelle_petite_star_bracelet","name":"Estelle Petite Star Bracelet","type":"bracelet","weight":0,"labor":0,"stones":1,"fixedPrice":72,"defaultBraceletTier":"essential","diamondPreset":{"q":"select","c":"0.1","qty":1,"additional":[]}},{"id":"silver_new_virelia_leaf_bracelet","name":"Virelia Leaf Bracelet","type":"bracelet","weight":0,"labor":0,"stones":1,"fixedPrice":87,"defaultBraceletTier":"essential","diamondPreset":{"q":"select","c":"0.25","qty":1,"additional":[]}},{"id":"silver_new_oriana_oval_bracelet","name":"Oriana Oval Bracelet","type":"bracelet","weight":0,"labor":0,"stones":1,"fixedPrice":87,"defaultBraceletTier":"essential","diamondPreset":{"q":"select","c":"0.25","qty":1,"additional":[]}}]},"keepsake":{"essentials":[{"id":"keepsake_amelie_heart_initial_key_charm","name":"Amelie Heart Initial Key Charm","type":"keycharm","weight":0,"labor":0,"stones":1,"initialRequired":true,"diamondPreset":{"q":"select","c":"0.25","qty":1,"additional":[]}},{"id":"keepsake_atlas_circle_initial_key_charm","name":"Atlas Circle Initial Key Charm","type":"keycharm","weight":0,"labor":0,"stones":1,"initialRequired":true,"diamondPreset":{"q":"select","c":"0.25","qty":1,"additional":[]}}]}};
+    for(const [collection,tiers] of Object.entries(ADDITIONAL_COLLECTIONS)){
+      PRODUCTS_BY_COLLECTION[collection] ||= {};COLLECTION_TIERS[collection] ||= Object.keys(tiers);
+      for(const [tier,products]of Object.entries(tiers))(PRODUCTS_BY_COLLECTION[collection][tier] ||= []).push(...products);
+    }
+    Object.assign(ORDER_CONFIGURATION_RULES,{"keepsake_amelie_heart_initial_key_charm":{"labOnly":true,"fixedDiamonds":[{"quality":"select","carat":"0.25","qty":1}],"initialRequired":true},"keepsake_atlas_circle_initial_key_charm":{"labOnly":true,"fixedDiamonds":[{"quality":"select","carat":"0.25","qty":1}],"initialRequired":true},"aura_lunara_pear_pendant":{"labOnly":true},"aura_virelia_leaf_pendant":{"labOnly":true},"aura_oriana_oval_pendant":{"labOnly":true},"aura_estelle_trio_pendant":{"labOnly":true},"aura_amelie_heart_pendant":{"labOnly":true},"aura_lunara_pear_earrings":{"labOnly":true,"fixedDiamonds":[{"quality":"select","carat":"2.00","qty":2},{"quality":"select","carat":"0.25","qty":2}]},"aura_virelia_leaf_earrings":{"labOnly":true,"fixedDiamonds":[{"quality":"select","carat":"1.00","qty":2},{"quality":"select","carat":"0.50","qty":4}]},"aura_oriana_oval_earrings":{"labOnly":true,"fixedDiamonds":[{"quality":"select","carat":"2.00","qty":2}]},"aura_estelle_trio_earrings":{"labOnly":true,"fixedDiamonds":[{"quality":"select","carat":"1.00","qty":2},{"quality":"select","carat":"0.50","qty":2},{"quality":"select","carat":"0.25","qty":2}]},"aura_amelie_heart_earrings":{"labOnly":true,"fixedDiamonds":[{"quality":"select","carat":"0.50","qty":2}]},"aura_lunara_pear_bracelet":{"labOnly":true,"fixedDiamonds":[{"quality":"select","carat":"3.00","qty":1},{"quality":"select","carat":"1.00","qty":4}],"braceletMetalTier":"supreme"},"aura_virelia_leaf_bracelet":{"labOnly":true,"fixedDiamonds":[{"quality":"select","carat":"2.00","qty":1},{"quality":"select","carat":"1.00","qty":4}],"braceletMetalTier":"premium"},"aura_oriana_oval_bracelet":{"labOnly":true,"fixedDiamonds":[{"quality":"select","carat":"3.00","qty":1},{"quality":"select","carat":"1.00","qty":4}],"braceletMetalTier":"supreme"},"aura_estelle_trio_bracelet":{"labOnly":true,"fixedDiamonds":[{"quality":"select","carat":"3.00","qty":1},{"quality":"select","carat":"1.00","qty":4}],"braceletMetalTier":"supreme"},"aura_amelie_heart_bracelet":{"labOnly":true,"fixedDiamonds":[{"quality":"select","carat":"2.00","qty":1},{"quality":"select","carat":"1.00","qty":4}],"braceletMetalTier":"premium"}});
     const DIAMOND_SECTION_NAMES = ['Main Diamond', 'Diamond 2', 'Diamond 3', 'Diamond 4'];
 
     let currentOrderTotal = 0;
@@ -1013,7 +1023,7 @@
           const typeSuffix = TYPE_LABELS[p.type] ? ' (' + TYPE_LABELS[p.type] + ')' : '';
           var opt = document.createElement('option');
           opt.value = p.id;
-          opt.textContent = p.name + typeSuffix + (p.fixedPrice !== undefined ? ' - ' + formatGBP(p.fixedPrice) : tierSuffix);
+          opt.textContent = p.name + typeSuffix + (p.fixedPrice !== undefined ? ' - ' + formatGBPRate(p.fixedPrice) : tierSuffix);
           sel.appendChild(opt);
         });
       }
@@ -1082,7 +1092,9 @@
     }
 
     function applyDesignLocks(){
+      if (typeof NaturalSelector !== 'undefined' && NaturalSelector.origin === 'natural') return;
       const rule=ORDER_CONFIGURATION_RULES[getCurrentProduct()?.id];
+      document.getElementById('initialRow').hidden=!rule?.initialRequired;
       for(let i=0;i<4;i++){
         for(const prefix of ['dq','dc','dqt'])document.getElementById(prefix+i).disabled=!!rule?.fixedDiamonds || (!!rule?.diamondPriceOptions && (i>0||prefix!=='dc'));
       }
@@ -1176,6 +1188,7 @@
     }
 
     function getDiamondEntries(){
+      if (typeof NaturalSelector !== 'undefined' && NaturalSelector.origin === 'natural') return NaturalSelector.entries();
       var entries = [];
       for(var i = 0; i < 4; i++){
         var q = document.getElementById('dq' + i).value;
@@ -1233,11 +1246,14 @@
       if(!fixed)applyDesignLocks();
     }
 
+    function collectionIsSilver(){return document.getElementById('collection').value === 'silver';}
     function computePricing(){
       const products = getProductsForCurrentSelections();
       const pid = document.getElementById('product').value;
-      const prod = products.find(function(p){ return p.id === pid; }) || products[0];
+      let prod = products.find(function(p){ return p.id === pid; }) || products[0];
+      if(prod?.initialRequired)prod={...prod,name:prod.name+' — Initial '+(document.getElementById('initial').value||'not selected')};
       if(!prod) return null;
+      if (typeof NaturalSelector !== 'undefined' && NaturalSelector.origin === 'natural' && (!NaturalSelector.entries().length || NaturalSelector.unavailableReason)) return null;
 
       const collection = document.getElementById('collection').value;
       const tierKey = getProductInherentTier(collection, prod.id) || 'essentials';
@@ -1296,7 +1312,8 @@
       let discount = Number(document.getElementById('discount').value) || 0;
       discount = Math.min(Math.max(discount, 0), 100);
 
-      const subtotal = ringPrice + diamondPrice + designFee;
+      const stackingSetMultiplier = ['ow_s_promise', 'fb_s_unbreakable_hearts', 'fb_s_bound_by_destiny'].includes(prod.id) ? 3 : 1;
+      const subtotal = (ringPrice + diamondPrice + designFee) * stackingSetMultiplier;
       const profitAmount = subtotal * (profitPct / 100);
       const unitTotal = subtotal + profitAmount;
       const grandTotal = unitTotal * qty;
@@ -1305,6 +1322,7 @@
 
       return {
         priceOnRequest: false,
+        stackingSetMultiplier: stackingSetMultiplier,
         prod: prod,
         collection: collection,
         tierKey: tierKey,
@@ -1336,12 +1354,12 @@
       const el = document.getElementById('liveTotal');
       if(!el) return;
       const p = computePricing();
-      if(!p){ el.textContent = 'No matching piece selected.'; return; }
+      if(!p){ el.textContent = typeof NaturalSelector !== 'undefined' && NaturalSelector.origin === 'natural' ? (NaturalSelector.unavailableReason || 'Choose your piece and add a natural diamond to calculate.') : 'No matching piece selected.'; return; }
       if(p.priceOnRequest){
         el.textContent = (TYPE_LABELS[p.type] || 'This piece') + ' is priced on request — not auto-calculated.';
         return;
       }
-      var text = (p.fixedPrice ? 'Fixed price: ' : 'Estimated total: ') + formatGBP(p.finalTotal);
+      var text = (p.fixedPrice ? 'Fixed price: ' : 'Estimated total: ') + formatGBPRate(p.finalTotal);
       if(p.discount > 0){
         text += ' (after ' + p.discount + '% discount)';
       }
@@ -1357,7 +1375,7 @@
           '<div><strong>Product:</strong> ' + prod.name + '</div>' +
           '<div><strong>Metal:</strong> Sterling 925 silver</div>' +
           '<div><strong>Quantity:</strong> 1</div><hr>' +
-          '<div><strong>Fixed price: ' + formatGBP(p.finalTotal) + '</strong></div>' +
+          '<div><strong>Fixed price: ' + formatGBPRate(p.finalTotal) + '</strong></div>' +
           '<div class="small">Includes the listed stones and silver specification. No pricing adjustments apply.</div>';
       }
       if(prod.type === 'bracelet'){
@@ -1371,10 +1389,10 @@
           '<div><strong>Specification:</strong> ' + (p.braceletTier ? p.braceletTier.label + ' — ' + p.braceletTier.weight : '-') + '</div>';
         p.entries.forEach(function(e, idx){
           if(e.caratNum > 0){
-            html += '<div class="small"><strong>' + DIAMOND_SECTION_NAMES[idx] + ':</strong> ' + qualityLabels[e.quality] + ', ' + e.carat + ' ct × ' + e.qty + '</div>';
+            html += '<div class="small"><strong>' + DIAMOND_SECTION_NAMES[idx] + ':</strong> ' + (qualityLabels[e.quality] || e.quality) + ', ' + e.carat + ' ct × ' + e.qty + '</div>';
           }
         });
-        html += '<hr /><div style="font-size:1.2rem;margin-top:12px"><strong>Final price: ' + formatGBP(p.finalTotal) + '</strong></div>' +
+        html += '<hr /><div style="font-size:1.2rem;margin-top:12px"><strong>Final price: ' + formatGBPRate(p.finalTotal) + '</strong></div>' +
           '<div class="small" style="margin-top:8px">Final price includes the selected diamonds and metal specification.</div>' +
           '<div class="small" style="margin-top:8px">Notes: ' + (document.getElementById('notes').value.trim() || '-') + '</div>';
         return html;
@@ -1390,14 +1408,14 @@
         '<div><strong>Product:</strong> ' + prod.name + '</div>' +
         '<div><strong>Model name:</strong> ' + (document.getElementById('modelName').value.trim() || '(none)') + '</div>' +
         '<div><strong>Metal:</strong> ' + metalLabel + '</div>' +
-        '<div><strong>Base price (design):</strong> ' + formatGBP(p.ringPrice) + '</div>';
+        '<div><strong>Base price (design):</strong> ' + formatGBPRate(p.ringPrice) + '</div>';
 
       p.entries.forEach(function(e, idx){
         if(e.caratNum > 0){
           if(e.unpriced){
-            html += '<div class="small"><strong>' + DIAMOND_SECTION_NAMES[idx] + ':</strong> ' + qualityLabels[e.quality] + ', ' + e.carat + ' ct × ' + e.qty + ' — ⚠ price not set for this size, contact us for a quote</div>';
+            html += '<div class="small"><strong>' + DIAMOND_SECTION_NAMES[idx] + ':</strong> ' + (qualityLabels[e.quality] || e.quality) + ', ' + e.carat + ' ct × ' + e.qty + ' — ⚠ price not set for this size, contact us for a quote</div>';
           } else {
-            html += '<div class="small"><strong>' + DIAMOND_SECTION_NAMES[idx] + ':</strong> ' + qualityLabels[e.quality] + ', ' + e.carat + ' ct × ' + e.qty + ' = ' + formatGBP(e.total) + '</div>';
+            html += '<div class="small"><strong>' + DIAMOND_SECTION_NAMES[idx] + ':</strong> ' + (qualityLabels[e.quality] || e.quality) + ', ' + e.carat + ' ct × ' + e.qty + ' = ' + formatGBPRate(e.total) + '</div>';
           }
         }
       });
@@ -1412,19 +1430,19 @@
         }
       }
 
-      html += '<div><strong>Diamond cost (all):</strong> ' + formatGBP(p.diamondPrice) + '</div><hr />' +
-        (p.designFee > 0 ? '<div><strong>Design customization:</strong> ' + formatGBP(p.designFee) + '</div>' : '') +
-        '<div><strong>Subtotal (per unit):</strong> ' + formatGBP(p.subtotal) + '</div>' +
-        '<div><strong>Profit (' + p.profitPct + '%):</strong> ' + formatGBP(p.profitAmount) + '</div>' +
-        '<div><strong>Unit total:</strong> ' + formatGBP(p.unitTotal) + '</div>' +
+      html += '<div><strong>Diamond cost (all):</strong> ' + formatGBPRate(p.diamondPrice) + '</div><hr />' +
+        (p.designFee > 0 ? '<div><strong>Design customization:</strong> ' + formatGBPRate(p.designFee) + '</div>' : '') +
+        '<div><strong>Subtotal (per unit):</strong> ' + formatGBPRate(p.subtotal) + '</div>' +
+        '<div><strong>Profit (' + p.profitPct + '%):</strong> ' + formatGBPRate(p.profitAmount) + '</div>' +
+        '<div><strong>Unit total:</strong> ' + formatGBPRate(p.unitTotal) + '</div>' +
         '<div><strong>Quantity:</strong> ' + p.qty + '</div>' +
-        '<div><strong>Total before discount:</strong> ' + formatGBP(p.grandTotal) + '</div>';
+        '<div><strong>Total before discount:</strong> ' + formatGBPRate(p.grandTotal) + '</div>';
 
       if(p.discount > 0){
-        html += '<div><strong>Discount (' + p.discount + '%):</strong> −' + formatGBP(p.discountAmount) + '</div>';
+        html += '<div><strong>Discount (' + p.discount + '%):</strong> −' + formatGBPRate(p.discountAmount) + '</div>';
       }
 
-      html += '<div style="font-size:1.1rem;margin-top:12px"><strong>Final total: ' + formatGBP(p.finalTotal) + '</strong></div>' +
+      html += '<div style="font-size:1.1rem;margin-top:12px"><strong>Final total: ' + formatGBPRate(p.finalTotal) + '</strong></div>' +
         '<div class="small" style="margin-top:8px">Notes: ' + (document.getElementById('notes').value.trim() || '-') + '</div>';
       return html;
     }
@@ -1447,30 +1465,30 @@
       const packageLabels = { basic: 'Essential design', signature: 'Signature design' };
       const qualityLabels = { luxe: 'Luxe', select: 'Select' };
       let lines = '<div class="breakdown-title">How this was calculated</div>';
-      lines += '<div class="breakdown-line"><span>Base price (design) — ' + (packageLabels[p.packageKey] || p.packageKey) + '</span><span>' + formatGBP(p.designComplexityFee) + '</span></div>';
+      lines += '<div class="breakdown-line"><span>Base price (design) — ' + (packageLabels[p.packageKey] || p.packageKey) + '</span><span>' + formatGBPRate(p.designComplexityFee) + '</span></div>';
       p.entries.forEach(function(e, idx){
         if(e.caratNum > 0){
           if(e.unpriced){
-            lines += '<div class="breakdown-line"><span>' + DIAMOND_SECTION_NAMES[idx] + ' — ' + qualityLabels[e.quality] + ', ' + e.carat + 'ct × ' + e.qty + '</span><span>⚠ unpriced</span></div>';
+            lines += '<div class="breakdown-line"><span>' + DIAMOND_SECTION_NAMES[idx] + ' — ' + (qualityLabels[e.quality] || e.quality) + ', ' + e.carat + 'ct × ' + e.qty + '</span><span>⚠ unpriced</span></div>';
           } else {
-            lines += '<div class="breakdown-line"><span>' + DIAMOND_SECTION_NAMES[idx] + ' — ' + qualityLabels[e.quality] + ', ' + e.carat + 'ct × ' + e.qty + '</span><span>' + formatGBP(e.total) + '</span></div>';
+            lines += '<div class="breakdown-line"><span>' + DIAMOND_SECTION_NAMES[idx] + ' — ' + (qualityLabels[e.quality] || e.quality) + ', ' + e.carat + 'ct × ' + e.qty + '</span><span>' + formatGBPRate(e.total) + '</span></div>';
           }
         }
       });
       if(p.designFee > 0){
-        lines += '<div class="breakdown-line"><span>Design customization</span><span>' + formatGBP(p.designFee) + '</span></div>';
+        lines += '<div class="breakdown-line"><span>Design customization</span><span>' + formatGBPRate(p.designFee) + '</span></div>';
       }
       lines += '<hr />';
-      lines += '<div class="breakdown-formula">Base price = ' + formatGBP(p.designComplexityFee) + ' (design) = <strong>' + formatGBP(p.ringPrice) + '</strong></div>';
-      lines += '<div class="breakdown-formula">Subtotal = ' + formatGBP(p.ringPrice) + ' + ' + formatGBP(p.diamondPrice) + (p.designFee > 0 ? ' + ' + formatGBP(p.designFee) : '') + ' = <strong>' + formatGBP(p.subtotal) + '</strong></div>';
-      lines += '<div class="breakdown-formula">Profit (' + p.profitPct + '%) = ' + formatGBP(p.subtotal) + ' × ' + p.profitPct + '% = <strong>' + formatGBP(p.profitAmount) + '</strong></div>';
-      lines += '<div class="breakdown-formula">Unit total = ' + formatGBP(p.subtotal) + ' + ' + formatGBP(p.profitAmount) + ' = <strong>' + formatGBP(p.unitTotal) + '</strong></div>';
-      lines += '<div class="breakdown-formula">Grand total = ' + formatGBP(p.unitTotal) + ' × ' + p.qty + ' = <strong>' + formatGBP(p.grandTotal) + '</strong></div>';
+      lines += '<div class="breakdown-formula">Base price = ' + formatGBPRate(p.designComplexityFee) + ' (design) = <strong>' + formatGBPRate(p.ringPrice) + '</strong></div>';
+      lines += '<div class="breakdown-formula">Subtotal = ' + (p.stackingSetMultiplier > 1 ? '(' : '') + formatGBPRate(p.ringPrice) + ' + ' + formatGBPRate(p.diamondPrice) + (p.designFee > 0 ? ' + ' + formatGBPRate(p.designFee) : '') + (p.stackingSetMultiplier > 1 ? ') × ' + p.stackingSetMultiplier + ' complete pieces' : '') + ' = <strong>' + formatGBPRate(p.subtotal) + '</strong></div>';
+      lines += '<div class="breakdown-formula">Profit (' + p.profitPct + '%) = ' + formatGBPRate(p.subtotal) + ' × ' + p.profitPct + '% = <strong>' + formatGBPRate(p.profitAmount) + '</strong></div>';
+      lines += '<div class="breakdown-formula">Unit total = ' + formatGBPRate(p.subtotal) + ' + ' + formatGBPRate(p.profitAmount) + ' = <strong>' + formatGBPRate(p.unitTotal) + '</strong></div>';
+      lines += '<div class="breakdown-formula">Grand total = ' + formatGBPRate(p.unitTotal) + ' × ' + p.qty + ' = <strong>' + formatGBPRate(p.grandTotal) + '</strong></div>';
       if(p.discount > 0){
-        lines += '<div class="breakdown-formula">Discount (' + p.discount + '%) = ' + formatGBP(p.grandTotal) + ' × ' + p.discount + '% = −<strong>' + formatGBP(p.discountAmount) + '</strong></div>';
-        lines += '<div class="breakdown-formula">Final total = ' + formatGBP(p.grandTotal) + ' − ' + formatGBP(p.discountAmount) + ' = <strong>' + formatGBP(p.finalTotal) + '</strong></div>';
+        lines += '<div class="breakdown-formula">Discount (' + p.discount + '%) = ' + formatGBPRate(p.grandTotal) + ' × ' + p.discount + '% = −<strong>' + formatGBPRate(p.discountAmount) + '</strong></div>';
+        lines += '<div class="breakdown-formula">Final total = ' + formatGBPRate(p.grandTotal) + ' − ' + formatGBPRate(p.discountAmount) + ' = <strong>' + formatGBPRate(p.finalTotal) + '</strong></div>';
       } else {
-        lines += '<div class="breakdown-formula">Final total = <strong>' + formatGBP(p.finalTotal) + '</strong></div>';
+        lines += '<div class="breakdown-formula">Final total = <strong>' + formatGBPRate(p.finalTotal) + '</strong></div>';
       }
       return lines;
     }
@@ -1529,7 +1547,7 @@
       proceedBtn.textContent = 'Proceed to Payment';
 
       document.getElementById('resultPopup').hidden = false;
-      document.getElementById('totalPrice').textContent = formatGBP(p.finalTotal);
+      document.getElementById('totalPrice').textContent = formatGBPRate(p.finalTotal);
     }
 
     function toggleBreakdown(){
@@ -1656,13 +1674,15 @@
 
       return {
         productId: document.getElementById('product').value,
+        initial: document.getElementById('initial').value,
         collection: document.getElementById('collection').value,
         typeFilter: document.getElementById('typeFilter').value,
         metal: document.getElementById('metal').value,
         karat: document.getElementById('karat') ? Number(document.getElementById('karat').value) : 18,
         purity: document.getElementById('purity') ? Number(document.getElementById('purity').value) : 925,
         braceletMetalTier: document.getElementById('braceletMetalTier').value,
-        diamonds: diamonds,
+        diamondOrigin: typeof NaturalSelector !== 'undefined' ? NaturalSelector.origin : 'lab',
+        diamonds: typeof NaturalSelector !== 'undefined' && NaturalSelector.origin === 'natural' ? NaturalSelector.payload() : diamonds,
         quantity: Number(document.getElementById('quantity').value) || 1,
         discount: Number(document.getElementById('discount').value) || 0,
         profit: Number(document.getElementById('profit').value) || 0,
@@ -1932,8 +1952,8 @@
         destroyAirwallexDropin();
       });
       populateDiamondCarats();
-      populateProducts();
       renderMetalExtras();
+      populateProducts();
       renderBraceletTierControl();
       updateLiveTotal();
 
@@ -1966,7 +1986,7 @@
         destroyAirwallexDropin();
       });
 
-      ['quantity','discount','profit','designFee'].forEach(function(id){
+      ['quantity','discount','profit','designFee','initial'].forEach(function(id){
         document.getElementById(id).addEventListener('input', updateLiveTotal);
         document.getElementById(id).addEventListener('change', updateLiveTotal);
       });
@@ -2003,6 +2023,7 @@
       document.getElementById('closeModal').addEventListener('click', closePaymentModal);
       document.getElementById('cancelCheckout').addEventListener('click', closePaymentModal);
       document.getElementById('submitPayment').addEventListener('click', processPayment);
+      document.getElementById('initial').addEventListener('change', destroyAirwallexDropin);
       document.getElementById('paymentPercentage').addEventListener('change', updateDepositHint);
 
     });
@@ -2029,6 +2050,7 @@
             if (i > 0) byId('additionalDiamonds').open = true;
           }
         }
+        if (typeof NaturalSelector !== 'undefined' && NaturalSelector.origin === 'natural') {diamonds.splice(0,diamonds.length,...NaturalSelector.entries().map(e=>e.qty+' x '+e.carat+'ct · '+e.quality));}
         byId('selectionDiamonds').textContent = diamonds.join(' / ') || 'None selected';
         byId('metalExtras').querySelectorAll('label').forEach(label => {
           const control = byId('metalExtras').querySelector('select, input');
@@ -2041,5 +2063,7 @@
       syncSelection();
     });
   </script>
+<script src="natural-diamonds-data.js"></script>
+<script src="natural-selector.js"></script>
 </body>
 </html>

@@ -2021,12 +2021,16 @@ function getMetalPricePerGram(metal, karat, purity) {
 ========================================================= */
 
 function computePricing(params) {
+  if (params.diamondOrigin && !['lab','natural'].includes(params.diamondOrigin)) throw new Error('Invalid diamond origin.');
+  const natural = params.diamondOrigin === 'natural';
+  if (natural && params.collection === 'silver') throw new Error('Silver Collection uses its listed lab diamond specification.');
+  const naturalEntries = natural ? require('./natural-diamonds').resolve(params.diamonds) : null;
   const rule = ORDER_CONFIGURATION_RULES[params.productId];
-  if(rule?.labOnly && params.diamondOrigin === 'natural') throw new Error('This design uses its listed lab-grown diamonds.');
+  if(rule?.labOnly && natural) throw new Error('This design uses its listed lab-grown diamonds.');
   if(rule?.initialRequired && !/^[A-Z]$/.test(String(params.initial||''))) throw new Error('Choose one initial from A to Z.');
   if(rule?.braceletMetalTier) params={...params,braceletMetalTier:rule.braceletMetalTier};
-  if (rule?.fixedDiamonds) params = {...params, diamonds: rule.fixedDiamonds};
-  if (rule?.diamondPriceOptions) {
+  if (!natural && rule?.fixedDiamonds) params = {...params, diamonds: rule.fixedDiamonds};
+  if (!natural && rule?.diamondPriceOptions) {
     const carat = Number(params.diamonds?.[0]?.carat).toFixed(2);
     if (!Object.hasOwn(rule.diamondPriceOptions, carat)) throw new Error('Choose an available bracelet diamond size.');
     params = {...params, braceletMetalTier: rule.braceletMetalTier, diamonds: [{quality:'select',carat,qty:1}]};
@@ -2052,6 +2056,7 @@ function computePricing(params) {
     typeFilter
   );
 
+  if (natural && !products.some(product => product.id === productId)) throw new Error('Choose a valid jewelry piece.');
   if (collection === 'silver' && !products.some(product => product.id === productId)) {
     return null;
   }
@@ -2322,11 +2327,16 @@ function computePricing(params) {
 
 
   // Bracelet options price the complete diamond portion, not a single main stone.
-  if (rule?.diamondPriceOptions) {
+  if (!natural && rule?.diamondPriceOptions) {
     diamondPrice = rule.diamondPriceOptions[params.diamonds[0].carat];
     hasUnpricedDiamond = false;
     entries[0].price = diamondPrice;
     entries[0].total = diamondPrice;
+  }
+  if (natural) {
+    entries.splice(0, entries.length, ...naturalEntries);
+    diamondPrice = Math.round(naturalEntries.reduce((sum,entry)=>sum+entry.total,0)*100)/100;
+    hasUnpricedDiamond = false;
   }
 
   /*

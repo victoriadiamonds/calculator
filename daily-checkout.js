@@ -15,16 +15,19 @@ function quoteDaily(body={}, collection='dailySparkle') {
  if(!Array.isArray(body.diamonds)||body.diamonds.length<(['foreverBond','singleLady'].includes(collection)?0:1)||body.diamonds.length>4)throw new Error('Please check the diamond specifications (up to four groups).');
  const rule=orderRules[product.id];
  if(rule?.initialRequired&&!/^[A-Z]$/.test(String(body.initial||'')))throw new Error('Choose one initial from A to Z.');
- if(rule?.labOnly&&body.diamondOrigin==='natural')throw new Error('This design uses its listed lab-grown diamonds.');
- const requestedDiamonds=rule?.fixedDiamonds||body.diamonds;
+ const natural=body.diamondOrigin==='natural';
+ if(rule?.labOnly&&natural)throw new Error('This design uses its listed lab-grown diamonds.');
+ if(body.diamondOrigin&&!['lab','natural'].includes(body.diamondOrigin))throw new Error('Invalid diamond origin.');
+ const requestedDiamonds=natural?body.diamonds:(rule?.fixedDiamonds||body.diamonds);
  const diamonds=requestedDiamonds.map(d=>{
+  if(natural){require('./natural-diamonds').resolve([d]);return {naturalId:d.naturalId,qty:Number(d.qty)};}
   if(!d||!['select','luxe'].includes(d.quality)||!pricing.DIAMOND_CARATS.includes(d.carat)||!Number.isInteger(Number(d.qty))||Number(d.qty)<1||Number(d.qty)>100)throw new Error('Please check the diamond specifications.');
   return {quality:d.quality,carat:d.carat,qty:Number(d.qty)};
  });
  const braceletMetalTier=rule?.braceletMetalTier||body.braceletMetalTier;
  if(product.type==='bracelet'&&!Object.hasOwn(pricing.PRICING_PACKAGE_MATRIX,braceletMetalTier))throw new Error('Please choose a bracelet specification.');
- const params={collection,productId:product.id,typeFilter:'all',metal:body.metal,karat:karat||18,purity:purity||925,quantity,diamonds,braceletMetalTier,discount:0,profit:0,designFee:0};
- if(rule?.diamondPriceOptions){const carat=Number(diamonds[0]?.carat).toFixed(2);if(!Object.hasOwn(rule.diamondPriceOptions,carat))throw new Error('Choose an available bracelet diamond size.');params.diamonds=[{quality:'select',carat,qty:1}];}
+ const params={collection,productId:product.id,typeFilter:'all',metal:body.metal,karat:karat||18,purity:purity||925,quantity,diamonds,diamondOrigin:body.diamondOrigin||'lab',braceletMetalTier,discount:0,profit:0,designFee:0};
+ if(!natural&&rule?.diamondPriceOptions){const carat=Number(diamonds[0]?.carat).toFixed(2);if(!Object.hasOwn(rule.diamondPriceOptions,carat))throw new Error('Choose an available bracelet diamond size.');params.diamonds=[{quality:'select',carat,qty:1}];}
  if(rule?.initialRequired)params.initial=body.initial;
  const result=pricing.computePricing(params);
  if(!result||result.priceOnRequest||result.hasUnpricedDiamond||!Number.isFinite(result.finalTotal)||result.finalTotal<=0)throw new Error('This configuration needs a personal quote.');

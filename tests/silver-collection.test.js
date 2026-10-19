@@ -30,20 +30,21 @@ test('piece search handles case, multiple terms, type filters and no matches', (
   controls.pieceSearch.value = 'no such jewelry';
   assert.equal(vm.runInContext('computePricing()', context), null);
   controls.pieceSearch.value = '';
-  assert.equal(vm.runInContext('getProductsForCurrentSelections().length', context), 17);
+  assert.equal(vm.runInContext('getProductsForCurrentSelections().length', context), backend.length);
 });
 
-test('all 17 Silver products and prices agree across frontend and checkout', () => {
-  assert.equal(backend.length, 17);
-  assert.deepEqual(backend.map(product => product.fixedPrice), expected);
+test('current Silver catalogue preserves original prices and matches checkout', () => {
+  assert.equal(backend.length, 42);
+  assert.deepEqual(backend.slice(0,17).map(product => product.fixedPrice), expected);
   assert.deepEqual(JSON.parse(JSON.stringify(frontend.map(({ id, name, type, fixedPrice, diamondPreset }) => ({ id, name, type, fixedPrice, diamondPreset })))),
     backend.map(({ id, name, type, fixedPrice, diamondPreset }) => ({ id, name, type, fixedPrice, diamondPreset })));
   for (const product of backend) {
     controls.collection = { value: 'silver' };
     controls.typeFilter = { value: product.type };
     controls.product = { value: product.id };
+    controls.initial = { value: 'A' };
     const front = vm.runInContext('computePricing()', context);
-    const back = pricing.computePricing({ collection: 'silver', productId: product.id, typeFilter: product.type, metal: 'silver' });
+    const back = pricing.computePricing({ collection: 'silver', productId: product.id, typeFilter: product.type, metal: 'silver', initial: 'A' });
     assert.equal(front.finalTotal, product.fixedPrice, product.name);
     assert.equal(back.finalTotal, front.finalTotal, product.name);
     const summary = vm.runInContext('buildResultMarkup(getCurrentProduct(), computePricing())', context);
@@ -55,6 +56,7 @@ test('all 17 Silver products and prices agree across frontend and checkout', () 
 test('server enforces Silver specifications despite altered checkout input', () => {
   for (const product of backend) {
     const result = pricing.computePricing({ collection: 'silver', productId: product.id, typeFilter: 'all', metal: 'gold', karat: 22,
+      initial: 'A',
       purity: 999, quantity: 100, discount: 100, profit: 500, designFee: 1000,
       diamonds: [{ quality: 'luxe', carat: '5.00', qty: 20 }] });
     assert.equal(result.finalTotal, product.fixedPrice);
