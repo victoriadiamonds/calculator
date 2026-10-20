@@ -1228,3 +1228,10 @@ button:focus-visible, summary:focus-visible, a:focus-visible { outline: 2px soli
 .diamond-grades abbr{cursor:help;text-decoration:underline dotted;text-underline-offset:4px}
 .natural-selected .diamond-grades>div{min-width:0;flex:initial}.natural-selected .diamond-grades{max-width:330px}
 @media(max-width:680px){.diamond-grades>div{grid-template-columns:minmax(0,1fr);gap:4px}.diamond-grades dd{text-align:left}.natural-selected .diamond-grades{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:none}.natural-selected .diamond-grades>div{border-bottom:0}}
+.natural-shapes{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+#naturalSelector .natural-shapes button{position:relative;min-width:0;min-height:112px;padding:17px 8px 12px;gap:10px;border-radius:7px}
+.natural-shapes .diamond-shape-art{display:block;width:48px;height:48px;flex:none;color:#dce8e5}
+.natural-shapes button .shape-name{font-size:13px;line-height:1.3;letter-spacing:.015em}
+#naturalSelector .natural-shapes button[aria-pressed="true"] .diamond-shape-art{color:#26372c}
+#naturalSelector .natural-shapes button[aria-pressed="true"]::after{content:'✓';position:absolute;top:5px;right:7px;font-size:11px;font-weight:700;color:#26372c}
+@media(max-width:680px){.natural-shapes{gap:6px}#naturalSelector .natural-shapes button{min-height:94px;padding:14px 3px 10px;gap:8px}.natural-shapes .diamond-shape-art{width:36px;height:36px}.natural-shapes button .shape-name{font-size:11px;letter-spacing:0}}

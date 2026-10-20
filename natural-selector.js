@@ -6,6 +6,30 @@ const NaturalSelector = (() => {
   const money=n=>'£'+Number(n).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
   const gradeHelp={carat:'Diamond weight, measured in carats.',colour:'Letter grade describing diamond colour.',clarity:'Grade describing inclusions and blemishes.',cut:'The cut grade listed for this diamond.'};
   const clarityNames={FL:'Flawless',IF:'Internally flawless',VVS1:'Very very slightly included 1',VVS2:'Very very slightly included 2',VS1:'Very slightly included 1',VS2:'Very slightly included 2',SI1:'Slightly included 1',SI2:'Slightly included 2'};
+  const clarityOrder=['FL','IF','VVS1','VVS2','VS1','VS2','SI1','SI2'];
+  const filterValues=key=>[...new Set(data.map(d=>d[key]))].sort((a,b)=>key==='clarity'?clarityOrder.indexOf(a)-clarityOrder.indexOf(b):key==='carat'?a-b:String(a).localeCompare(String(b)));
+  function diamondIcon(name){
+    const outlines={
+      Round:'<circle cx="32" cy="32" r="26"/>',
+      Cushion:'<rect x="8" y="8" width="48" height="48" rx="12"/>',
+      Emerald:'<path d="M22 5H42L51 14V50L42 59H22L13 50V14Z"/>',
+      Oval:'<ellipse cx="32" cy="32" rx="23" ry="28"/>',
+      Marquise:'<path d="M32 3C59 24 59 40 32 61C5 40 5 24 32 3Z"/>'
+    };
+    const vertices={
+      Round:[[32,6],[50.4,13.6],[58,32],[50.4,50.4],[32,58],[13.6,50.4],[6,32],[13.6,13.6]],
+      Cushion:[[22,8],[42,8],[56,22],[56,42],[42,56],[22,56],[8,42],[8,22]],
+      Emerald:[[22,5],[42,5],[51,14],[51,50],[42,59],[22,59],[13,50],[13,14]],
+      Oval:[[32,4],[48.3,12.2],[55,32],[48.3,51.8],[32,60],[15.7,51.8],[9,32],[15.7,12.2]],
+      Marquise:[[32,3],[46,18],[52,32],[46,46],[32,61],[18,46],[12,32],[18,18]]
+    };
+    const outer=vertices[name],scale=name==='Emerald'?.69:.55;
+    const inner=outer.map(([x,y])=>[32+(x-32)*scale,32+(y-32)*scale]);
+    const points=list=>list.map(p=>p.join(',')).join(' ');
+    const facets=outer.map((p,i)=>`<polygon points="${points([p,outer[(i+1)%8],inner[(i+1)%8],inner[i]])}" fill="currentColor" fill-opacity="${i%2?.035:.10}" stroke-opacity=".65"/>`).join('');
+    const extra=name==='Emerald'?'<path d="M24 12H40L45 17V47L40 52H24L19 47V17Z" stroke-opacity=".55"/>':outer.map((p,i)=>`<path d="M${p.join(' ')}L${inner[(i+1)%8].join(' ')}" stroke-opacity=".36"/>`).join('');
+    return `<svg class="diamond-shape-art" viewBox="0 0 64 64" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round">${facets}${extra}<polygon points="${points(inner)}" fill="currentColor" fill-opacity=".07" stroke-width="1.3"/><g stroke-width="1.6">${outlines[name]}</g></svg>`;
+  }
   const grades=d=>`<dl class="diamond-grades"><div class="grade-colour"><dt>Colour</dt><dd>${d.colour}</dd></div><div class="grade-clarity"><dt>Clarity</dt><dd><abbr title="${clarityNames[d.clarity]||d.clarity}">${d.clarity}</abbr></dd></div><div class="grade-cut"><dt>Cut</dt><dd>${d.cut}</dd></div></dl>`;
   const section=document.querySelector('[aria-labelledby="diamondHeading"]');
   const labNodes=[...section.children].filter(n=>n.id!=='diamondHeading');
@@ -13,10 +37,10 @@ const NaturalSelector = (() => {
   toolbar.innerHTML='<span id="diamondOriginLabel">Lab-grown diamonds</span><button type="button" id="changeDiamondOrigin">Change diamond type</button>';
   section.querySelector('h2').after(toolbar);
   const panel=document.createElement('div');panel.id='naturalSelector';panel.hidden=true;
-  const shapes={Round:'○',Cushion:'▢',Emerald:'▯',Oval:'⬭',Marquise:'◇'};
+  const shapes=['Round','Cushion','Emerald','Oval','Marquise'];
   panel.innerHTML=`<p class="muted">Choose a priced natural diamond combination, then add it to your piece. Prices are per diamond in GBP.</p><p class="small muted">0.05, 0.10 and 0.15ct natural diamonds are not currently priced.</p>
-    <fieldset class="natural-shapes"><legend>Diamond shape</legend>${Object.entries(shapes).map(([name,icon])=>`<button type="button" data-shape="${name}" aria-pressed="false"><span aria-hidden="true">${icon}</span>${name}</button>`).join('')}</fieldset>
-    <div class="natural-filters">${['carat','colour','clarity','cut'].map(key=>`<label class="filter-${key}"><span class="grade-filter-label">${key==='carat'?'Carat':key[0].toUpperCase()+key.slice(1)}</span><small id="natural-${key}-help">${gradeHelp[key]}</small><select id="natural-${key}" aria-describedby="natural-${key}-help"><option value="">Any ${key}</option>${[...new Set(data.map(d=>d[key]))].sort((a,b)=>key==='carat'?a-b:String(a).localeCompare(String(b))).map(v=>`<option value="${v}">${key==='clarity'?v+' — '+clarityNames[v]:key==='carat'?v+' ct':v}</option>`).join('')}</select></label>`).join('')}
+    <fieldset class="natural-shapes"><legend>Diamond shape</legend>${shapes.map(name=>`<button type="button" data-shape="${name}" aria-pressed="false">${diamondIcon(name)}<span class="shape-name">${name}</span></button>`).join('')}</fieldset>
+    <div class="natural-filters">${['carat','colour','clarity','cut'].map(key=>`<label class="filter-${key}"><span class="grade-filter-label">${key==='carat'?'Carat':key[0].toUpperCase()+key.slice(1)}</span><small id="natural-${key}-help">${gradeHelp[key]}</small><select id="natural-${key}" aria-describedby="natural-${key}-help"><option value="">Any ${key}</option>${filterValues(key).map(v=>`<option value="${v}">${key==='clarity'?v+' — '+clarityNames[v]:key==='carat'?v+' ct':v}</option>`).join('')}</select></label>`).join('')}
     <label>Maximum price per diamond (£)<input id="natural-budget" type="number" min="0" step="1" placeholder="Any budget" aria-describedby="natural-budget-help"><small id="natural-budget-help">Filters results only; excludes metal and other diamonds.</small></label>
     <label>Sort by<select id="natural-sort"><option value="asc">Lowest price first</option><option value="desc">Highest price first</option></select></label></div>
     <button type="button" id="natural-clear">Clear filters</button><p id="natural-count" role="status"></p>
