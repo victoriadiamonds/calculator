@@ -15,6 +15,8 @@ test('every current browser lab configuration agrees with checkout, including ne
   const input={collection,productId:product.id,typeFilter:'all',metal,karat:18,purity:925,quantity:1,profit:0,discount:0,designFee:0,initial:'A',braceletMetalTier:product.defaultBraceletTier||'essential',diamonds};
   const front=vm.runInContext('computePricing()',ctx),back=pricing.computePricing(input);
   if(front.priceOnRequest){assert.equal(back.priceOnRequest,true);continue;}
+  assert.equal(front.designFee,0,`${product.id}: no automatic browser customization fee`);
+  assert.equal(back.designFee,0,`${product.id}: no automatic checkout customization fee`);
   assert.equal(Math.round(front.finalTotal*100),Math.round(back.finalTotal*100),product.id);count++;
  }
  assert.equal(count,174);

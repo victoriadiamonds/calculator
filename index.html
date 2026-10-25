@@ -904,7 +904,6 @@
       }
     };
 
-    const RING_DESIGN_FEES = {"ds_s_solenne":200,"ds_s_timeless":200,"ds_s_elan":200,"ds_s_princess":200,"ds_m_splendor":200,"ow_m_fae":200,"ow_m_skylar":200,"ow_m_celestia":200,"ow_m_rosebloom":200,"ow_m_elysia":200,"ow_m_lunelle":200,"fb_m_stellar":200,"fb_m_elegance":200,"fb_m_endless":200,"fb_m_luminous":200,"fb_m_everlasting":200,"fb_l_ethereal_halo":200,"fb_l_celestial_embrace":200,"fb_m_eternal_harmony":200,"fb_m_elysian":200,"sl_r_cushion_bypass_swirl":200,"sl_r_marquise_bypass_pave":200,"sl_r_marquise_halo_infinity_twist":200,"sl_r_marquise_pear_three_stone":200,"sl_r_oval_halo_pave":200,"sl_r_oval_halo_twist_petite":200,"sl_r_pear_solitaire_tapered":200,"sl_r_pear_solitaire_chevron":200,"sl_r_round_nature_vine":200,"sl_r_round_vintage_milgrain":200,"sl_r_three_stone_round_classic_ii":200,"sl_r_three_stone_round_classic":200,"ow_m_athena":100,"ow_s_tranquility":100,"ow_l_venus":300};
     // Default a central ring diamond to 1 ct; bands and fixed Silver pieces retain their design.
     Object.entries(PRODUCTS_BY_COLLECTION).forEach(([collection, tiers]) => {
       if (collection === 'silver') return;
@@ -1307,7 +1306,7 @@
 
       const qty = Number(document.getElementById('quantity').value) || 1;
       const profitPct = Number(document.getElementById('profit').value) || 0;
-      const designFee = (Number(document.getElementById('designFee').value) || 0) + (RING_DESIGN_FEES[getCurrentProduct()?.id] || 0);
+      const designFee = Number(document.getElementById('designFee').value) || 0;
 
       let discount = Number(document.getElementById('discount').value) || 0;
       discount = Math.min(Math.max(discount, 0), 100);

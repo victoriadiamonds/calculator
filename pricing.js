@@ -1,5 +1,4 @@
 const ORDER_CONFIGURATION_RULES = require('./order-configuration-rules.json');
-const RING_DESIGN_FEES = require('./ring-design-fees');
 const BASE = {
   gold24: 62.0,
   silver: 0.85,
@@ -2352,7 +2351,7 @@ function computePricing(params) {
 
 
   const designFeeAmt =
-    (Number(designFee) || 0) + (RING_DESIGN_FEES[prod.id] || 0);
+    Number(designFee) || 0;
 
 
   let discountPct =

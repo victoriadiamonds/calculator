@@ -18,6 +18,7 @@ test('natural quotes use authoritative prices, preserve pence and deposits',()=>
  const q=quoteDaily({...input,diamonds:[{...input.diamonds[0],price:1,carat:'5.00',quality:'select'}]});
  const base=pricing.computePricing(input);assert.equal(q.total,base.ringPrice+base.designFee+855.75*2);assert.equal(q.due,Math.round(q.total*50)/100);assert.equal(q.balance,q.due);
  const r=pricing.computePricing(input);assert.equal(r.entries[0].shape,'Round');assert.equal(r.entries[0].clarity,'SI2');
+ assert.equal(r.designFee,0,'Natural diamonds do not add automatic customization charges');
 });
 test('reject missing, fabricated, over-limit and fractional natural selections',()=>{
  for(const groups of [[],[{naturalId:'fake',qty:1}],[{naturalId:'nd-0002',qty:0}],[{naturalId:'nd-0002',qty:1.5}],Array(5).fill({naturalId:'nd-0002',qty:1})])assert.throws(()=>pricing.computePricing({...input,diamonds:groups}));
