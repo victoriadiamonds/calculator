@@ -7,7 +7,7 @@ const app={use(){},get(){},post(paths,handler){for(const p of [].concat(paths))r
 const express=()=>app;express.json=express.static=()=>()=>{};
 const axios=async options=>{calls.push(options);return {data:options.url.endsWith('/create')?{id:'preview-link',url:'https://example.invalid/payment'}:{}};};
 axios.post=async()=>({data:{token:'test-only',expires_at:'2099-01-01'}});
-const context=vm.createContext({require(id){if(id==='express')return express;if(id==='cors')return ()=>()=>{};if(id==='axios')return axios;if(id==='pdfkit')return function(){};if(id==='dotenv')return {config(){}};if(id==='./pricing')return pricing;if(id==='./daily-checkout')return {quoteDaily};return require(id);},__dirname:root,process:{env:{AIRWALLEX_CLIENT_ID:'test',AIRWALLEX_API_KEY:'test'}},console:{log(){},warn(){},error(){}},Buffer});
+const context=vm.createContext({require(id){if(id==='./server-security')return {installSecurity(){},escapeHtml:require(root+'/server-security').escapeHtml};if(id==='express')return express;if(id==='cors')return ()=>()=>{};if(id==='axios')return axios;if(id==='pdfkit')return function(){};if(id==='dotenv')return {config(){}};if(id==='./pricing')return pricing;if(id==='./daily-checkout')return {quoteDaily};return require(id);},__dirname:root,process:{env:{AIRWALLEX_CLIENT_ID:'test',AIRWALLEX_API_KEY:'test',AIRWALLEX_WEBHOOK_SECRET:'test-webhook-secret'}},console:{log(){},warn(){},error(){}},Buffer});
 vm.runInContext(fs.readFileSync(path.join(root,'server.js'),'utf8'),context);
 const sample={productId:'ds_s_solenne',metal:'gold',karat:14,purity:925,quantity:2,paymentPercentage:30,diamonds:[{carat:'1.00',qty:1,quality:'luxe'}],customerName:'Preview',customerEmail:'preview@example.com'};
 async function request(route,body){const response={code:200,status(code){this.code=code;return this;},set(){return this;},json(data){this.data=data;return this;}};await routes.get(route)({path:route,body},response);return response;}
@@ -15,3 +15,23 @@ test('quote endpoint performs no payment or email operation',async()=>{const bef
 test('payment route rejects changed prices and invalid configurations before payment creation',async()=>{const before=calls.length;assert.equal((await request('/daily-sparkle/payment-link',{...sample,expectedTotal:1})).code,409);assert.equal((await request('/daily-sparkle/payment-link',{...sample,productId:'missing'})).code,400);assert.equal(calls.length,before);});
 test('payment link uses confirmed deposit and preserves selected specification in order',async()=>{const q=quoteDaily(sample);const res=await request('/daily-sparkle/payment-link',{...sample,expectedTotal:q.total,discount:100,designFee:-10000});assert.equal(res.code,200);assert.equal(res.data.amount,q.due);assert.equal(res.data.fullAmount,q.total);const create=calls.find(c=>c.url.endsWith('/create'));assert.equal(create.data.amount,q.due);const order=vm.runInContext('Array.from(orders.values()).at(-1)',context);assert.equal(order.pricing.karat,14);assert.equal(order.pricing.metal,'gold');assert.equal(order.pricing.qty,2);assert.equal(order.pricing.discount,0);assert.equal(calls.filter(c=>c.url.endsWith('/notify_shopper')).length,1);});
 test('current Sterling 925 choice is preserved and unsupported purity rejected',()=>{const result=pricing.computePricing(quoteDaily({...sample,metal:'silver',purity:925}).params);assert.equal(result.prod.metal,'silver');assert.equal(result.purity,925);assert.throws(()=>quoteDaily({...sample,metal:'silver',purity:999}),/purity/);});
+
+
+test('public legacy checkout refuses unauthorized discounts and negative fees', async () => {
+ const before=calls.length;
+ for(const adjustment of [{discount:100},{designFee:-10000},{profit:-100}]) {
+  const res=await request('/create-payment-link',{...sample,collection:'dailySparkle',...adjustment});
+  assert.equal(res.code,400);
+ }
+ assert.equal(calls.length,before);
+});
+
+test('webhook signatures require the exact raw payload and configured secret', () => {
+ const raw=Buffer.from('{"type":"payment_intent.succeeded"}'),timestamp=String(Date.now());
+ const signature=require('node:crypto').createHmac('sha256','test-webhook-secret').update(timestamp+raw.toString('utf8')).digest('hex');
+ const verify=vm.runInContext('verifyWebhookSignature',context);
+ assert.equal(verify(raw,timestamp,signature),true);
+ assert.equal(verify(Buffer.from('{}'),timestamp,signature),false);
+ assert.equal(verify(raw,timestamp,'forged'),false);
+ assert.equal(verify(raw,timestamp,null),false);
+});

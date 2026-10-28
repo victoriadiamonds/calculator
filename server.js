@@ -4,12 +4,14 @@ const crypto = require('crypto');
 const cors = require('cors');
 const axios = require('axios');
 const PDFDocument = require('pdfkit');
+const { installSecurity, escapeHtml } = require('./server-security');
 require('dotenv').config();
 
 const pricing = require('./pricing');
 const { quoteDaily } = require('./daily-checkout');
 
 const app = express();
+installSecurity(app, __dirname);
 
 app.use(cors({
   origin: [
@@ -23,14 +25,21 @@ app.use(cors({
 
 // Preserve the exact raw body for webhook signature verification.
 app.use(express.json({
+  limit: '32kb',
+  inflate: false,
   verify: (req, res, buffer) => {
-    if (req.originalUrl === '/airwallex/webhook') {
+    if (req.path === '/airwallex/webhook') {
       req.rawBody = Buffer.from(buffer);
     }
   }
 }));
 
-app.use(express.static(path.join(__dirname)));
+app.use((req, res, next) => {
+  if (req.method === 'POST' && (!req.body || typeof req.body !== 'object' || Array.isArray(req.body))) {
+    return res.status(400).json({ error: 'A JSON object is required.' });
+  }
+  next();
+});
 
 // Natural diamond integration endpoints. Quotes have no payment side effects.
 app.get('/api/v1/natural-diamonds', (req,res) => res.json(require('./natural-diamonds').search(req.query)));
@@ -232,7 +241,7 @@ function generateMerchantOrderId() {
     .replace(/-/g, '');
 
   const random = crypto
-    .randomBytes(5)
+    .randomBytes(16)
     .toString('hex')
     .toUpperCase();
 
@@ -375,6 +384,18 @@ function buildPricingParams(body) {
 // =========================
 
 function validateCheckoutRequest(body) {
+  if (typeof body.customerName !== 'string' || body.customerName.length > 120 ||
+      typeof body.customerEmail !== 'string' || body.customerEmail.length > 254) {
+    return 'Please provide a valid customer name and email address.';
+  }
+  for (const field of ['discount', 'profit', 'designFee']) {
+    if (body[field] != null && Number(body[field]) !== 0) {
+      return 'Custom price adjustments are not available through public checkout.';
+    }
+  }
+  if (!Number.isInteger(Number(body.quantity ?? 1)) || Number(body.quantity ?? 1) < 1 || Number(body.quantity ?? 1) > 10) {
+    return 'Quantity must be between 1 and 10.';
+  }
 
   const required = [
     'productId',
@@ -831,6 +852,9 @@ app.post(
       const timestamp =
         req.headers['x-timestamp'];
 
+      if (!AIRWALLEX_WEBHOOK_SECRET) {
+        return res.status(503).json({ error: 'Webhook verification is not configured.' });
+      }
       if (AIRWALLEX_WEBHOOK_SECRET) {
 
         if (
@@ -1015,9 +1039,9 @@ function generateOrderReceiptHTML(order) {
         diamondRows.push(`
           <tr>
             <td>${['Main Diamond', 'Diamond 2', 'Diamond 3', 'Diamond 4'][idx]}</td>
-            <td>${qualityLabel}</td>
-            <td>${entry.carat} ct</td>
-            <td>× ${entry.qty}</td>
+            <td>${escapeHtml(qualityLabel)}</td>
+            <td>${escapeHtml(entry.carat)} ct</td>
+            <td>× ${escapeHtml(entry.qty)}</td>
             <td>${entry.unpriced ? 'Price on request' : formatCurrency(entry.total)}</td>
           </tr>
         `);
@@ -1085,28 +1109,28 @@ function generateOrderReceiptHTML(order) {
       </div>
       <div class="detail-item">
         <div class="detail-label">Customer</div>
-        <div class="detail-value">${customerName}</div>
+        <div class="detail-value">${escapeHtml(customerName)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Email</div>
-        <div class="detail-value">${customerEmail}</div>
+        <div class="detail-value">${escapeHtml(customerEmail)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Collection</div>
-        <div class="detail-value">${getCollectionDisplayName(collection)}</div>
+        <div class="detail-value">${escapeHtml(getCollectionDisplayName(collection))}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Product</div>
-        <div class="detail-value">${product.name}</div>
+        <div class="detail-value">${escapeHtml(product.name)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Metal</div>
-        <div class="detail-value">${metalLabel}</div>
+        <div class="detail-value">${escapeHtml(metalLabel)}</div>
       </div>
       ${pricing && pricing.braceletTier ? `
       <div class="detail-item">
         <div class="detail-label">Bracelet Spec</div>
-        <div class="detail-value">${pricing.braceletTier.label} — ${pricing.braceletTier.weight}</div>
+        <div class="detail-value">${escapeHtml(pricing.braceletTier.label)} — ${escapeHtml(pricing.braceletTier.weight)}</div>
       </div>
       ` : ''}
     </div>
@@ -1246,11 +1270,11 @@ function generatePaymentReceiptHTML(order) {
       </div>
       <div class="detail-item">
         <div class="detail-label">Customer</div>
-        <div class="detail-value">${customerName}</div>
+        <div class="detail-value">${escapeHtml(customerName)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Email</div>
-        <div class="detail-value">${customerEmail}</div>
+        <div class="detail-value">${escapeHtml(customerEmail)}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Payment Type</div>
@@ -1258,15 +1282,15 @@ function generatePaymentReceiptHTML(order) {
       </div>
       <div class="detail-item">
         <div class="detail-label">Payment Intent</div>
-        <div class="detail-value">${paymentIntentId || 'N/A'}</div>
+        <div class="detail-value">${escapeHtml(paymentIntentId || 'N/A')}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Collection</div>
-        <div class="detail-value">${getCollectionDisplayName(collection)}</div>
+        <div class="detail-value">${escapeHtml(getCollectionDisplayName(collection))}</div>
       </div>
       <div class="detail-item">
         <div class="detail-label">Product</div>
-        <div class="detail-value">${product.name}</div>
+        <div class="detail-value">${escapeHtml(product.name)}</div>
       </div>
     </div>
 
@@ -1500,6 +1524,7 @@ app.get('/payment-receipt/:merchantOrderId', (req, res) => {
 
 // Test endpoint: Create mock order for receipt testing
 app.post('/test/create-mock-order', (req, res) => {
+  if (process.env.NODE_ENV !== 'test') return res.sendStatus(404);
   const {
     customerName = 'John Smith',
     customerEmail = 'john@example.com',
@@ -1567,6 +1592,12 @@ app.post('/test/create-mock-order', (req, res) => {
   });
 });
 
+app.use((error, req, res, next) => {
+  if (res.headersSent) return next(error);
+  const status = [400, 413, 415].includes(error.status) ? error.status : 500;
+  res.status(status).json({ error: status === 413 ? 'Request is too large.' : status === 415 ? 'Unsupported request encoding.' : status === 400 ? 'Invalid request body.' : 'The request could not be completed.' });
+});
+
 // =========================
 // START SERVER
 // =========================
@@ -1574,7 +1605,7 @@ app.post('/test/create-mock-order', (req, res) => {
 const port =
   process.env.PORT || 3000;
 
-app.listen(
+if (typeof module !== 'undefined' && require.main === module) app.listen(
   port,
   '0.0.0.0',
   () => {
@@ -1592,3 +1623,5 @@ app.listen(
     );
   }
 );
+
+if (typeof module !== 'undefined') module.exports = app;
