@@ -1,0 +1,522 @@
+[
+  {
+    "id": "pet_d01m",
+    "sourceId": "D01M",
+    "name": "Pawprint Promise Pendant",
+    "type": "pendant",
+    "subcollection": "petLover",
+    "audience": "furmom",
+    "species": "dog",
+    "fixedPrice": 155,
+    "metal": "silver",
+    "purity": 925,
+    "weight": 0,
+    "labor": 0,
+    "stones": 1,
+    "diamondPreset": {
+      "q": "select",
+      "c": "0.25",
+      "qty": 1
+    },
+    "personalisation": {
+      "petNameRequired": false,
+      "ringSizeRequired": false,
+      "reverseEngraving": true
+    },
+    "matchingId": "pet_d01p"
+  },
+  {
+    "id": "pet_d01p",
+    "sourceId": "D01P",
+    "name": "Pawprint Promise Dog Charm",
+    "type": "collarcharm",
+    "subcollection": "petLover",
+    "audience": "furbaby",
+    "species": "dog",
+    "fixedPrice": 65,
+    "metal": "silver",
+    "purity": 925,
+    "weight": 0,
+    "labor": 0,
+    "stones": 1,
+    "diamondPreset": {
+      "q": "select",
+      "c": "0.1",
+      "qty": 1
+    },
+    "personalisation": {
+      "petNameRequired": true,
+      "ringSizeRequired": false,
+      "reverseEngraving": true
+    },
+    "matchingId": "pet_d01m"
+  },
+  {
+    "id": "pet_d02m",
+    "sourceId": "D02M",
+    "name": "Little Bone Bracelet Charm",
+    "type": "braceletcharm",
+    "subcollection": "petLover",
+    "audience": "furmom",
+    "species": "dog",
+    "fixedPrice": 155,
+    "metal": "silver",
+    "purity": 925,
+    "weight": 0,
+    "labor": 0,
+    "stones": 1,
+    "diamondPreset": {
+      "q": "select",
+      "c": "0.25",
+      "qty": 1
+    },
+    "personalisation": {
+      "petNameRequired": false,
+      "ringSizeRequired": false,
+      "reverseEngraving": true
+    },
+    "matchingId": "pet_d02p"
+  },
+  {
+    "id": "pet_d02p",
+    "sourceId": "D02P",
+    "name": "Little Bone Dog Charm",
+    "type": "collarcharm",
+    "subcollection": "petLover",
+    "audience": "furbaby",
+    "species": "dog",
+    "fixedPrice": 65,
+    "metal": "silver",
+    "purity": 925,
+    "weight": 0,
+    "labor": 0,
+    "stones": 1,
+    "diamondPreset": {
+      "q": "select",
+      "c": "0.1",
+      "qty": 1
+    },
+    "personalisation": {
+      "petNameRequired": true,
+      "ringSizeRequired": false,
+      "reverseEngraving": true
+    },
+    "matchingId": "pet_d02m"
+  },
+  {
+    "id": "pet_d03m",
+    "sourceId": "D03M",
+    "name": "True Companion Signet Ring",
+    "type": "ring",
+    "subcollection": "petLover",
+    "audience": "furmom",
+    "species": "dog",
+    "fixedPrice": 165,
+    "metal": "silver",
+    "purity": 925,
+    "weight": 0,
+    "labor": 0,
+    "stones": 1,
+    "diamondPreset": {
+      "q": "select",
+      "c": "0.25",
+      "qty": 1
+    },
+    "personalisation": {
+      "petNameRequired": false,
+      "ringSizeRequired": true,
+      "reverseEngraving": true
+    },
+    "matchingId": "pet_d03p"
+  },
+  {
+    "id": "pet_d03p",
+    "sourceId": "D03P",
+    "name": "True Companion Dog Charm",
+    "type": "collarcharm",
+    "subcollection": "petLover",
+    "audience": "furbaby",
+    "species": "dog",
+    "fixedPrice": 75,
+    "metal": "silver",
+    "purity": 925,
+    "weight": 0,
+    "labor": 0,
+    "stones": 1,
+    "diamondPreset": {
+      "q": "select",
+      "c": "0.1",
+      "qty": 1
+    },
+    "personalisation": {
+      "petNameRequired": true,
+      "ringSizeRequired": false,
+      "reverseEngraving": true
+    },
+    "matchingId": "pet_d03m"
+  },
+  {
+    "id": "pet_d04m",
+    "sourceId": "D04M",
+    "name": "Homeward Paw Pendant",
+    "type": "pendant",
+    "subcollection": "petLover",
+    "audience": "furmom",
+    "species": "dog",
+    "fixedPrice": 160,
+    "metal": "silver",
+    "purity": 925,
+    "weight": 0,
+    "labor": 0,
+    "stones": 1,
+    "diamondPreset": {
+      "q": "select",
+      "c": "0.25",
+      "qty": 1
+    },
+    "personalisation": {
+      "petNameRequired": false,
+      "ringSizeRequired": false,
+      "reverseEngraving": true
+    },
+    "matchingId": "pet_d04p"
+  },
+  {
+    "id": "pet_d04p",
+    "sourceId": "D04P",
+    "name": "Homeward Paw Dog Charm",
+    "type": "collarcharm",
+    "subcollection": "petLover",
+    "audience": "furbaby",
+    "species": "dog",
+    "fixedPrice": 70,
+    "metal": "silver",
+    "purity": 925,
+    "weight": 0,
+    "labor": 0,
+    "stones": 1,
+    "diamondPreset": {
+      "q": "select",
+      "c": "0.1",
+      "qty": 1
+    },
+    "personalisation": {
+      "petNameRequired": true,
+      "ringSizeRequired": false,
+      "reverseEngraving": true
+    },
+    "matchingId": "pet_d04m"
+  },
+  {
+    "id": "pet_d05m",
+    "sourceId": "D05M",
+    "name": "Forever Together Bracelet Charm",
+    "type": "braceletcharm",
+    "subcollection": "petLover",
+    "audience": "furmom",
+    "species": "dog",
+    "fixedPrice": 155,
+    "metal": "silver",
+    "purity": 925,
+    "weight": 0,
+    "labor": 0,
+    "stones": 1,
+    "diamondPreset": {
+      "q": "select",
+      "c": "0.25",
+      "qty": 1
+    },
+    "personalisation": {
+      "petNameRequired": false,
+      "ringSizeRequired": false,
+      "reverseEngraving": true
+    },
+    "matchingId": "pet_d05p"
+  },
+  {
+    "id": "pet_d05p",
+    "sourceId": "D05P",
+    "name": "Forever Together Dog Charm",
+    "type": "collarcharm",
+    "subcollection": "petLover",
+    "audience": "furbaby",
+    "species": "dog",
+    "fixedPrice": 65,
+    "metal": "silver",
+    "purity": 925,
+    "weight": 0,
+    "labor": 0,
+    "stones": 1,
+    "diamondPreset": {
+      "q": "select",
+      "c": "0.1",
+      "qty": 1
+    },
+    "personalisation": {
+      "petNameRequired": true,
+      "ringSizeRequired": false,
+      "reverseEngraving": true
+    },
+    "matchingId": "pet_d05m"
+  },
+  {
+    "id": "pet_c01m",
+    "sourceId": "C01M",
+    "name": "Whisker Heart Pendant",
+    "type": "pendant",
+    "subcollection": "petLover",
+    "audience": "furmom",
+    "species": "cat",
+    "fixedPrice": 155,
+    "metal": "silver",
+    "purity": 925,
+    "weight": 0,
+    "labor": 0,
+    "stones": 1,
+    "diamondPreset": {
+      "q": "select",
+      "c": "0.25",
+      "qty": 1
+    },
+    "personalisation": {
+      "petNameRequired": false,
+      "ringSizeRequired": false,
+      "reverseEngraving": true
+    },
+    "matchingId": "pet_c01p"
+  },
+  {
+    "id": "pet_c01p",
+    "sourceId": "C01P",
+    "name": "Whisker Heart Cat Charm",
+    "type": "collarcharm",
+    "subcollection": "petLover",
+    "audience": "furbaby",
+    "species": "cat",
+    "fixedPrice": 65,
+    "metal": "silver",
+    "purity": 925,
+    "weight": 0,
+    "labor": 0,
+    "stones": 1,
+    "diamondPreset": {
+      "q": "select",
+      "c": "0.1",
+      "qty": 1
+    },
+    "personalisation": {
+      "petNameRequired": true,
+      "ringSizeRequired": false,
+      "reverseEngraving": true
+    },
+    "matchingId": "pet_c01m"
+  },
+  {
+    "id": "pet_c02m",
+    "sourceId": "C02M",
+    "name": "Moonlight Purr Pendant",
+    "type": "pendant",
+    "subcollection": "petLover",
+    "audience": "furmom",
+    "species": "cat",
+    "fixedPrice": 160,
+    "metal": "silver",
+    "purity": 925,
+    "weight": 0,
+    "labor": 0,
+    "stones": 1,
+    "diamondPreset": {
+      "q": "select",
+      "c": "0.25",
+      "qty": 1
+    },
+    "personalisation": {
+      "petNameRequired": false,
+      "ringSizeRequired": false,
+      "reverseEngraving": true
+    },
+    "matchingId": "pet_c02p"
+  },
+  {
+    "id": "pet_c02p",
+    "sourceId": "C02P",
+    "name": "Moonlight Purr Cat Charm",
+    "type": "collarcharm",
+    "subcollection": "petLover",
+    "audience": "furbaby",
+    "species": "cat",
+    "fixedPrice": 70,
+    "metal": "silver",
+    "purity": 925,
+    "weight": 0,
+    "labor": 0,
+    "stones": 1,
+    "diamondPreset": {
+      "q": "select",
+      "c": "0.1",
+      "qty": 1
+    },
+    "personalisation": {
+      "petNameRequired": true,
+      "ringSizeRequired": false,
+      "reverseEngraving": true
+    },
+    "matchingId": "pet_c02m"
+  },
+  {
+    "id": "pet_c03m",
+    "sourceId": "C03M",
+    "name": "Curled Companion Ring",
+    "type": "ring",
+    "subcollection": "petLover",
+    "audience": "furmom",
+    "species": "cat",
+    "fixedPrice": 160,
+    "metal": "silver",
+    "purity": 925,
+    "weight": 0,
+    "labor": 0,
+    "stones": 1,
+    "diamondPreset": {
+      "q": "select",
+      "c": "0.25",
+      "qty": 1
+    },
+    "personalisation": {
+      "petNameRequired": false,
+      "ringSizeRequired": true,
+      "reverseEngraving": true
+    },
+    "matchingId": "pet_c03p"
+  },
+  {
+    "id": "pet_c03p",
+    "sourceId": "C03P",
+    "name": "Curled Companion Cat Charm",
+    "type": "collarcharm",
+    "subcollection": "petLover",
+    "audience": "furbaby",
+    "species": "cat",
+    "fixedPrice": 70,
+    "metal": "silver",
+    "purity": 925,
+    "weight": 0,
+    "labor": 0,
+    "stones": 1,
+    "diamondPreset": {
+      "q": "select",
+      "c": "0.1",
+      "qty": 1
+    },
+    "personalisation": {
+      "petNameRequired": true,
+      "ringSizeRequired": false,
+      "reverseEngraving": true
+    },
+    "matchingId": "pet_c03m"
+  },
+  {
+    "id": "pet_c04m",
+    "sourceId": "C04M",
+    "name": "Little Fish Bracelet Charm",
+    "type": "braceletcharm",
+    "subcollection": "petLover",
+    "audience": "furmom",
+    "species": "cat",
+    "fixedPrice": 155,
+    "metal": "silver",
+    "purity": 925,
+    "weight": 0,
+    "labor": 0,
+    "stones": 1,
+    "diamondPreset": {
+      "q": "select",
+      "c": "0.25",
+      "qty": 1
+    },
+    "personalisation": {
+      "petNameRequired": false,
+      "ringSizeRequired": false,
+      "reverseEngraving": true
+    },
+    "matchingId": "pet_c04p"
+  },
+  {
+    "id": "pet_c04p",
+    "sourceId": "C04P",
+    "name": "Little Fish Cat Charm",
+    "type": "collarcharm",
+    "subcollection": "petLover",
+    "audience": "furbaby",
+    "species": "cat",
+    "fixedPrice": 65,
+    "metal": "silver",
+    "purity": 925,
+    "weight": 0,
+    "labor": 0,
+    "stones": 1,
+    "diamondPreset": {
+      "q": "select",
+      "c": "0.1",
+      "qty": 1
+    },
+    "personalisation": {
+      "petNameRequired": true,
+      "ringSizeRequired": false,
+      "reverseEngraving": true
+    },
+    "matchingId": "pet_c04m"
+  },
+  {
+    "id": "pet_c05m",
+    "sourceId": "C05M",
+    "name": "Starlit Paw Pendant",
+    "type": "pendant",
+    "subcollection": "petLover",
+    "audience": "furmom",
+    "species": "cat",
+    "fixedPrice": 155,
+    "metal": "silver",
+    "purity": 925,
+    "weight": 0,
+    "labor": 0,
+    "stones": 1,
+    "diamondPreset": {
+      "q": "select",
+      "c": "0.25",
+      "qty": 1
+    },
+    "personalisation": {
+      "petNameRequired": false,
+      "ringSizeRequired": false,
+      "reverseEngraving": true
+    },
+    "matchingId": "pet_c05p"
+  },
+  {
+    "id": "pet_c05p",
+    "sourceId": "C05P",
+    "name": "Starlit Paw Cat Charm",
+    "type": "collarcharm",
+    "subcollection": "petLover",
+    "audience": "furbaby",
+    "species": "cat",
+    "fixedPrice": 65,
+    "metal": "silver",
+    "purity": 925,
+    "weight": 0,
+    "labor": 0,
+    "stones": 1,
+    "diamondPreset": {
+      "q": "select",
+      "c": "0.1",
+      "qty": 1
+    },
+    "personalisation": {
+      "petNameRequired": true,
+      "ringSizeRequired": false,
+      "reverseEngraving": true
+    },
+    "matchingId": "pet_c05m"
+  }
+]

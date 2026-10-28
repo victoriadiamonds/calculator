@@ -331,6 +331,9 @@ function buildPricingParams(body) {
     collection: body.collection,
     productId: body.productId,
     initial: body.initial,
+    petName: body.petName,
+    ringSize: body.ringSize,
+    reverseEngraving: body.reverseEngraving,
     diamondOrigin: body.diamondOrigin || 'lab',
     typeFilter: body.typeFilter || 'all',
 
@@ -399,6 +402,8 @@ function validateCheckoutRequest(body) {
     return 'Invalid email address';
   }
 
+  const petProduct=pricing.getProductsForCollection('silver','all').find(p=>p.id===body.productId&&p.subcollection==='petLover');
+  if(petProduct){if(body.collection!=='silver')return 'Choose Silver Collection for this design.';try{require('./pet-personalisation').read(petProduct,body,true);}catch(error){return error.message;}}
   // Validate payment percentage if provided
   if (body.collection === 'silver' && body.paymentPercentage != null && Number(body.paymentPercentage) !== 100) {
     return 'Silver Collection requires full payment. Deposits are not available.';

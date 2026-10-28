@@ -1904,6 +1904,8 @@ for (const [collection,tiers] of Object.entries(additionalCollections)) {
 }
 
 // Tennis pieces keep stable IDs; old collection requests remain compatible.
+const PET_LOVER_PRODUCTS = require('./pet-lover-products.json');
+PRODUCTS_BY_COLLECTION.silver.essentials.push(...PET_LOVER_PRODUCTS);
 const TENNIS_COLLECTION = require('./tennis-products.json');
 for(const tiers of Object.values(PRODUCTS_BY_COLLECTION))for(const tier of Object.keys(tiers))tiers[tier]=tiers[tier].filter(p=>!TENNIS_COLLECTION.migratedIds.includes(p.id));
 PRODUCTS_BY_COLLECTION.tennis={premium:TENNIS_COLLECTION.products};
@@ -2079,6 +2081,7 @@ function computePricing(params) {
   }
 
 
+  if(prod.subcollection==='petLover'){const details=require('./pet-personalisation').read(prod,params,false);if(Object.keys(details).length)prod={...prod,personalisationDetails:details,name:prod.name+' — '+Object.entries(details).map(([key,value])=>({petName:'Pet name',ringSize:'UK ring size',reverseEngraving:'Reverse engraving'}[key])+': '+value).join('; ')};}
   if(rule?.initialRequired) prod={...prod,name:prod.name+' — Initial '+params.initial};
 
   const tierKey =

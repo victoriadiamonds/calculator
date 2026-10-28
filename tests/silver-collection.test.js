@@ -34,7 +34,7 @@ test('piece search handles case, multiple terms, type filters and no matches', (
 });
 
 test('current Silver catalogue preserves original prices and matches checkout', () => {
-  assert.equal(backend.length, 42);
+  assert.equal(backend.length, 62);
   assert.deepEqual(backend.slice(0,17).map(product => product.fixedPrice), expected);
   assert.deepEqual(JSON.parse(JSON.stringify(frontend.map(({ id, name, type, fixedPrice, diamondPreset }) => ({ id, name, type, fixedPrice, diamondPreset })))),
     backend.map(({ id, name, type, fixedPrice, diamondPreset }) => ({ id, name, type, fixedPrice, diamondPreset })));
@@ -110,7 +110,7 @@ test('Silver checkout requires full payment on frontend and server', () => {
   assert.equal(vm.runInContext('getOrderDataForPayment().paymentPercentage', context), 100);
   const server = fs.readFileSync(path.join(__dirname, '../server.js'), 'utf8');
   const validation = server.slice(server.indexOf('function validateCheckoutRequest(body)'), server.indexOf('// HEALTH CHECK'));
-  const serverContext = vm.createContext({});
+  const serverContext = vm.createContext({pricing});
   vm.runInContext(validation, serverContext);
   const request = { productId: 'silver_everyday_ring', collection: 'silver', metal: 'silver', customerName: 'Test', customerEmail: 'test@example.com' };
   for (const paymentPercentage of [30, 50, 90]) {
