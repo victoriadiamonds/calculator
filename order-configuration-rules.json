@@ -370,5 +370,50 @@
       }
     ],
     "braceletMetalTier": "premium"
+  },
+  "tennis_oval_riviere": {
+    "braceletMetalTier": "premium",
+    "diamondPriceOptions": {
+      "0.25": 2200,
+      "0.50": 2400,
+      "0.75": 2700,
+      "1.00": 3000
+    }
+  },
+  "tennis_princess_line": {
+    "braceletMetalTier": "premium",
+    "diamondPriceOptions": {
+      "0.25": 2200,
+      "0.50": 2400,
+      "0.75": 2700,
+      "1.00": 3000
+    }
+  },
+  "tennis_cushion_lumiere": {
+    "braceletMetalTier": "premium",
+    "diamondPriceOptions": {
+      "0.25": 2200,
+      "0.50": 2400,
+      "0.75": 2700,
+      "1.00": 3000
+    }
+  },
+  "tennis_asscher_avenue": {
+    "braceletMetalTier": "premium",
+    "diamondPriceOptions": {
+      "0.25": 2200,
+      "0.50": 2400,
+      "0.75": 2700,
+      "1.00": 3000
+    }
+  },
+  "tennis_round_bezel": {
+    "braceletMetalTier": "premium",
+    "diamondPriceOptions": {
+      "0.25": 2200,
+      "0.50": 2400,
+      "0.75": 2700,
+      "1.00": 3000
+    }
   }
 }

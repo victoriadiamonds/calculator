@@ -19,5 +19,5 @@ test('every current browser lab configuration agrees with checkout, including ne
   assert.equal(back.designFee,0,`${product.id}: no automatic checkout customization fee`);
   assert.equal(Math.round(front.finalTotal*100),Math.round(back.finalTotal*100),product.id);count++;
  }
- assert.equal(count,174);
+ assert.equal(count,179);
 });

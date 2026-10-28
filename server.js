@@ -438,7 +438,7 @@ app.get('/health', (req, res) => {
 // =========================
 
 // Routes determine the collection; a customer cannot switch it in the request body.
-const onlineCollections = { 'daily-sparkle': 'dailySparkle', 'high-note': 'occasionWear', 'forever-bond': 'foreverBond', aura: 'singleLady', mens: 'mens', keepsake: 'keepsake' };
+const onlineCollections = { 'daily-sparkle': 'dailySparkle', 'high-note': 'occasionWear', 'forever-bond': 'foreverBond', aura: 'singleLady', mens: 'mens', keepsake: 'keepsake', tennis: 'tennis' };
 const onlineCollection = route => onlineCollections[route.split('/')[1]];
 // Quotes never create payment links or send customer emails.
 app.post(Object.keys(onlineCollections).map(route => `/${route}/quote`), (req, res) => {
@@ -970,6 +970,7 @@ function formatCurrencyDecimal(value) {
 
 function getCollectionDisplayName(collection) {
   const names = {
+    tennis: 'Tennis Collection',
     dailySparkle: 'Daily Sparkle',
     occasionWear: 'High Note',
     foreverBond: 'Forever Bond',

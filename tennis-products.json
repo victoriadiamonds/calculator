@@ -1,0 +1,206 @@
+{
+  "migratedIds": [
+    "ow_l_lumina",
+    "ow_l_arabella",
+    "ow_l_classic_round_tennis_gold",
+    "ow_l_emerald_cut_tennis",
+    "ow_l_marquise_round_alternating_tennis",
+    "ow_l_pear_cut_tennis_gold",
+    "mens_apex_tennis_bracelet",
+    "mens_pillar_tennis_bracelet"
+  ],
+  "products": [
+    {
+      "id": "ow_l_lumina",
+      "name": "Lumina",
+      "weight": 18,
+      "labor": 88,
+      "stones": 7,
+      "type": "bracelet",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.50",
+        "qty": 7
+      },
+      "defaultBraceletTier": "premium",
+      "minBraceletTier": "premium"
+    },
+    {
+      "id": "ow_l_arabella",
+      "name": "Arabella",
+      "weight": 20,
+      "labor": 95,
+      "stones": 8,
+      "type": "bracelet",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.50",
+        "qty": 8
+      },
+      "defaultBraceletTier": "premium",
+      "minBraceletTier": "premium"
+    },
+    {
+      "id": "ow_l_classic_round_tennis_gold",
+      "name": "Classic Round Tennis Bracelet (Gold)",
+      "weight": 14,
+      "labor": 88,
+      "stones": 12,
+      "type": "bracelet",
+      "defaultBraceletTier": "premium",
+      "minBraceletTier": "premium"
+    },
+    {
+      "id": "ow_l_emerald_cut_tennis",
+      "name": "Emerald-Cut Tennis Bracelet",
+      "weight": 14,
+      "labor": 88,
+      "stones": 12,
+      "type": "bracelet",
+      "defaultBraceletTier": "premium",
+      "minBraceletTier": "premium"
+    },
+    {
+      "id": "ow_l_marquise_round_alternating_tennis",
+      "name": "Marquise & Round Alternating Tennis Bracelet",
+      "weight": 14,
+      "labor": 88,
+      "stones": 20,
+      "type": "bracelet",
+      "defaultBraceletTier": "premium",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.50",
+        "qty": 20
+      },
+      "minBraceletTier": "premium"
+    },
+    {
+      "id": "ow_l_pear_cut_tennis_gold",
+      "name": "Pear-Cut Tennis Bracelet (Gold)",
+      "weight": 14,
+      "labor": 88,
+      "stones": 12,
+      "type": "bracelet",
+      "defaultBraceletTier": "premium",
+      "minBraceletTier": "premium"
+    },
+    {
+      "id": "mens_apex_tennis_bracelet",
+      "name": "Apex Tennis Bracelet",
+      "type": "bracelet",
+      "weight": 8,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.75",
+        "qty": 29
+      },
+      "stones": 29,
+      "defaultBraceletTier": "premium",
+      "minBraceletTier": "premium"
+    },
+    {
+      "id": "mens_pillar_tennis_bracelet",
+      "name": "Pillar Tennis Bracelet",
+      "type": "bracelet",
+      "weight": 16,
+      "labor": 0,
+      "defaultMetal": "gold",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.75",
+        "qty": 29
+      },
+      "stones": 29,
+      "defaultBraceletTier": "supreme",
+      "minBraceletTier": "supreme"
+    },
+    {
+      "id": "tennis_oval_riviere",
+      "name": "Oval Rivière Tennis Bracelet",
+      "type": "bracelet",
+      "weight": 8,
+      "labor": 0,
+      "stones": 48,
+      "defaultBraceletTier": "premium",
+      "minBraceletTier": "premium",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.25",
+        "qty": 1
+      },
+      "diamondShape": "Oval",
+      "totalCarat": 12
+    },
+    {
+      "id": "tennis_princess_line",
+      "name": "Princess Line Tennis Bracelet",
+      "type": "bracelet",
+      "weight": 8,
+      "labor": 0,
+      "stones": 48,
+      "defaultBraceletTier": "premium",
+      "minBraceletTier": "premium",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.25",
+        "qty": 1
+      },
+      "diamondShape": "Princess",
+      "totalCarat": 12
+    },
+    {
+      "id": "tennis_cushion_lumiere",
+      "name": "Cushion Lumière Tennis Bracelet",
+      "type": "bracelet",
+      "weight": 8,
+      "labor": 0,
+      "stones": 48,
+      "defaultBraceletTier": "premium",
+      "minBraceletTier": "premium",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.25",
+        "qty": 1
+      },
+      "diamondShape": "Cushion",
+      "totalCarat": 12
+    },
+    {
+      "id": "tennis_asscher_avenue",
+      "name": "Asscher Avenue Tennis Bracelet",
+      "type": "bracelet",
+      "weight": 8,
+      "labor": 0,
+      "stones": 48,
+      "defaultBraceletTier": "premium",
+      "minBraceletTier": "premium",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.25",
+        "qty": 1
+      },
+      "diamondShape": "Asscher",
+      "totalCarat": 12
+    },
+    {
+      "id": "tennis_round_bezel",
+      "name": "Round Bezel Tennis Bracelet",
+      "type": "bracelet",
+      "weight": 8,
+      "labor": 0,
+      "stones": 48,
+      "defaultBraceletTier": "premium",
+      "minBraceletTier": "premium",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.25",
+        "qty": 1
+      },
+      "diamondShape": "Round",
+      "totalCarat": 12
+    }
+  ]
+}

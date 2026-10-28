@@ -8,13 +8,13 @@ const context = vm.createContext({ document: { addEventListener() {}, getElement
 for (const script of fs.readFileSync(require.resolve('../index.html'), 'utf8').matchAll(/<script>([\s\S]*?)<\/script>/g)) vm.runInContext(script[1], context);
 const products = pricing.PRODUCTS_BY_COLLECTION.mens.essentials;
 const browserProducts = JSON.parse(vm.runInContext('JSON.stringify(PRODUCTS_BY_COLLECTION.mens.essentials)',context));
-const expected = [1575,825,1575,1375,1613,3075,1375,1875,1575,1375,5220,6732,6732,6732,6732,1625,1975,1375,1375,1875];
+const expected = [1575,825,1575,1375,1613,3075,1375,1875,1575,1375,6732,6732,6732,1625,1975,1375,1375,1875];
 function params(product) {
   return { collection:'mens', productId:product.id, typeFilter:product.type, metal:product.defaultMetal, karat:18, braceletMetalTier:product.defaultBraceletTier,
     diamonds:[product.diamondPreset,...(product.diamondPreset.additional || [])].map(s => ({quality:s.q,carat:s.c,qty:s.qty})), quantity:1, discount:0, profit:0, designFee:0 };
 }
-test('all 20 current men’s browser configurations agree with checkout', () => {
-  assert.equal(products.length,20);
+test('all 18 current men’s browser configurations agree with checkout', () => {
+  assert.equal(products.length,18);
   assert.deepEqual(browserProducts.map(p=>p.id), products.map(p=>p.id));
   browserProducts.forEach((product,index) => {
     const input=params(product);

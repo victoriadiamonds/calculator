@@ -2,7 +2,8 @@
 const pricing=require('./pricing');
 const orderRules=require('./order-configuration-rules.json');
 function quoteDaily(body={}, collection='dailySparkle') {
- if(!['dailySparkle','occasionWear','foreverBond','singleLady','mens','keepsake'].includes(collection))throw new Error('Unsupported online collection.');
+ if(require('./tennis-products.json').migratedIds.includes(body.productId)&&['occasionWear','mens'].includes(collection))collection='tennis';
+ if(!['dailySparkle','occasionWear','foreverBond','singleLady','mens','keepsake','tennis'].includes(collection))throw new Error('Unsupported online collection.');
  const product=pricing.getProductsForCollection(collection,'all').find(p=>p.id===body.productId);
  if(!product)throw new Error('Please choose a valid piece from this collection.');
  if(!['gold','silver','platinum'].includes(body.metal))throw new Error('Please choose a valid metal.');

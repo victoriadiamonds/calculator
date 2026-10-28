@@ -1903,9 +1903,15 @@ for (const [collection,tiers] of Object.entries(additionalCollections)) {
   for (const [tier,products] of Object.entries(tiers)) (PRODUCTS_BY_COLLECTION[collection][tier] ||= []).push(...products);
 }
 
+// Tennis pieces keep stable IDs; old collection requests remain compatible.
+const TENNIS_COLLECTION = require('./tennis-products.json');
+for(const tiers of Object.values(PRODUCTS_BY_COLLECTION))for(const tier of Object.keys(tiers))tiers[tier]=tiers[tier].filter(p=>!TENNIS_COLLECTION.migratedIds.includes(p.id));
+PRODUCTS_BY_COLLECTION.tennis={premium:TENNIS_COLLECTION.products};
+COLLECTION_TIERS.tennis=['premium'];
 function getCollectionName(id) {
 
   const names = {
+    tennis: 'Tennis Collection',
     keepsake: 'Keepsake Collection',
     dailySparkle: 'Daily Sparkle',
     occasionWear: 'High Note',
@@ -2020,6 +2026,7 @@ function getMetalPricePerGram(metal, karat, purity) {
 ========================================================= */
 
 function computePricing(params) {
+  if(TENNIS_COLLECTION.migratedIds.includes(params.productId)&&['occasionWear','mens'].includes(params.collection))params={...params,collection:'tennis'};
   if (params.diamondOrigin && !['lab','natural'].includes(params.diamondOrigin)) throw new Error('Invalid diamond origin.');
   const natural = params.diamondOrigin === 'natural';
   if (natural && params.collection === 'silver') throw new Error('Silver Collection uses its listed lab diamond specification.');
