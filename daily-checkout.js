@@ -3,7 +3,7 @@ const pricing=require('./pricing');
 const orderRules=require('./order-configuration-rules.json');
 function quoteDaily(body={}, collection='dailySparkle') {
  if(require('./tennis-products.json').migratedIds.includes(body.productId)&&['occasionWear','mens'].includes(collection))collection='tennis';
- if(!['dailySparkle','occasionWear','foreverBond','singleLady','mens','keepsake','tennis'].includes(collection))throw new Error('Unsupported online collection.');
+ if(!['dailySparkle','occasionWear','foreverBond','singleLady','mens','keepsake','tennis','halo'].includes(collection))throw new Error('Unsupported online collection.');
  const product=pricing.getProductsForCollection(collection,'all').find(p=>p.id===body.productId);
  if(!product)throw new Error('Please choose a valid piece from this collection.');
  if(!['gold','silver','platinum'].includes(body.metal))throw new Error('Please choose a valid metal.');
@@ -19,7 +19,7 @@ function quoteDaily(body={}, collection='dailySparkle') {
  const natural=body.diamondOrigin==='natural';
  if(rule?.labOnly&&natural)throw new Error('This design uses its listed lab-grown diamonds.');
  if(body.diamondOrigin&&!['lab','natural'].includes(body.diamondOrigin))throw new Error('Invalid diamond origin.');
- const requestedDiamonds=natural?body.diamonds:(rule?.fixedDiamonds||body.diamonds);
+ const requestedDiamonds=collection==='halo'?require('./halo-configuration').normalize(product.id,body.diamonds,natural):natural?body.diamonds:(rule?.fixedDiamonds||body.diamonds);
  const diamonds=requestedDiamonds.map(d=>{
   if(natural){require('./natural-diamonds').resolve([d]);return {naturalId:d.naturalId,qty:Number(d.qty)};}
   if(!d||!['select','luxe'].includes(d.quality)||!pricing.DIAMOND_CARATS.includes(d.carat)||!Number.isInteger(Number(d.qty))||Number(d.qty)<1||Number(d.qty)>100)throw new Error('Please check the diamond specifications.');

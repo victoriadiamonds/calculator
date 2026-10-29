@@ -1,0 +1,137 @@
+[
+  {
+    "id": "halo_oh01",
+    "sourceId": "OH01",
+    "name": "Aveline Oval Hidden Halo Ring",
+    "type": "ring",
+    "weight": 0,
+    "labor": 0,
+    "stones": 23,
+    "diamondShape": "Oval",
+    "haloStones": 10,
+    "paveStones": 12,
+    "naturalCentreCarat": 1,
+    "defaultMetal": "gold",
+    "defaultKarat": 18,
+    "diamondPreset": {
+      "q": "select",
+      "c": "2.00",
+      "qty": 1,
+      "additional": [
+        {
+          "q": "select",
+          "c": "0.05",
+          "qty": 22
+        }
+      ]
+    }
+  },
+  {
+    "id": "halo_oh02",
+    "sourceId": "OH02",
+    "name": "Celina Oval Cathedral Hidden Halo Ring",
+    "type": "ring",
+    "weight": 0,
+    "labor": 0,
+    "stones": 27,
+    "diamondShape": "Oval",
+    "haloStones": 10,
+    "paveStones": 16,
+    "naturalCentreCarat": 1,
+    "defaultMetal": "gold",
+    "defaultKarat": 18,
+    "diamondPreset": {
+      "q": "select",
+      "c": "2.00",
+      "qty": 1,
+      "additional": [
+        {
+          "q": "select",
+          "c": "0.05",
+          "qty": 26
+        }
+      ]
+    }
+  },
+  {
+    "id": "halo_oh03",
+    "sourceId": "OH03",
+    "name": "Elowen Oval Split Shank Hidden Halo Ring",
+    "type": "ring",
+    "weight": 0,
+    "labor": 0,
+    "stones": 31,
+    "diamondShape": "Oval",
+    "haloStones": 10,
+    "paveStones": 20,
+    "naturalCentreCarat": 1,
+    "defaultMetal": "gold",
+    "defaultKarat": 18,
+    "diamondPreset": {
+      "q": "select",
+      "c": "2.00",
+      "qty": 1,
+      "additional": [
+        {
+          "q": "select",
+          "c": "0.05",
+          "qty": 30
+        }
+      ]
+    }
+  },
+  {
+    "id": "halo_oh04",
+    "sourceId": "OH04",
+    "name": "Iselle Oval Twist Hidden Halo Ring",
+    "type": "ring",
+    "weight": 0,
+    "labor": 0,
+    "stones": 23,
+    "diamondShape": "Oval",
+    "haloStones": 10,
+    "paveStones": 12,
+    "naturalCentreCarat": 1,
+    "defaultMetal": "gold",
+    "defaultKarat": 18,
+    "diamondPreset": {
+      "q": "select",
+      "c": "2.00",
+      "qty": 1,
+      "additional": [
+        {
+          "q": "select",
+          "c": "0.05",
+          "qty": 22
+        }
+      ]
+    }
+  },
+  {
+    "id": "halo_oh05",
+    "sourceId": "OH05",
+    "name": "Maelle East West Hidden Halo Ring",
+    "type": "ring",
+    "weight": 0,
+    "labor": 0,
+    "stones": 25,
+    "diamondShape": "Oval",
+    "haloStones": 10,
+    "paveStones": 14,
+    "naturalCentreCarat": 1,
+    "defaultMetal": "gold",
+    "defaultKarat": 18,
+    "diamondPreset": {
+      "q": "select",
+      "c": "2.00",
+      "qty": 1,
+      "additional": [
+        {
+          "q": "select",
+          "c": "0.05",
+          "qty": 24
+        }
+      ]
+    }
+  }
+]

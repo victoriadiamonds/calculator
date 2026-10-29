@@ -1909,10 +1909,13 @@ PRODUCTS_BY_COLLECTION.silver.essentials.push(...PET_LOVER_PRODUCTS);
 const TENNIS_COLLECTION = require('./tennis-products.json');
 for(const tiers of Object.values(PRODUCTS_BY_COLLECTION))for(const tier of Object.keys(tiers))tiers[tier]=tiers[tier].filter(p=>!TENNIS_COLLECTION.migratedIds.includes(p.id));
 PRODUCTS_BY_COLLECTION.tennis={premium:TENNIS_COLLECTION.products};
+PRODUCTS_BY_COLLECTION.halo={essentials:require('./halo-products.json')};
+COLLECTION_TIERS.halo=['essentials'];
 COLLECTION_TIERS.tennis=['premium'];
 function getCollectionName(id) {
 
   const names = {
+    halo: 'Halo Ring Collection',
     tennis: 'Tennis Collection',
     keepsake: 'Keepsake Collection',
     dailySparkle: 'Daily Sparkle',
@@ -2031,6 +2034,7 @@ function computePricing(params) {
   if(TENNIS_COLLECTION.migratedIds.includes(params.productId)&&['occasionWear','mens'].includes(params.collection))params={...params,collection:'tennis'};
   if (params.diamondOrigin && !['lab','natural'].includes(params.diamondOrigin)) throw new Error('Invalid diamond origin.');
   const natural = params.diamondOrigin === 'natural';
+  if(params.collection==='halo')params={...params,diamonds:require('./halo-configuration').normalize(params.productId,params.diamonds,natural)};
   if (natural && params.collection === 'silver') throw new Error('Silver Collection uses its listed lab diamond specification.');
   const naturalEntries = natural ? require('./natural-diamonds').resolve(params.diamonds) : null;
   const rule = ORDER_CONFIGURATION_RULES[params.productId];

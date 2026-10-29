@@ -2,7 +2,7 @@
 const NaturalSelector = (() => {
   const data=NATURAL_DIAMOND_DATA.items;
   const state={origin:'lab',groups:[],page:0};
-  const unavailableReason=()=>collectionIsSilver()?'Silver Collection has a fixed specification. Choose Lab-grown or another collection.':ORDER_CONFIGURATION_RULES[getCurrentProduct()?.id]?.labOnly?'This design uses its listed lab-grown diamonds. Choose Lab-grown or another piece.':'';
+  const unavailableReason=()=>getCurrentProduct()?.id.startsWith('halo_')?'Natural Halo rings start with a 1 ct oval centre. Complete pricing requires an appointment because 0.05 ct natural accents are unavailable.':collectionIsSilver()?'Silver Collection has a fixed specification. Choose Lab-grown or another collection.':ORDER_CONFIGURATION_RULES[getCurrentProduct()?.id]?.labOnly?'This design uses its listed lab-grown diamonds. Choose Lab-grown or another piece.':'';
   const money=n=>'£'+Number(n).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
   const gradeHelp={carat:'Diamond weight, measured in carats.',colour:'Letter grade describing diamond colour.',clarity:'Grade describing inclusions and blemishes.',cut:'The cut grade listed for this diamond.'};
   const clarityNames={FL:'Flawless',IF:'Internally flawless',VVS1:'Very very slightly included 1',VVS2:'Very very slightly included 2',VS1:'Very slightly included 1',VS2:'Very slightly included 2',SI1:'Slightly included 1',SI2:'Slightly included 2'};
@@ -61,6 +61,7 @@ const NaturalSelector = (() => {
     document.getElementById('natural-prev').disabled=state.page===0;document.getElementById('natural-next').disabled=state.page>=pages-1;
   }
   function renderSelected(){
+    if(getCurrentProduct()?.id.startsWith('halo_')){document.getElementById('natural-carat').value='1';panel.querySelectorAll('[data-shape]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.shape==='Oval')));}
     document.getElementById('natural-selected').innerHTML=state.groups.map((g,i)=>{const d=data.find(d=>d.id===g.naturalId);return `<article class="natural-selected"><div><strong>${d.shape} · ${d.carat}ct</strong>${grades(d)}<p>${money(d.price)} each</p></div><label>Quantity<input aria-label="Quantity for natural diamond group ${i+1}" type="number" min="1" max="100" value="${g.qty}" data-quantity="${i}"></label><strong>${money(d.price*g.qty)}</strong><button type="button" data-remove="${i}" aria-label="Remove natural diamond group ${i+1}">Remove</button></article>`;}).join('')||'<p>Select a diamond above to calculate your quote.</p>';
     document.getElementById('natural-warning').textContent=unavailableReason();
     refreshQuote();renderResults();
