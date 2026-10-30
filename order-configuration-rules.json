@@ -79,56 +79,80 @@
   "ow_l_lumina": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
+      "0.05": 300.0,
+      "0.10": 552,
+      "0.20": 2160,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
       "1.00": 3000
-    }
+    },
+    "stoneCount": 24
   },
   "ow_l_arabella": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
+      "0.05": 300.0,
+      "0.10": 552,
+      "0.20": 2160,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
       "1.00": 3000
-    }
+    },
+    "stoneCount": 24
   },
   "ow_l_classic_round_tennis_gold": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
+      "0.05": 150.0,
+      "0.10": 276,
+      "0.20": 1080,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
       "1.00": 3000
-    }
+    },
+    "stoneCount": 12
   },
   "ow_l_emerald_cut_tennis": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
+      "0.05": 150.0,
+      "0.10": 276,
+      "0.20": 1080,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
       "1.00": 3000
-    }
+    },
+    "stoneCount": 12
   },
   "ow_l_marquise_round_alternating_tennis": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
+      "0.05": 300.0,
+      "0.10": 552,
+      "0.20": 2160,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
       "1.00": 3000
-    }
+    },
+    "stoneCount": 24
   },
   "ow_l_pear_cut_tennis_gold": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
+      "0.05": 150.0,
+      "0.10": 276,
+      "0.20": 1080,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
       "1.00": 3000
-    }
+    },
+    "stoneCount": 12
   },
   "sl_b_diamond_paperclip_link_bracelet": {
     "braceletMetalTier": "premium",
@@ -142,20 +166,28 @@
   "mens_apex_tennis_bracelet": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
+      "0.05": 362.5,
+      "0.10": 667,
+      "0.20": 2610,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
       "1.00": 3000
-    }
+    },
+    "stoneCount": 29
   },
   "mens_pillar_tennis_bracelet": {
     "braceletMetalTier": "supreme",
     "diamondPriceOptions": {
+      "0.05": 362.5,
+      "0.10": 667,
+      "0.20": 2610,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
       "1.00": 3000
-    }
+    },
+    "stoneCount": 29
   },
   "mens_anchor_link_bracelet": {
     "braceletMetalTier": "supreme",
@@ -374,46 +406,66 @@
   "tennis_oval_riviere": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
+      "0.05": 600.0,
+      "0.10": 1104,
+      "0.20": 4320,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
       "1.00": 3000
-    }
+    },
+    "stoneCount": 48
   },
   "tennis_princess_line": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
+      "0.05": 600.0,
+      "0.10": 1104,
+      "0.20": 4320,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
       "1.00": 3000
-    }
+    },
+    "stoneCount": 48
   },
   "tennis_cushion_lumiere": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
+      "0.05": 600.0,
+      "0.10": 1104,
+      "0.20": 4320,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
       "1.00": 3000
-    }
+    },
+    "stoneCount": 48
   },
   "tennis_asscher_avenue": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
+      "0.05": 600.0,
+      "0.10": 1104,
+      "0.20": 4320,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
       "1.00": 3000
-    }
+    },
+    "stoneCount": 48
   },
   "tennis_round_bezel": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
+      "0.05": 600.0,
+      "0.10": 1104,
+      "0.20": 4320,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
       "1.00": 3000
-    }
+    },
+    "stoneCount": 48
   }
 }
