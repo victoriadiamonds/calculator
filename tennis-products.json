@@ -128,11 +128,11 @@
       "minBraceletTier": "premium",
       "diamondPreset": {
         "q": "select",
-        "c": "0.25",
+        "c": "0.20",
         "qty": 1
       },
       "diamondShape": "Oval",
-      "totalCarat": 12
+      "totalCarat": 9.6
     },
     {
       "id": "tennis_princess_line",
@@ -145,11 +145,11 @@
       "minBraceletTier": "premium",
       "diamondPreset": {
         "q": "select",
-        "c": "0.25",
+        "c": "0.20",
         "qty": 1
       },
       "diamondShape": "Princess",
-      "totalCarat": 12
+      "totalCarat": 9.6
     },
     {
       "id": "tennis_cushion_lumiere",
@@ -162,11 +162,11 @@
       "minBraceletTier": "premium",
       "diamondPreset": {
         "q": "select",
-        "c": "0.25",
+        "c": "0.20",
         "qty": 1
       },
       "diamondShape": "Cushion",
-      "totalCarat": 12
+      "totalCarat": 9.6
     },
     {
       "id": "tennis_asscher_avenue",
@@ -179,11 +179,11 @@
       "minBraceletTier": "premium",
       "diamondPreset": {
         "q": "select",
-        "c": "0.25",
+        "c": "0.20",
         "qty": 1
       },
       "diamondShape": "Asscher",
-      "totalCarat": 12
+      "totalCarat": 9.6
     },
     {
       "id": "tennis_round_bezel",
@@ -196,11 +196,11 @@
       "minBraceletTier": "premium",
       "diamondPreset": {
         "q": "select",
-        "c": "0.25",
+        "c": "0.20",
         "qty": 1
       },
       "diamondShape": "Round",
-      "totalCarat": 12
+      "totalCarat": 9.6
     }
   ]
 }

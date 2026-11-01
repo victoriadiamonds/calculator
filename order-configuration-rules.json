@@ -79,9 +79,9 @@
   "ow_l_lumina": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
-      "0.05": 300.0,
+      "0.05": 300,
       "0.10": 552,
-      "0.20": 2160,
+      "0.20": 1500,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
@@ -92,9 +92,9 @@
   "ow_l_arabella": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
-      "0.05": 300.0,
+      "0.05": 300,
       "0.10": 552,
-      "0.20": 2160,
+      "0.20": 1500,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
@@ -105,9 +105,9 @@
   "ow_l_classic_round_tennis_gold": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
-      "0.05": 150.0,
+      "0.05": 150,
       "0.10": 276,
-      "0.20": 1080,
+      "0.20": 750,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
@@ -118,9 +118,9 @@
   "ow_l_emerald_cut_tennis": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
-      "0.05": 150.0,
+      "0.05": 150,
       "0.10": 276,
-      "0.20": 1080,
+      "0.20": 750,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
@@ -131,9 +131,9 @@
   "ow_l_marquise_round_alternating_tennis": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
-      "0.05": 300.0,
+      "0.05": 300,
       "0.10": 552,
-      "0.20": 2160,
+      "0.20": 1500,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
@@ -144,9 +144,9 @@
   "ow_l_pear_cut_tennis_gold": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
-      "0.05": 150.0,
+      "0.05": 150,
       "0.10": 276,
-      "0.20": 1080,
+      "0.20": 750,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
@@ -168,7 +168,7 @@
     "diamondPriceOptions": {
       "0.05": 362.5,
       "0.10": 667,
-      "0.20": 2610,
+      "0.20": 1812.5,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
@@ -181,7 +181,7 @@
     "diamondPriceOptions": {
       "0.05": 362.5,
       "0.10": 667,
-      "0.20": 2610,
+      "0.20": 1812.5,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
@@ -406,9 +406,9 @@
   "tennis_oval_riviere": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
-      "0.05": 600.0,
+      "0.05": 600,
       "0.10": 1104,
-      "0.20": 4320,
+      "0.20": 3000,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
@@ -419,9 +419,9 @@
   "tennis_princess_line": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
-      "0.05": 600.0,
+      "0.05": 600,
       "0.10": 1104,
-      "0.20": 4320,
+      "0.20": 3000,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
@@ -432,9 +432,9 @@
   "tennis_cushion_lumiere": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
-      "0.05": 600.0,
+      "0.05": 600,
       "0.10": 1104,
-      "0.20": 4320,
+      "0.20": 3000,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
@@ -445,9 +445,9 @@
   "tennis_asscher_avenue": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
-      "0.05": 600.0,
+      "0.05": 600,
       "0.10": 1104,
-      "0.20": 4320,
+      "0.20": 3000,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
@@ -458,9 +458,9 @@
   "tennis_round_bezel": {
     "braceletMetalTier": "premium",
     "diamondPriceOptions": {
-      "0.05": 600.0,
+      "0.05": 600,
       "0.10": 1104,
-      "0.20": 4320,
+      "0.20": 3000,
       "0.25": 2200,
       "0.50": 2400,
       "0.75": 2700,
