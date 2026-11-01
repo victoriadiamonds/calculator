@@ -536,6 +536,7 @@ app.post(
           buildPricingParams(req.body)
         );
 
+      if (req.body.braceletSize && pricingResult?.prod) {const [width,length]=req.body.braceletSize.split('|');pricingResult.prod={...pricingResult.prod,name:pricingResult.prod.name+' — Bracelet '+width+' mm width × '+length+' inch length'};}
       if (!pricingResult) {
 
         return res.status(400).json({
