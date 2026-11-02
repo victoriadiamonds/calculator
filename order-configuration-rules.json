@@ -542,5 +542,194 @@
       18,
       20
     ]
+  },
+  "aura_laurel_diamond_band": {
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "0.25",
+        "qty": 5
+      }
+    ],
+    "labOnly": true
+  },
+  "aura_pear_and_round_bypass_ring": {
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "1.00",
+        "qty": 1
+      },
+      {
+        "quality": "select",
+        "carat": "0.50",
+        "qty": 1
+      }
+    ],
+    "labOnly": true
+  },
+  "aura_ribbon_diamond_ring": {
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "0.50",
+        "qty": 1
+      },
+      {
+        "quality": "select",
+        "carat": "0.25",
+        "qty": 2
+      }
+    ],
+    "labOnly": true
+  },
+  "aura_diamond_bow_pendant": {
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "0.50",
+        "qty": 1
+      },
+      {
+        "quality": "select",
+        "carat": "0.25",
+        "qty": 2
+      }
+    ],
+    "labOnly": true
+  },
+  "aura_diamond_leaf_circle_pendant": {
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "0.25",
+        "qty": 5
+      }
+    ],
+    "labOnly": true
+  },
+  "aura_diamond_bow_stud_earrings": {
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "0.50",
+        "qty": 2
+      }
+    ],
+    "labOnly": true
+  },
+  "aura_pear_diamond_drop_earrings": {
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "1.00",
+        "qty": 2
+      },
+      {
+        "quality": "select",
+        "carat": "0.25",
+        "qty": 2
+      }
+    ],
+    "labOnly": true
+  },
+  "aura_diamond_ribbon_bracelet": {
+    "braceletMetalTier": "essential",
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "0.50",
+        "qty": 1
+      },
+      {
+        "quality": "select",
+        "carat": "0.25",
+        "qty": 2
+      }
+    ],
+    "labOnly": true
+  },
+  "aura_diamond_star_station_bracelet": {
+    "braceletMetalTier": "essential",
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "0.25",
+        "qty": 5
+      }
+    ],
+    "labOnly": true
+  },
+  "christmas_solstice_crown_ring": {
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "0.75",
+        "qty": 1
+      },
+      {
+        "quality": "select",
+        "carat": "0.25",
+        "qty": 4
+      }
+    ],
+    "labOnly": true
+  },
+  "christmas_noelle_star_pendant": {
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "0.50",
+        "qty": 1
+      }
+    ],
+    "labOnly": true
+  },
+  "christmas_noelle_wreath_drop_earrings": {
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "0.25",
+        "qty": 12
+      }
+    ],
+    "labOnly": true
+  },
+  "christmas_winter_snowflake_earrings": {
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "0.50",
+        "qty": 2
+      },
+      {
+        "quality": "select",
+        "carat": "0.25",
+        "qty": 12
+      }
+    ],
+    "labOnly": true
+  },
+  "christmas_solstice_diamond_line_bracelet": {
+    "braceletMetalTier": "essential",
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "0.25",
+        "qty": 35
+      }
+    ],
+    "labOnly": true
+  },
+  "christmas_winter_wreath_bracelet": {
+    "braceletMetalTier": "essential",
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "0.25",
+        "qty": 6
+      }
+    ],
+    "labOnly": true
   }
 }

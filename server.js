@@ -465,7 +465,7 @@ app.get('/health', (req, res) => {
 // =========================
 
 // Routes determine the collection; a customer cannot switch it in the request body.
-const onlineCollections = { 'daily-sparkle': 'dailySparkle', 'high-note': 'occasionWear', 'forever-bond': 'foreverBond', aura: 'singleLady', mens: 'mens', keepsake: 'keepsake', tennis: 'tennis', halo: 'halo' };
+const onlineCollections = { 'daily-sparkle': 'dailySparkle', 'high-note': 'occasionWear', 'forever-bond': 'foreverBond', aura: 'singleLady', mens: 'mens', keepsake: 'keepsake', tennis: 'tennis', halo: 'halo', christmas: 'christmas' };
 const onlineCollection = route => onlineCollections[route.split('/')[1]];
 // Quotes never create payment links or send customer emails.
 app.post(Object.keys(onlineCollections).map(route => `/${route}/quote`), (req, res) => {
@@ -537,7 +537,7 @@ app.post(
           buildPricingParams(req.body)
         );
 
-      if (req.body.necklaceLength && pricingResult?.prod) pricingResult.prod={...pricingResult.prod,name:pricingResult.prod.name+' � '+req.body.necklaceLength+' inch necklace'};
+      if (req.body.necklaceLength && pricingResult?.prod) pricingResult.prod={...pricingResult.prod,name:pricingResult.prod.name+' � '+req.body.necklaceLength+' inch necklace'};
       if (req.body.braceletSize && pricingResult?.prod) {const [width,length]=req.body.braceletSize.split('|');pricingResult.prod={...pricingResult.prod,name:pricingResult.prod.name+' — Bracelet '+width+' mm width × '+length+' inch length'};}
       if (!pricingResult) {
 

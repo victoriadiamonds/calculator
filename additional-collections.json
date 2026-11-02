@@ -291,6 +291,162 @@
             }
           ]
         }
+      },
+      {
+        "id": "aura_laurel_diamond_band",
+        "name": "Laurel Diamond Band",
+        "type": "ring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 5,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.25",
+          "qty": 5
+        }
+      },
+      {
+        "id": "aura_pear_and_round_bypass_ring",
+        "name": "Pear and Round Bypass Ring",
+        "type": "ring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 2,
+        "diamondPreset": {
+          "q": "select",
+          "c": "1.00",
+          "qty": 1,
+          "additional": [
+            {
+              "q": "select",
+              "c": "0.50",
+              "qty": 1
+            }
+          ]
+        }
+      },
+      {
+        "id": "aura_ribbon_diamond_ring",
+        "name": "Ribbon Diamond Ring",
+        "type": "ring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 3,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.50",
+          "qty": 1,
+          "additional": [
+            {
+              "q": "select",
+              "c": "0.25",
+              "qty": 2
+            }
+          ]
+        }
+      },
+      {
+        "id": "aura_diamond_bow_pendant",
+        "name": "Diamond Bow Pendant",
+        "type": "pendant",
+        "weight": 0,
+        "labor": 0,
+        "stones": 3,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.50",
+          "qty": 1,
+          "additional": [
+            {
+              "q": "select",
+              "c": "0.25",
+              "qty": 2
+            }
+          ]
+        }
+      },
+      {
+        "id": "aura_diamond_leaf_circle_pendant",
+        "name": "Diamond Leaf Circle Pendant",
+        "type": "pendant",
+        "weight": 0,
+        "labor": 0,
+        "stones": 5,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.25",
+          "qty": 5
+        }
+      },
+      {
+        "id": "aura_diamond_bow_stud_earrings",
+        "name": "Diamond Bow Stud Earrings",
+        "type": "earring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 2,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.50",
+          "qty": 2
+        }
+      },
+      {
+        "id": "aura_pear_diamond_drop_earrings",
+        "name": "Pear Diamond Drop Earrings",
+        "type": "earring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 4,
+        "diamondPreset": {
+          "q": "select",
+          "c": "1.00",
+          "qty": 2,
+          "additional": [
+            {
+              "q": "select",
+              "c": "0.25",
+              "qty": 2
+            }
+          ]
+        }
+      },
+      {
+        "id": "aura_diamond_ribbon_bracelet",
+        "name": "Diamond Ribbon Bracelet",
+        "type": "bracelet",
+        "weight": 0,
+        "labor": 0,
+        "stones": 3,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.50",
+          "qty": 1,
+          "additional": [
+            {
+              "q": "select",
+              "c": "0.25",
+              "qty": 2
+            }
+          ]
+        },
+        "defaultBraceletTier": "essential",
+        "minBraceletTier": "essential"
+      },
+      {
+        "id": "aura_diamond_star_station_bracelet",
+        "name": "Diamond Star Station Bracelet",
+        "type": "bracelet",
+        "weight": 0,
+        "labor": 0,
+        "stones": 5,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.25",
+          "qty": 5
+        },
+        "defaultBraceletTier": "essential",
+        "minBraceletTier": "essential"
       }
     ]
   },
@@ -675,6 +831,104 @@
           "qty": 1,
           "additional": []
         }
+      },
+      {
+        "id": "christmas_silver_holly_embrace_ring",
+        "name": "Holly Embrace Ring",
+        "type": "ring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 3,
+        "fixedPrice": 147.5,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.20",
+          "qty": 1,
+          "additional": [
+            {
+              "q": "select",
+              "c": "0.10",
+              "qty": 2
+            }
+          ]
+        }
+      },
+      {
+        "id": "christmas_silver_noelle_starburst_ring",
+        "name": "Noelle Starburst Ring",
+        "type": "ring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 7,
+        "fixedPrice": 239.5,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.20",
+          "qty": 1,
+          "additional": [
+            {
+              "q": "select",
+              "c": "0.10",
+              "qty": 6
+            }
+          ]
+        }
+      },
+      {
+        "id": "christmas_silver_evergreen_tree_pendant",
+        "name": "Evergreen Tree Pendant",
+        "type": "pendant",
+        "weight": 0,
+        "labor": 0,
+        "stones": 3,
+        "fixedPrice": 147.5,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.20",
+          "qty": 1,
+          "additional": [
+            {
+              "q": "select",
+              "c": "0.10",
+              "qty": 2
+            }
+          ]
+        }
+      },
+      {
+        "id": "christmas_silver_midnight_snowfall_pendant",
+        "name": "Midnight Snowfall Pendant",
+        "type": "pendant",
+        "weight": 0,
+        "labor": 0,
+        "stones": 7,
+        "fixedPrice": 239.5,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.20",
+          "qty": 1,
+          "additional": [
+            {
+              "q": "select",
+              "c": "0.10",
+              "qty": 6
+            }
+          ]
+        }
+      },
+      {
+        "id": "christmas_silver_candy_cane_diamond_earrings",
+        "name": "Candy Cane Diamond Earrings",
+        "type": "earring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 6,
+        "fixedPrice": 184,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.10",
+          "qty": 6
+        }
       }
     ]
   },
@@ -709,6 +963,106 @@
           "qty": 1,
           "additional": []
         }
+      }
+    ]
+  },
+  "christmas": {
+    "essentials": [
+      {
+        "id": "christmas_solstice_crown_ring",
+        "name": "Solstice Crown Ring",
+        "type": "ring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 5,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.75",
+          "qty": 1,
+          "additional": [
+            {
+              "q": "select",
+              "c": "0.25",
+              "qty": 4
+            }
+          ]
+        }
+      },
+      {
+        "id": "christmas_noelle_star_pendant",
+        "name": "Noelle Star Pendant",
+        "type": "pendant",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.50",
+          "qty": 1
+        }
+      },
+      {
+        "id": "christmas_noelle_wreath_drop_earrings",
+        "name": "Noelle Wreath Drop Earrings",
+        "type": "earring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 12,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.25",
+          "qty": 12
+        }
+      },
+      {
+        "id": "christmas_winter_snowflake_earrings",
+        "name": "Winter Snowflake Earrings",
+        "type": "earring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 14,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.50",
+          "qty": 2,
+          "additional": [
+            {
+              "q": "select",
+              "c": "0.25",
+              "qty": 12
+            }
+          ]
+        }
+      },
+      {
+        "id": "christmas_solstice_diamond_line_bracelet",
+        "name": "Solstice Diamond Line Bracelet",
+        "type": "bracelet",
+        "weight": 0,
+        "labor": 0,
+        "stones": 35,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.25",
+          "qty": 35
+        },
+        "defaultBraceletTier": "essential",
+        "minBraceletTier": "essential"
+      },
+      {
+        "id": "christmas_winter_wreath_bracelet",
+        "name": "Winter Wreath Bracelet",
+        "type": "bracelet",
+        "weight": 0,
+        "labor": 0,
+        "stones": 6,
+        "diamondPreset": {
+          "q": "select",
+          "c": "0.25",
+          "qty": 6
+        },
+        "defaultBraceletTier": "essential",
+        "minBraceletTier": "essential"
       }
     ]
   }
