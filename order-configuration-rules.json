@@ -467,5 +467,80 @@
       "1.00": 3000
     },
     "stoneCount": 48
+  },
+  "tennis_necklace_round_classic": {
+    "braceletMetalTier": "supreme",
+    "stoneCount": 99,
+    "diamondPriceOptions": {
+      "0.05": 1900,
+      "0.10": 2852,
+      "0.15": 3850,
+      "0.20": 6187.5
+    },
+    "necklaceLengths": [
+      16,
+      18,
+      20
+    ]
+  },
+  "tennis_necklace_oval_riviere": {
+    "braceletMetalTier": "supreme",
+    "stoneCount": 99,
+    "diamondPriceOptions": {
+      "0.05": 1900,
+      "0.10": 2852,
+      "0.15": 3850,
+      "0.20": 6187.5
+    },
+    "necklaceLengths": [
+      16,
+      18,
+      20
+    ]
+  },
+  "tennis_necklace_princess_line": {
+    "braceletMetalTier": "supreme",
+    "stoneCount": 99,
+    "diamondPriceOptions": {
+      "0.05": 1900,
+      "0.10": 2852,
+      "0.15": 3850,
+      "0.20": 6187.5
+    },
+    "necklaceLengths": [
+      16,
+      18,
+      20
+    ]
+  },
+  "tennis_necklace_pear_lumiere": {
+    "braceletMetalTier": "supreme",
+    "stoneCount": 99,
+    "diamondPriceOptions": {
+      "0.05": 1900,
+      "0.10": 2852,
+      "0.15": 3850,
+      "0.20": 6187.5
+    },
+    "necklaceLengths": [
+      16,
+      18,
+      20
+    ]
+  },
+  "tennis_necklace_round_bezel": {
+    "braceletMetalTier": "supreme",
+    "stoneCount": 99,
+    "diamondPriceOptions": {
+      "0.05": 1900,
+      "0.10": 2852,
+      "0.15": 3850,
+      "0.20": 6187.5
+    },
+    "necklaceLengths": [
+      16,
+      18,
+      20
+    ]
   }
 }

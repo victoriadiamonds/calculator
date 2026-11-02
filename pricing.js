@@ -2042,6 +2042,8 @@ function computePricing(params) {
   const natural = params.diamondOrigin === 'natural';
   if(params.collection==='halo')params={...params,diamonds:require('./halo-configuration').normalize(params.productId,params.diamonds,natural)};
   if (natural && params.collection === 'silver') throw new Error('Silver Collection uses its listed lab diamond specification.');
+  const necklaceRule=ORDER_CONFIGURATION_RULES[params.productId];
+  if(natural&&necklaceRule?.necklaceLengths){const length=Number(params.necklaceLength||16);if(!necklaceRule.necklaceLengths.includes(length))throw new Error('Choose a valid necklace length.');const entry=require('./natural-diamonds').resolve([params.diamonds[0]])[0];const count=require('./tennis-necklace-sizing').estimateStoneCount(length,entry.carat);params={...params,diamonds:[{naturalId:entry.naturalId,qty:Math.min(100,count)},...(count>100?[{naturalId:entry.naturalId,qty:count-100}]:[])]};}
   const naturalEntries = natural ? require('./natural-diamonds').resolve(params.diamonds) : null;
   const rule = ORDER_CONFIGURATION_RULES[params.productId];
   if(rule?.labOnly && natural) throw new Error('This design uses its listed lab-grown diamonds.');
@@ -2195,7 +2197,7 @@ function computePricing(params) {
 
   let packageKey;
 
-  if (prod.type === 'bracelet') {
+  if (prod.type === 'bracelet' || rule?.necklaceLengths) {
 
     // Honour the same specification selected in the customer calculator.
     packageKey = Object.hasOwn(PRICING_PACKAGE_MATRIX, params.braceletMetalTier)
@@ -2348,6 +2350,7 @@ function computePricing(params) {
   // Bracelet options price the complete diamond portion, not a single main stone.
   if (!natural && rule?.diamondPriceOptions) {
     diamondPrice = rule.diamondPriceOptions[params.diamonds[0].carat];
+    if(rule.necklaceLengths){const length=Number(params.necklaceLength||16);if(!rule.necklaceLengths.includes(length))throw new Error("Choose a valid necklace length.");const count=require("./tennis-necklace-sizing").estimateStoneCount(length,params.diamonds[0].carat);diamondPrice=count*DIAMOND_PRICES.select[params.diamonds[0].carat];}
     hasUnpricedDiamond = false;
     entries[0].price = diamondPrice;
     entries[0].total = diamondPrice;

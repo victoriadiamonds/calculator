@@ -201,6 +201,91 @@
       },
       "diamondShape": "Round",
       "totalCarat": 9.6
+    },
+    {
+      "id": "tennis_necklace_round_classic",
+      "name": "Classic Round Tennis Necklace",
+      "type": "necklace",
+      "weight": 0,
+      "labor": 0,
+      "stones": 99,
+      "defaultBraceletTier": "supreme",
+      "minBraceletTier": "supreme",
+      "diamondShape": "Round",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.20",
+        "qty": 1
+      },
+      "totalCarat": 19.8
+    },
+    {
+      "id": "tennis_necklace_oval_riviere",
+      "name": "Oval Riviere Tennis Necklace",
+      "type": "necklace",
+      "weight": 0,
+      "labor": 0,
+      "stones": 99,
+      "defaultBraceletTier": "supreme",
+      "minBraceletTier": "supreme",
+      "diamondShape": "Oval",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.20",
+        "qty": 1
+      },
+      "totalCarat": 19.8
+    },
+    {
+      "id": "tennis_necklace_princess_line",
+      "name": "Princess Line Tennis Necklace",
+      "type": "necklace",
+      "weight": 0,
+      "labor": 0,
+      "stones": 99,
+      "defaultBraceletTier": "supreme",
+      "minBraceletTier": "supreme",
+      "diamondShape": "Princess",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.20",
+        "qty": 1
+      },
+      "totalCarat": 19.8
+    },
+    {
+      "id": "tennis_necklace_pear_lumiere",
+      "name": "Pear Lumiere Tennis Necklace",
+      "type": "necklace",
+      "weight": 0,
+      "labor": 0,
+      "stones": 99,
+      "defaultBraceletTier": "supreme",
+      "minBraceletTier": "supreme",
+      "diamondShape": "Pear",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.20",
+        "qty": 1
+      },
+      "totalCarat": 19.8
+    },
+    {
+      "id": "tennis_necklace_round_bezel",
+      "name": "Round Bezel Tennis Necklace",
+      "type": "necklace",
+      "weight": 0,
+      "labor": 0,
+      "stones": 99,
+      "defaultBraceletTier": "supreme",
+      "minBraceletTier": "supreme",
+      "diamondShape": "Round",
+      "diamondPreset": {
+        "q": "select",
+        "c": "0.20",
+        "qty": 1
+      },
+      "totalCarat": 19.8
     }
   ]
 }

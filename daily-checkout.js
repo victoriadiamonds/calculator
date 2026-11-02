@@ -29,6 +29,7 @@ function quoteDaily(body={}, collection='dailySparkle') {
  if(product.type==='bracelet'&&!Object.hasOwn(pricing.PRICING_PACKAGE_MATRIX,braceletMetalTier))throw new Error('Please choose a bracelet specification.');
  const params={collection,productId:product.id,typeFilter:'all',metal:body.metal,karat:karat||18,purity:purity||925,quantity,diamonds,diamondOrigin:body.diamondOrigin||'lab',braceletMetalTier,discount:0,profit:0,designFee:0};
  if(!natural&&rule?.diamondPriceOptions){const carat=Number(diamonds[0]?.carat).toFixed(2);if(!Object.hasOwn(rule.diamondPriceOptions,carat))throw new Error('Choose an available bracelet diamond size.');params.diamonds=[{quality:'select',carat,qty:1}];}
+ if(rule?.necklaceLengths){const length=Number(body.necklaceLength||16);if(!rule.necklaceLengths.includes(length))throw new Error("Choose a valid necklace length.");params.necklaceLength=length;}
  if(body.braceletSize!=null){if(product.type!=='bracelet'||!['2.5|6.5','2.5|7','3|6.5','3|7'].includes(body.braceletSize))throw new Error('Choose a valid bracelet size.');params.braceletSize=body.braceletSize;}
  if(rule?.initialRequired)params.initial=body.initial;
  const result=pricing.computePricing(params);

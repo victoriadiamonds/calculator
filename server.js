@@ -341,6 +341,7 @@ function buildPricingParams(body) {
     productId: body.productId,
     initial: body.initial,
     petName: body.petName,
+    necklaceLength: body.necklaceLength,
     ringSize: body.ringSize,
     reverseEngraving: body.reverseEngraving,
     diamondOrigin: body.diamondOrigin || 'lab',
@@ -536,6 +537,7 @@ app.post(
           buildPricingParams(req.body)
         );
 
+      if (req.body.necklaceLength && pricingResult?.prod) pricingResult.prod={...pricingResult.prod,name:pricingResult.prod.name+' � '+req.body.necklaceLength+' inch necklace'};
       if (req.body.braceletSize && pricingResult?.prod) {const [width,length]=req.body.braceletSize.split('|');pricingResult.prod={...pricingResult.prod,name:pricingResult.prod.name+' — Bracelet '+width+' mm width × '+length+' inch length'};}
       if (!pricingResult) {
 
