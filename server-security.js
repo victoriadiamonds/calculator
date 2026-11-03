@@ -47,7 +47,7 @@ function installSecurity(app, root) {
     next();
   });
   // Serve only browser assets, never server code, archives, tests, or lockfiles.
-  const assets = new Set(['/style.css', '/natural-selector.js', '/natural-diamonds-data.js']);
+  const assets = new Set(['/style.css', '/natural-selector.js', '/natural-diamonds-data.js', '/prism-controls.js']);
   const index = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
   app.get(['/', '/index.html'], (req, res) => {
     res.set('Cache-Control', 'no-store').type('html').send(index.replace(/<script>/g, `<script nonce="${res.locals.scriptNonce}">`));

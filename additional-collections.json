@@ -1065,5 +1065,79 @@
         "minBraceletTier": "essential"
       }
     ]
+  },
+  "prism": {
+    "essentials": [
+      {
+        "id": "prism_aurelle_ring",
+        "name": "Aurelle Colour Solitaire Ring",
+        "type": "ring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "defaultBraceletTier": "essential",
+        "diamondPreset": {
+          "q": "select",
+          "c": "1.00",
+          "qty": 1
+        }
+      },
+      {
+        "id": "prism_orbe_ring",
+        "name": "Orbe Colour Bezel Ring",
+        "type": "ring",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "defaultBraceletTier": "essential",
+        "diamondPreset": {
+          "q": "select",
+          "c": "1.00",
+          "qty": 1
+        }
+      },
+      {
+        "id": "prism_lien_bracelet",
+        "name": "Lien Colour Solitaire Bracelet",
+        "type": "bracelet",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "defaultBraceletTier": "essential",
+        "diamondPreset": {
+          "q": "select",
+          "c": "1.00",
+          "qty": 1
+        }
+      },
+      {
+        "id": "prism_lumiere_studs",
+        "name": "Lumière Colour Stud Earrings",
+        "type": "earrings",
+        "weight": 0,
+        "labor": 0,
+        "stones": 2,
+        "defaultBraceletTier": "essential",
+        "diamondPreset": {
+          "q": "select",
+          "c": "1.00",
+          "qty": 2
+        }
+      },
+      {
+        "id": "prism_solene_necklace",
+        "name": "Solène Colour Solitaire Necklace",
+        "type": "necklace",
+        "weight": 0,
+        "labor": 0,
+        "stones": 1,
+        "defaultBraceletTier": "essential",
+        "diamondPreset": {
+          "q": "select",
+          "c": "1.00",
+          "qty": 1
+        }
+      }
+    ]
   }
 }

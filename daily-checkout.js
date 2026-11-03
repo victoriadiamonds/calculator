@@ -3,7 +3,7 @@ const pricing=require('./pricing');
 const orderRules=require('./order-configuration-rules.json');
 function quoteDaily(body={}, collection='dailySparkle') {
  if(require('./tennis-products.json').migratedIds.includes(body.productId)&&['occasionWear','mens'].includes(collection))collection='tennis';
- if(!['dailySparkle','occasionWear','foreverBond','singleLady','mens','keepsake','tennis','halo','christmas'].includes(collection))throw new Error('Unsupported online collection.');
+ if(!['dailySparkle','occasionWear','foreverBond','singleLady','mens','keepsake','tennis','halo','christmas','prism'].includes(collection))throw new Error('Unsupported online collection.');
  const product=pricing.getProductsForCollection(collection,'all').find(p=>p.id===body.productId);
  if(!product)throw new Error('Please choose a valid piece from this collection.');
  if(!['gold','silver','platinum'].includes(body.metal))throw new Error('Please choose a valid metal.');
@@ -16,6 +16,10 @@ function quoteDaily(body={}, collection='dailySparkle') {
  if(!Array.isArray(body.diamonds)||body.diamonds.length<(['foreverBond','singleLady'].includes(collection)?0:1)||body.diamonds.length>4)throw new Error('Please check the diamond specifications (up to four groups).');
  const rule=orderRules[product.id];
  if(rule?.initialRequired&&!/^[A-Z]$/.test(String(body.initial||'')))throw new Error('Choose one initial from A to Z.');
+ if(rule?.diamondColours){
+  if(!rule.diamondColours.includes(body.diamondColour||'pink'))throw new Error('Choose an available diamond colour.');
+  if(body.diamonds.length!==1||!rule.diamondCarats.includes(body.diamonds[0]?.carat)||Number(body.diamonds[0]?.qty)!==rule.stoneCount)throw new Error('Choose an available Prism stone size and the fixed design count.');
+ }
  const natural=body.diamondOrigin==='natural';
  if(rule?.labOnly&&natural)throw new Error('This design uses its listed lab-grown diamonds.');
  if(body.diamondOrigin&&!['lab','natural'].includes(body.diamondOrigin))throw new Error('Invalid diamond origin.');
@@ -32,6 +36,7 @@ function quoteDaily(body={}, collection='dailySparkle') {
  if(rule?.necklaceLengths){const length=Number(body.necklaceLength||16);if(!rule.necklaceLengths.includes(length))throw new Error("Choose a valid necklace length.");params.necklaceLength=length;}
  if(body.braceletSize!=null){if(product.type!=='bracelet'||!['2.5|6.5','2.5|7','3|6.5','3|7'].includes(body.braceletSize))throw new Error('Choose a valid bracelet size.');params.braceletSize=body.braceletSize;}
  if(rule?.initialRequired)params.initial=body.initial;
+ if(rule?.diamondColours)params.diamondColour=body.diamondColour||'pink';
  const result=pricing.computePricing(params);
  if(!result||result.priceOnRequest||result.hasUnpricedDiamond||!Number.isFinite(result.finalTotal)||result.finalTotal<=0)throw new Error('This configuration needs a personal quote.');
  const total=Math.round(result.finalTotal*100)/100,due=Math.round(total*paymentPercentage)/100;

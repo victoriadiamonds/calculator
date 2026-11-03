@@ -340,6 +340,7 @@ function buildPricingParams(body) {
     collection: body.collection,
     productId: body.productId,
     initial: body.initial,
+    diamondColour: body.diamondColour,
     petName: body.petName,
     necklaceLength: body.necklaceLength,
     ringSize: body.ringSize,
@@ -465,7 +466,7 @@ app.get('/health', (req, res) => {
 // =========================
 
 // Routes determine the collection; a customer cannot switch it in the request body.
-const onlineCollections = { 'daily-sparkle': 'dailySparkle', 'high-note': 'occasionWear', 'forever-bond': 'foreverBond', aura: 'singleLady', mens: 'mens', keepsake: 'keepsake', tennis: 'tennis', halo: 'halo', christmas: 'christmas' };
+const onlineCollections = { 'daily-sparkle': 'dailySparkle', 'high-note': 'occasionWear', 'forever-bond': 'foreverBond', aura: 'singleLady', mens: 'mens', keepsake: 'keepsake', tennis: 'tennis', halo: 'halo', christmas: 'christmas', prism: 'prism', prism: 'prism' };
 const onlineCollection = route => onlineCollections[route.split('/')[1]];
 // Quotes never create payment links or send customer emails.
 app.post(Object.keys(onlineCollections).map(route => `/${route}/quote`), (req, res) => {
@@ -537,6 +538,7 @@ app.post(
           buildPricingParams(req.body)
         );
 
+      if (req.body.diamondColour && pricingResult?.prod) pricingResult.prod={...pricingResult.prod,name:pricingResult.prod.name+' — Coloured lab diamond: '+req.body.diamondColour};
       if (req.body.necklaceLength && pricingResult?.prod) pricingResult.prod={...pricingResult.prod,name:pricingResult.prod.name+' � '+req.body.necklaceLength+' inch necklace'};
       if (req.body.braceletSize && pricingResult?.prod) {const [width,length]=req.body.braceletSize.split('|');pricingResult.prod={...pricingResult.prod,name:pricingResult.prod.name+' — Bracelet '+width+' mm width × '+length+' inch length'};}
       if (!pricingResult) {
@@ -600,6 +602,8 @@ app.post(
 
           collection:
             String(req.body.collection),
+
+          diamond_colour: String(req.body.diamondColour || ''),
 
           product_id:
             String(req.body.productId),

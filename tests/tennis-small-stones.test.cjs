@@ -5,7 +5,7 @@ const pricing=require('../pricing');
 const rules=require('../order-configuration-rules.json');
 
 test('small tennis options use configured stone counts and authoritative rates across metals and deposits',()=>{
- const designs=Object.entries(rules).filter(([,rule])=>rule.stoneCount&&!rule.necklaceLengths);
+ const designs=Object.entries(rules).filter(([,rule])=>rule.stoneCount&&rule.diamondPriceOptions&&!rule.necklaceLengths);
  assert.equal(designs.length,13);
  for(const [productId,rule]of designs)for(const [carat,rate]of [['0.05',12.5],['0.10',23],['0.20',62.5]])for(const metal of ['gold','silver','platinum'])for(const paymentPercentage of [30,50,100]){
   const body={productId,metal,karat:18,purity:925,quantity:1,paymentPercentage,diamonds:[{quality:'select',carat,qty:99}]};

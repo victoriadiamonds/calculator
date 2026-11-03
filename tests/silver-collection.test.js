@@ -34,7 +34,7 @@ test('piece search handles case, multiple terms, type filters and no matches', (
 });
 
 test('current Silver catalogue preserves original prices and matches checkout', () => {
-  assert.equal(backend.length, 62);
+  assert.equal(backend.length, 67);
   assert.deepEqual(backend.slice(0,17).map(product => product.fixedPrice), expected);
   assert.deepEqual(JSON.parse(JSON.stringify(frontend.map(({ id, name, type, fixedPrice, diamondPreset }) => ({ id, name, type, fixedPrice, diamondPreset })))),
     backend.map(({ id, name, type, fixedPrice, diamondPreset }) => ({ id, name, type, fixedPrice, diamondPreset })));

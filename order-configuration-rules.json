@@ -731,5 +731,117 @@
       }
     ],
     "labOnly": true
+  },
+  "prism_aurelle_ring": {
+    "labOnly": true,
+    "diamondPriceMultiplier": 1.2,
+    "diamondColours": [
+      "pink",
+      "red",
+      "orange",
+      "yellow",
+      "green",
+      "teal",
+      "blue"
+    ],
+    "diamondCarats": [
+      "1.00",
+      "2.00",
+      "3.00",
+      "4.00",
+      "5.00"
+    ],
+    "stoneCount": 1
+  },
+  "prism_orbe_ring": {
+    "labOnly": true,
+    "diamondPriceMultiplier": 1.2,
+    "diamondColours": [
+      "pink",
+      "red",
+      "orange",
+      "yellow",
+      "green",
+      "teal",
+      "blue"
+    ],
+    "diamondCarats": [
+      "1.00",
+      "2.00",
+      "3.00",
+      "4.00",
+      "5.00"
+    ],
+    "stoneCount": 1
+  },
+  "prism_lien_bracelet": {
+    "labOnly": true,
+    "diamondPriceMultiplier": 1.2,
+    "diamondColours": [
+      "pink",
+      "red",
+      "orange",
+      "yellow",
+      "green",
+      "teal",
+      "blue"
+    ],
+    "diamondCarats": [
+      "1.00",
+      "2.00",
+      "3.00",
+      "4.00",
+      "5.00"
+    ],
+    "stoneCount": 1,
+    "braceletMetalTier": "essential"
+  },
+  "prism_lumiere_studs": {
+    "labOnly": true,
+    "diamondPriceMultiplier": 1.2,
+    "diamondColours": [
+      "pink",
+      "red",
+      "orange",
+      "yellow",
+      "green",
+      "teal",
+      "blue"
+    ],
+    "diamondCarats": [
+      "0.25",
+      "0.50",
+      "0.75",
+      "1.00",
+      "2.00",
+      "3.00",
+      "4.00",
+      "5.00"
+    ],
+    "stoneCount": 2
+  },
+  "prism_solene_necklace": {
+    "labOnly": true,
+    "diamondPriceMultiplier": 1.2,
+    "diamondColours": [
+      "pink",
+      "red",
+      "orange",
+      "yellow",
+      "green",
+      "teal",
+      "blue"
+    ],
+    "diamondCarats": [
+      "0.25",
+      "0.50",
+      "0.75",
+      "1.00",
+      "2.00",
+      "3.00",
+      "4.00",
+      "5.00"
+    ],
+    "stoneCount": 1
   }
 }

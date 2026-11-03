@@ -1921,6 +1921,7 @@ COLLECTION_TIERS.tennis=['premium'];
 function getCollectionName(id) {
 
   const names = {
+    prism: 'Prism Collection',
     halo: 'Halo Ring Collection',
     tennis: 'Tennis Collection',
     keepsake: 'Keepsake Collection',
@@ -2401,6 +2402,15 @@ function computePricing(params) {
     cost breakdown.
   */
 
+  // A server-owned multiplier applies to diamonds only; metal is unchanged.
+  if (rule?.diamondPriceMultiplier) {
+    if (natural) throw new Error('Prism designs are lab-grown only.');
+    if (!rule.diamondColours.includes(params.diamondColour || 'pink')) throw new Error('Invalid diamond colour.');
+    const prismDiamonds=params.diamonds.filter(d=>Number(d.carat)>0);
+    if (prismDiamonds.length !== 1 || !rule.diamondCarats.includes(prismDiamonds[0].carat) || Number(prismDiamonds[0].qty) !== rule.stoneCount) throw new Error('Invalid Prism diamond configuration.');
+    diamondPrice = Math.round(diamondPrice * rule.diamondPriceMultiplier * 100) / 100;
+    entries.forEach(entry => { entry.price = Math.round(entry.price * rule.diamondPriceMultiplier * 100) / 100; entry.total = Math.round(entry.total * rule.diamondPriceMultiplier * 100) / 100; });
+  }
   // These three-ring stacking sets cost three complete finished pieces.
   // Server-owned: request fields cannot override the set multiplier.
   const stackingSetMultiplier = ['ow_s_promise', 'fb_s_unbreakable_hearts', 'fb_s_bound_by_destiny'].includes(prod.id) ? 3 : 1;
