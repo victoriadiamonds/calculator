@@ -1096,7 +1096,7 @@
       const row = document.getElementById('braceletTierRow');
       const sel = document.getElementById('braceletMetalTier');
       if(!row) return;
-      row.hidden = !(prod && prod.type === 'bracelet' && prod.fixedPrice === undefined);
+      row.hidden = !(prod && prod.type === 'bracelet' && prod.fixedPrice === undefined && !ORDER_CONFIGURATION_RULES[prod.id]?.braceletMetalTier);
       if(!sel) return;
       const tiers = ['essential', 'signature', 'atelier', 'premium', 'supreme'];
       Array.from(sel.options).forEach(option => option.disabled = !!prod?.minBraceletTier && tiers.indexOf(option.value) < tiers.indexOf(prod.minBraceletTier));
