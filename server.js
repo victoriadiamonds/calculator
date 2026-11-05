@@ -9,6 +9,7 @@ require('dotenv').config();
 
 const pricing = require('./pricing');
 const { quoteDaily } = require('./daily-checkout');
+const klubby = require('./klubby-offer');
 
 const app = express();
 installSecurity(app, __dirname);
@@ -49,9 +50,9 @@ app.get('/api/v1/pieces', (req,res) => {
  if(!Object.hasOwn(pricing.PRODUCTS_BY_COLLECTION,req.query.collection))return res.status(400).json({error:'Choose a valid collection.'});
  res.json(pricing.getProductsForCollection(req.query.collection,req.query.type||'all'));
 });
-app.post('/api/v1/quote', (req,res) => {
- try {const {params,...quote}=quoteDaily(req.body,req.body.collection);res.set('Cache-Control','no-store').json(quote);}
- catch(error){res.status(400).json({error:error.message});}
+app.post('/api/v1/quote', async (req,res) => {
+ try {const {params,digest,...quote}=await klubby.applyOffer(req.body,quoteDaily(req.body,req.body.collection));res.set('Cache-Control','no-store').json(quote);}
+ catch(error){res.status(error instanceof klubby.OfferError ? error.status : req.body.klubbyCode ? 503 : 400).json({error:req.body.klubbyCode && !(error instanceof klubby.OfferError) ? 'Unable to check the Klubby offer.' : error.message});}
 });
 
 // =========================
@@ -469,11 +470,11 @@ app.get('/health', (req, res) => {
 const onlineCollections = { 'daily-sparkle': 'dailySparkle', 'high-note': 'occasionWear', 'forever-bond': 'foreverBond', aura: 'singleLady', mens: 'mens', keepsake: 'keepsake', tennis: 'tennis', halo: 'halo', christmas: 'christmas', prism: 'prism', prism: 'prism' };
 const onlineCollection = route => onlineCollections[route.split('/')[1]];
 // Quotes never create payment links or send customer emails.
-app.post(Object.keys(onlineCollections).map(route => `/${route}/quote`), (req, res) => {
+app.post(Object.keys(onlineCollections).map(route => `/${route}/quote`), async (req, res) => {
   try {
-    const { params, ...quote } = quoteDaily(req.body, onlineCollection(req.path));
+    const { params, digest, ...quote } = await klubby.applyOffer(req.body, quoteDaily(req.body, onlineCollection(req.path)));
     res.set('Cache-Control', 'no-store').json(quote);
-  } catch (error) { res.status(400).json({ error: error.message }); }
+  } catch (error) { res.status(error instanceof klubby.OfferError ? error.status : req.body.klubbyCode ? 503 : 400).json({error:req.body.klubbyCode && !(error instanceof klubby.OfferError) ? 'Unable to check the Klubby offer.' : error.message}); }
 });
 
 app.post(
@@ -486,11 +487,14 @@ app.post(
 
     try {
 
+      let offerQuote;
+      if (req.body.klubbyCode && req.path === '/create-payment-link') return res.status(400).json({error:'Klubby is unavailable for this checkout.'});
       if (Boolean(onlineCollection(req.path)) || req.path === '/api/v1/payment-link') {
         let dailyQuote;
         try { dailyQuote = quoteDaily(req.body, req.path === '/api/v1/payment-link' ? req.body.collection : onlineCollection(req.path)); }
         catch (error) { return res.status(400).json({ error: error.message }); }
-        if (Number(req.body.expectedTotal) !== dailyQuote.total) {
+        offerQuote = await klubby.applyOffer(req.body, dailyQuote);
+        if (Number(req.body.expectedTotal) !== offerQuote.total) {
           return res.status(409).json({ error: 'The price has changed. Please review a fresh quote before continuing.' });
         }
         req.body = { ...dailyQuote.params, paymentPercentage: dailyQuote.paymentPercentage,
@@ -559,8 +563,8 @@ app.post(
 
       // Calculate payment amount based on percentage (30-100%, default 100%)
       const paymentPercentage = pricingResult.fixedPrice ? 100 : Math.max(30, Math.min(100, Number(req.body.paymentPercentage) || 100));
-      const fullAmount = Math.round(Number(pricingResult.finalTotal) * 100) / 100;
-      const amount = Math.round(fullAmount * (paymentPercentage / 100) * 100) / 100;
+      const fullAmount = offerQuote?.digest ? offerQuote.total : Math.round(Number(pricingResult.finalTotal) * 100) / 100;
+      const amount = offerQuote?.digest ? offerQuote.due : Math.round(fullAmount * (paymentPercentage / 100) * 100) / 100;
 
       if (
         !Number.isFinite(amount) ||
@@ -577,6 +581,8 @@ app.post(
 
       const isDeposit = paymentPercentage < 100;
       const paymentTypeLabel = isDeposit ? `Deposit (${paymentPercentage}%)` : 'Full Payment';
+
+      if (offerQuote?.digest) await klubby.reserve(offerQuote.digest, merchantOrderId);
 
       const paymentLinkData = {
 
@@ -596,6 +602,7 @@ app.post(
           merchantOrderId,
 
         metadata: {
+          ...(offerQuote?.digest ? { promotion: 'klubby', delivery_country: 'GB' } : {}),
 
           merchant_order_id:
             merchantOrderId,
@@ -639,7 +646,7 @@ app.post(
 
           reference: false,
 
-          shipping_address: false,
+          shipping_address: Boolean(offerQuote?.digest),
 
           billing_address: false
         }
@@ -784,6 +791,7 @@ app.post(
 
     } catch (error) {
 
+      if (error instanceof klubby.OfferError) return res.status(error.status).json({error:error.message});
       const details =
         safeAirwallexError(error);
 
@@ -913,6 +921,10 @@ app.post(
           paymentIntentId
         }
       );
+
+      if (eventType === 'payment_link.paid' && object.metadata?.promotion === 'klubby' && object.reference) {
+        await klubby.redeem(object.reference);
+      }
 
       if (
         merchantOrderId &&
