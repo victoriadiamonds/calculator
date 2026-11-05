@@ -52,6 +52,12 @@ function installSecurity(app, root) {
   app.get(['/', '/index.html'], (req, res) => {
     res.set('Cache-Control', 'no-store').type('html').send(index.replace(/<script>/g, `<script nonce="${res.locals.scriptNonce}">`));
   });
+  app.get('/klubby-test', (req, res) => {
+    if (process.env.AIRWALLEX_ENV !== 'sandbox') return res.sendStatus(404);
+    const page = fs.readFileSync(path.join(root, 'klubby-test.html'), 'utf8');
+    res.set('Cache-Control', 'no-store').set('X-Robots-Tag', 'noindex, nofollow')
+      .type('html').send(page.replace(/<script>/g, `<script nonce="${res.locals.scriptNonce}">`));
+  });
   app.get([...assets], (req, res) => res.sendFile(path.join(root, req.path.slice(1))));
 }
 

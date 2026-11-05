@@ -770,6 +770,7 @@ app.post(
         success: true,
 
         paymentLinkId,
+        ...(AIRWALLEX_ENV === 'sandbox' ? { sandboxPaymentLinkUrl: paymentLinkUrl } : {}),
 
         merchantOrderId,
 
