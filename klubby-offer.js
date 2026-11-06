@@ -23,7 +23,7 @@ function discountedAmounts({ fullAmount, paymentPercentage, metal, deliveryCount
   const pennies = Math.round(fullAmount * 100);
   if (!Number.isSafeInteger(pennies) || pennies <= 0 || pennies > Math.floor(Number.MAX_SAFE_INTEGER / 100)) throw new Error('Invalid order amount.');
   if (!fixedPrice && (!Number.isFinite(paymentPercentage) || paymentPercentage < 30 || paymentPercentage > 100)) throw new Error('Invalid payment percentage.');
-  const discount = Math.round(pennies * 13 / 100);
+  const discount = Math.round(pennies * 10 / 100);
   const total = pennies - discount;
   const payable = fixedPrice ? total : Math.round(total * paymentPercentage / 100);
   return { discount: discount / 100, fullAmount: total / 100, amount: payable / 100, balance: (total - payable) / 100 };
@@ -75,4 +75,4 @@ async function redeem(order) {
   await database().query('SELECT promotions.redeem_klubby_code($1)', [order]);
 }
 
-module.exports = { applyOffer, reserve, redeem, OfferError };
+module.exports = { applyOffer, reserve, redeem, OfferError, discountedAmounts };
