@@ -9,7 +9,7 @@ const axios=async options=>{calls.push(options);return {data:options.url.endsWit
 axios.post=async()=>({data:{token:'test-only',expires_at:'2099-01-01'}});
 const context=vm.createContext({require(id){if(id==='./server-security')return {installSecurity(){},escapeHtml:require(root+'/server-security').escapeHtml};if(id==='express')return express;if(id==='cors')return ()=>()=>{};if(id==='axios')return axios;if(id==='pdfkit')return function(){};if(id==='dotenv')return {config(){}};if(id==='./pricing')return pricing;if(id==='./daily-checkout')return {quoteDaily};return require(id);},__dirname:root,process:{env:{AIRWALLEX_CLIENT_ID:'test',AIRWALLEX_API_KEY:'test',AIRWALLEX_WEBHOOK_SECRET:'test-webhook-secret'}},console:{log(){},warn(){},error(){}},Buffer});
 vm.runInContext(fs.readFileSync(path.join(root,'server.js'),'utf8'),context);
-const sample={productId:'ds_s_solenne',metal:'gold',karat:14,purity:925,quantity:2,paymentPercentage:30,diamonds:[{carat:'1.00',qty:1,quality:'luxe'}],customerName:'Preview',customerEmail:'preview@example.com'};
+const sample={productId:'ds_s_solenne',metal:'gold',karat:14,purity:925,quantity:2,paymentPercentage:50,diamonds:[{carat:'1.00',qty:1,quality:'luxe'}],customerName:'Preview',customerEmail:'preview@example.com'};
 async function request(route,body){const response={code:200,status(code){this.code=code;return this;},set(){return this;},json(data){this.data=data;return this;}};await routes.get(route)({path:route,body},response);return response;}
 test('quote endpoint performs no payment or email operation',async()=>{const before=calls.length,res=await request('/daily-sparkle/quote',sample);assert.equal(res.code,200);assert.equal(res.data.total,quoteDaily(sample).total);assert.equal(calls.length,before);assert.equal(res.data.params,undefined);});
 test('payment route rejects changed prices and invalid configurations before payment creation',async()=>{const before=calls.length;assert.equal((await request('/daily-sparkle/payment-link',{...sample,expectedTotal:1})).code,409);assert.equal((await request('/daily-sparkle/payment-link',{...sample,productId:'missing'})).code,400);assert.equal(calls.length,before);});
@@ -34,4 +34,16 @@ test('webhook signatures require the exact raw payload and configured secret', (
  assert.equal(verify(Buffer.from('{}'),timestamp,signature),false);
  assert.equal(verify(raw,timestamp,'forged'),false);
  assert.equal(verify(raw,timestamp,null),false);
+});
+
+
+test('30% deposits are rejected before a quote or payment link can be created', async () => {
+ const before = calls.length;
+ const body = {...sample, collection:'dailySparkle', paymentPercentage:30};
+ for (const route of ['/daily-sparkle/quote', '/daily-sparkle/payment-link', '/create-payment-link']) {
+  const response = await request(route, body);
+  assert.equal(response.code, 400, route);
+  assert.match(response.data.error, /50% deposit or full payment/);
+ }
+ assert.equal(calls.length, before);
 });

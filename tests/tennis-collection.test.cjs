@@ -6,7 +6,7 @@ const c=vm.createContext({require(id){if(id==='./server-security')return {instal
 async function request(route,body){const res={code:200,status(v){this.code=v;return this;},set(){return this;},json(v){this.data=v;return this;}};await routes.get(route)({path:route,body},res);return res;}
 test('all eighteen tennis pieces produce quotes and mocked payment links with locked design-specific tier',async()=>{
  assert.equal(pricing.getProductsForCollection('tennis','bracelet').length,13);
- for(const p of catalogue.products){const body={productId:p.id,metal:'gold',karat:18,purity:925,quantity:1,paymentPercentage:30,braceletMetalTier:'essential',diamonds:[{quality:'select',carat:p.type==='necklace'?'0.20':'0.25',qty:1}],necklaceLength:18,customerName:'Test',customerEmail:'test@example.invalid'};
+ for(const p of catalogue.products){const body={productId:p.id,metal:'gold',karat:18,purity:925,quantity:1,paymentPercentage:50,braceletMetalTier:'essential',diamonds:[{quality:'select',carat:p.type==='necklace'?'0.20':'0.25',qty:1}],necklaceLength:18,customerName:'Test',customerEmail:'test@example.invalid'};
  const before=calls.length,q=await request('/tennis/quote',body);assert.equal(q.code,200);assert.equal(q.data.total,p.type==='necklace'?11032:p.id==='mens_pillar_tennis_bracelet'?6232:4720);assert.equal(calls.length,before);
  const pay=await request('/tennis/payment-link',{...body,expectedTotal:q.data.total});assert.equal(pay.code,200);assert.equal(pay.data.fullAmount,q.data.total);assert.equal(pay.data.amount,q.data.due);
  const order=vm.runInContext('Array.from(orders.values()).at(-1)',c);assert.equal(order.collection,'tennis');assert.equal(order.pricing.packageKey,p.defaultBraceletTier);

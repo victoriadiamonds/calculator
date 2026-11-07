@@ -433,8 +433,8 @@ function validateCheckoutRequest(body) {
   }
   if (body.paymentPercentage !== undefined && body.paymentPercentage !== null) {
     const percentage = Number(body.paymentPercentage);
-    if (!Number.isFinite(percentage) || percentage < 30 || percentage > 100) {
-      return 'Payment percentage must be between 30 and 100';
+    if (![50, 100].includes(percentage)) {
+      return 'Choose a 50% deposit or full payment.';
     }
   }
 
@@ -557,8 +557,8 @@ app.post(
         });
       }
 
-      // Calculate payment amount based on percentage (30-100%, default 100%)
-      const paymentPercentage = pricingResult.fixedPrice ? 100 : Math.max(30, Math.min(100, Number(req.body.paymentPercentage) || 100));
+      // Use the validated payment choice, defaulting to full payment.
+      const paymentPercentage = pricingResult.fixedPrice ? 100 : Number(req.body.paymentPercentage ?? 100);
       const fullAmount = Math.round(Number(pricingResult.finalTotal) * 100) / 100;
       const amount = Math.round(fullAmount * (paymentPercentage / 100) * 100) / 100;
 

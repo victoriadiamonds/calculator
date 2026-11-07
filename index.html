@@ -297,13 +297,7 @@
           <div class="form-group">
             <label for="paymentPercentage">Payment Amount</label>
             <select id="paymentPercentage">
-              <option value="30">30% Deposit</option>
-              <option value="40">40% Deposit</option>
               <option value="50" selected>50% Deposit</option>
-              <option value="60">60% Deposit</option>
-              <option value="70">70% Deposit</option>
-              <option value="80">80% Deposit</option>
-              <option value="90">90% Deposit</option>
               <option value="100">100% - Full Payment</option>
             </select>
             <div class="small muted" id="depositAmountHint" style="margin-top:4px"></div>
@@ -1630,13 +1624,13 @@
       const paymentSelect = document.getElementById('paymentPercentage');
       const previousPercentage = paymentSelect.value;
       paymentSelect.replaceChildren();
-      (fullPaymentOnly ? [100] : [30, 40, 50, 60, 70, 80, 90, 100]).forEach(percentage => {
+      (fullPaymentOnly ? [100] : [50, 100]).forEach(percentage => {
         const option = document.createElement('option');
         option.value = String(percentage);
         option.textContent = percentage === 100 ? '100% - Full Payment' : percentage + '% Deposit';
         paymentSelect.appendChild(option);
       });
-      paymentSelect.value = fullPaymentOnly ? '100' : (previousPercentage || '50');
+      paymentSelect.value = fullPaymentOnly ? '100' : (previousPercentage === '100' ? '100' : '50');
       paymentSelect.disabled = fullPaymentOnly;
       closeResultPopup();
       document.getElementById('petOrderFields')?.remove();
