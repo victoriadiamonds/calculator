@@ -22,7 +22,7 @@ function discountedAmounts({ fullAmount, paymentPercentage, metal, deliveryCount
   if (!['gold', 'platinum'].includes(metal) || deliveryCountry !== 'GB') throw new Error('The Klubby offer applies to eligible non-silver jewellery for UK delivery.');
   const pennies = Math.round(fullAmount * 100);
   if (!Number.isSafeInteger(pennies) || pennies <= 0 || pennies > Math.floor(Number.MAX_SAFE_INTEGER / 100)) throw new Error('Invalid order amount.');
-  if (!fixedPrice && (!Number.isFinite(paymentPercentage) || paymentPercentage < 30 || paymentPercentage > 100)) throw new Error('Invalid payment percentage.');
+  if (!fixedPrice && ![50, 100].includes(paymentPercentage)) throw new Error('Invalid payment percentage.');
   const discount = Math.round(pennies * 10 / 100);
   const total = pennies - discount;
   const payable = fixedPrice ? total : Math.round(total * paymentPercentage / 100);

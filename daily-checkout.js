@@ -12,7 +12,7 @@ function quoteDaily(body={}, collection='dailySparkle') {
  if(body.metal==='silver'&&purity!==925)throw new Error('Please choose a valid silver purity.');
  const quantity=Number(body.quantity),paymentPercentage=Number(body.paymentPercentage);
  if(!Number.isInteger(quantity)||quantity<1||quantity>10)throw new Error('Quantity must be between 1 and 10.');
- if(![30,50,100].includes(paymentPercentage))throw new Error('Choose a 30% deposit, 50% deposit, or full payment.');
+ if(![50,100].includes(paymentPercentage))throw new Error('Choose a 50% deposit or full payment.');
  if(!Array.isArray(body.diamonds)||body.diamonds.length<(['foreverBond','singleLady'].includes(collection)?0:1)||body.diamonds.length>4)throw new Error('Please check the diamond specifications (up to four groups).');
  const rule=orderRules[product.id];
  if(rule?.initialRequired&&!/^[A-Z]$/.test(String(body.initial||'')))throw new Error('Choose one initial from A to Z.');
