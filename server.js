@@ -341,6 +341,7 @@ function buildPricingParams(body) {
     productId: body.productId,
     initial: body.initial,
     diamondColour: body.diamondColour,
+    diamondIntensity: body.diamondIntensity,
     petName: body.petName,
     necklaceLength: body.necklaceLength,
     ringSize: body.ringSize,
@@ -604,6 +605,7 @@ app.post(
             String(req.body.collection),
 
           diamond_colour: String(req.body.diamondColour || ''),
+          diamond_intensity: String(req.body.diamondIntensity || ''),
 
           product_id:
             String(req.body.productId),

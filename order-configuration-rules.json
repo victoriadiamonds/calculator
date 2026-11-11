@@ -734,7 +734,6 @@
   },
   "prism_aurelle_ring": {
     "labOnly": true,
-    "diamondPriceMultiplier": 1.2,
     "diamondColours": [
       "pink",
       "red",
@@ -745,6 +744,13 @@
       "blue"
     ],
     "diamondCarats": [
+      "0.05",
+      "0.1",
+      "0.15",
+      "0.20",
+      "0.25",
+      "0.50",
+      "0.75",
       "1.00",
       "2.00",
       "3.00",
@@ -755,7 +761,6 @@
   },
   "prism_orbe_ring": {
     "labOnly": true,
-    "diamondPriceMultiplier": 1.2,
     "diamondColours": [
       "pink",
       "red",
@@ -766,6 +771,13 @@
       "blue"
     ],
     "diamondCarats": [
+      "0.05",
+      "0.1",
+      "0.15",
+      "0.20",
+      "0.25",
+      "0.50",
+      "0.75",
       "1.00",
       "2.00",
       "3.00",
@@ -776,7 +788,6 @@
   },
   "prism_lien_bracelet": {
     "labOnly": true,
-    "diamondPriceMultiplier": 1.2,
     "diamondColours": [
       "pink",
       "red",
@@ -787,6 +798,13 @@
       "blue"
     ],
     "diamondCarats": [
+      "0.05",
+      "0.1",
+      "0.15",
+      "0.20",
+      "0.25",
+      "0.50",
+      "0.75",
       "1.00",
       "2.00",
       "3.00",
@@ -798,7 +816,6 @@
   },
   "prism_lumiere_studs": {
     "labOnly": true,
-    "diamondPriceMultiplier": 1.2,
     "diamondColours": [
       "pink",
       "red",
@@ -809,6 +826,10 @@
       "blue"
     ],
     "diamondCarats": [
+      "0.05",
+      "0.1",
+      "0.15",
+      "0.20",
       "0.25",
       "0.50",
       "0.75",
@@ -822,7 +843,6 @@
   },
   "prism_solene_necklace": {
     "labOnly": true,
-    "diamondPriceMultiplier": 1.2,
     "diamondColours": [
       "pink",
       "red",
@@ -833,6 +853,10 @@
       "blue"
     ],
     "diamondCarats": [
+      "0.05",
+      "0.1",
+      "0.15",
+      "0.20",
       "0.25",
       "0.50",
       "0.75",

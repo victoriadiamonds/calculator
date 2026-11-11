@@ -1,3 +1,10 @@
+const prismMultipliers = {"yellow": [2, 4.8], "blue": [2.5, 6], "teal": [2.5, 6], "green": [2.5, 6], "orange": [3, 7.2], "pink": [3.6, 8.6], "red": [4.5, 10.8]};
+function prismMultiplier(colour = 'pink', intensity = 'light-fancy') {
+  if (!Object.hasOwn(prismMultipliers, colour) || !['light-fancy', 'intense-vivid'].includes(intensity)) {
+    throw new Error('Choose an available colour and intensity.');
+  }
+  return prismMultipliers[colour][intensity === 'intense-vivid' ? 1 : 0];
+}
 const ORDER_CONFIGURATION_RULES = require('./order-configuration-rules.json');
 const BASE = {
   gold24: 62.0,
@@ -2291,7 +2298,7 @@ function computePricing(params) {
     if (caratNum > 0) {
 
       const tierPrices =
-        DIAMOND_PRICES[d.quality] || {};
+        DIAMOND_PRICES[rule?.diamondColours ? 'select' : d.quality] || {};
 
 
       const rawPrice =
@@ -2403,13 +2410,14 @@ function computePricing(params) {
   */
 
   // A server-owned multiplier applies to diamonds only; metal is unchanged.
-  if (rule?.diamondPriceMultiplier) {
+  if (rule?.diamondColours) {
+    const multiplier = prismMultiplier(params.diamondColour, params.diamondIntensity);
     if (natural) throw new Error('Prism designs are lab-grown only.');
     if (!rule.diamondColours.includes(params.diamondColour || 'pink')) throw new Error('Invalid diamond colour.');
     const prismDiamonds=params.diamonds.filter(d=>Number(d.carat)>0);
     if (prismDiamonds.length !== 1 || !rule.diamondCarats.includes(prismDiamonds[0].carat) || Number(prismDiamonds[0].qty) !== rule.stoneCount) throw new Error('Invalid Prism diamond configuration.');
-    diamondPrice = Math.round(diamondPrice * rule.diamondPriceMultiplier * 100) / 100;
-    entries.forEach(entry => { entry.price = Math.round(entry.price * rule.diamondPriceMultiplier * 100) / 100; entry.total = Math.round(entry.total * rule.diamondPriceMultiplier * 100) / 100; });
+    diamondPrice = Math.round(diamondPrice * multiplier * 100) / 100;
+    entries.forEach(entry => { entry.price = Math.round(entry.price * multiplier * 100) / 100; entry.total = Math.round(entry.total * multiplier * 100) / 100; });
   }
   // These three-ring stacking sets cost three complete finished pieces.
   // Server-owned: request fields cannot override the set multiplier.

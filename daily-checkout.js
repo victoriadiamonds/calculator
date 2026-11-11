@@ -36,7 +36,11 @@ function quoteDaily(body={}, collection='dailySparkle') {
  if(rule?.necklaceLengths){const length=Number(body.necklaceLength||16);if(!rule.necklaceLengths.includes(length))throw new Error("Choose a valid necklace length.");params.necklaceLength=length;}
  if(body.braceletSize!=null){if(product.type!=='bracelet'||!['2.5|6.5','2.5|7','3|6.5','3|7'].includes(body.braceletSize))throw new Error('Choose a valid bracelet size.');params.braceletSize=body.braceletSize;}
  if(rule?.initialRequired)params.initial=body.initial;
- if(rule?.diamondColours)params.diamondColour=body.diamondColour||'pink';
+ if(rule?.diamondColours){
+  params.diamondColour=body.diamondColour||'pink';
+  params.diamondIntensity=body.diamondIntensity;
+  params.diamonds=diamonds.map(d=>({...d,quality:'select'}));
+ }
  const result=pricing.computePricing(params);
  if(!result||result.priceOnRequest||result.hasUnpricedDiamond||!Number.isFinite(result.finalTotal)||result.finalTotal<=0)throw new Error('This configuration needs a personal quote.');
  const total=Math.round(result.finalTotal*100)/100,due=Math.round(total*paymentPercentage)/100;
