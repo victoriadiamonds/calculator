@@ -2054,6 +2054,9 @@ function computePricing(params) {
   if(natural&&necklaceRule?.necklaceLengths){const length=Number(params.necklaceLength||16);if(!necklaceRule.necklaceLengths.includes(length))throw new Error('Choose a valid necklace length.');const entry=require('./natural-diamonds').resolve([params.diamonds[0]])[0];const count=require('./tennis-necklace-sizing').estimateStoneCount(length,entry.carat);params={...params,diamonds:[{naturalId:entry.naturalId,qty:Math.min(100,count)},...(count>100?[{naturalId:entry.naturalId,qty:count-100}]:[])]};}
   const naturalEntries = natural ? require('./natural-diamonds').resolve(params.diamonds) : null;
   const rule = ORDER_CONFIGURATION_RULES[params.productId];
+  if (rule?.diamondColours && params.metal === 'silver') {
+    throw new Error('Colour Diamond Collection pieces are available in gold or platinum.');
+  }
   if(rule?.labOnly && natural) throw new Error('This design uses its listed lab-grown diamonds.');
   if(rule?.initialRequired && !/^[A-Z]$/.test(String(params.initial||''))) throw new Error('Choose one initial from A to Z.');
   if(rule?.braceletMetalTier) params={...params,braceletMetalTier:rule.braceletMetalTier};
