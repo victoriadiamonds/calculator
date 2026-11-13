@@ -8,6 +8,7 @@ const { installSecurity, escapeHtml } = require('./server-security');
 require('dotenv').config();
 
 const pricing = require('./pricing');
+const {deliveryPricing}=require('./delivery-pricing');
 const { quoteDaily } = require('./daily-checkout');
 
 const app = express();
@@ -560,7 +561,13 @@ app.post(
 
       // Use the validated payment choice, defaulting to full payment.
       const paymentPercentage = pricingResult.fixedPrice ? 100 : Number(req.body.paymentPercentage ?? 100);
-      const fullAmount = Math.round(Number(pricingResult.finalTotal) * 100) / 100;
+      let charges;
+      try { charges=deliveryPricing(Number(pricingResult.finalTotal),req.body.deliveryDestination); }
+      catch (error) { return res.status(400).json({error:error.message}); }
+      const fullAmount = charges.total;
+      if (req.body.deliveryDestination && req.body.collection === 'silver' && Number(req.body.expectedTotal) !== fullAmount) {
+        return res.status(409).json({error:'The price has changed. Please review your order total.'});
+      }
       const amount = Math.round(fullAmount * (paymentPercentage / 100) * 100) / 100;
 
       if (
@@ -629,6 +636,8 @@ app.post(
           is_deposit:
             String(isDeposit),
 
+          delivery_destination: req.body.deliveryDestination || "",
+          vat_amount: String(charges.vat),
           full_amount:
             String(fullAmount)
         },
@@ -641,7 +650,7 @@ app.post(
 
           reference: false,
 
-          shipping_address: false,
+          shipping_address: Boolean(req.body.deliveryDestination),
 
           billing_address: false
         }

@@ -1,3 +1,4 @@
+const {deliveryPricing}=require('./delivery-pricing');
 // This module belongs in the calculator repository as daily-checkout.js.
 const pricing=require('./pricing');
 const orderRules=require('./order-configuration-rules.json');
@@ -43,7 +44,9 @@ function quoteDaily(body={}, collection='dailySparkle') {
  }
  const result=pricing.computePricing(params);
  if(!result||result.priceOnRequest||result.hasUnpricedDiamond||!Number.isFinite(result.finalTotal)||result.finalTotal<=0)throw new Error('This configuration needs a personal quote.');
- const total=Math.round(result.finalTotal*100)/100,due=Math.round(total*paymentPercentage)/100;
- return {params,paymentPercentage,total,due,balance:Math.round((total-due)*100)/100,currency:'GBP'};
+ const charges=deliveryPricing(result.finalTotal,body.deliveryDestination);
+ if(body.deliveryDestination!==undefined)params.deliveryDestination=body.deliveryDestination;
+ const {total}=charges,due=Math.round(total*paymentPercentage)/100;
+ return {params,paymentPercentage,...charges,due,balance:Math.round((total-due)*100)/100,currency:'GBP'};
 }
 module.exports={quoteDaily};
