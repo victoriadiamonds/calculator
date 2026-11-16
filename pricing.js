@@ -1928,7 +1928,7 @@ COLLECTION_TIERS.tennis=['premium'];
 function getCollectionName(id) {
 
   const names = {
-    prism: 'Prism Collection',
+    prism: 'Colour Diamond',
     halo: 'Halo Ring Collection',
     tennis: 'Tennis Collection',
     keepsake: 'Keepsake Collection',

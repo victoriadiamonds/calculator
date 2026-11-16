@@ -30,7 +30,7 @@
           <option value="occasionWear">High Note</option>
           <option value="foreverBond">Forever Bond</option>
           <option value="singleLady">Aura</option>
-          <option value="prism">Prism Collection</option><option value="silver">Silver Collection</option>
+          <option value="prism">Colour Diamond</option><option value="silver">Silver Collection</option>
           <option value="halo">Halo Ring Collection</option>
           <option value="tennis">Tennis Collection</option>
           <option value="keepsake">Keepsake Collection</option>
@@ -53,7 +53,7 @@
         </select>
       </div>
       <div style="flex:1">
-        <label id="prismColourWrap" hidden>Diamond colour<select id="prismColour"><option value="pink">Pink</option><option value="red">Red</option><option value="orange">Orange</option><option value="yellow">Yellow</option><option value="green">Green</option><option value="teal">Teal</option><option value="blue">Blue</option></select></label><label id="prismIntensityWrap" hidden>Colour intensity<select id="prismIntensity"><option value="light-fancy">Fancy Light to Fancy</option><option value="intense-vivid">Fancy Intense to Fancy Vivid</option></select></label><label for="pieceSearch">Search piece</label>
+        <label id="prismColourWrap" hidden>Diamond colour<select id="prismColour"><option value="pink">Pink</option><option value="red">Red</option><option value="orange">Orange</option><option value="yellow">Yellow</option><option value="green">Green</option><option value="teal">Teal</option><option value="blue">Blue</option></select></label><label for="pieceSearch">Search piece</label>
         <input id="pieceSearch" type="search" placeholder="Search this collection and type" autocomplete="off" aria-describedby="pieceSearchStatus" />
         <p id="pieceSearchStatus" class="small muted" role="status"></p>
         <label for="product">Choose product / design</label>
@@ -113,13 +113,14 @@
         <button type="button" class="diamond-reset" data-index="0" title="Reset this diamond">↺</button>
       </div>
       <div class="row" style="margin-top:8px">
-        <div style="flex:1">
+        <div id="mainDiamondQuality" style="flex:1">
           <label for="dq0">Diamond quality</label>
           <select id="dq0" class="diamond-quality">
             <option value="select" selected>Select</option>
             <option value="luxe">Luxe</option>
           </select>
         </div>
+        <div id="prismIntensityWrap" style="flex:1" hidden><label>Colour intensity<select id="prismIntensity"><option value="light-fancy">Fancy Light to Fancy</option><option value="intense-vivid">Fancy Intense to Fancy Vivid</option></select></label></div>
         <div style="flex:1">
           <label for="dc0">Diamond carat</label>
           <select id="dc0" class="diamond-carat"></select>
@@ -1336,7 +1337,20 @@ function prismMultiplier(colour = 'pink', intensity = 'light-fancy') {
   return prismMultipliers[colour][intensity === 'intense-vivid' ? 1 : 0];
 }
 const prismRule=ORDER_CONFIGURATION_RULES[prod.id];
-      diamondPrice=Math.round(diamondPrice*(prismRule?.diamondColours ? prismMultiplier(document.getElementById('prismColour').value, document.getElementById('prismIntensity').value) : 1)*100)/100;
+      if (prismRule?.diamondColours) {
+        const colour = document.getElementById('prismColour');
+        const intensity = document.getElementById('prismIntensity');
+        const multiplier = prismMultiplier(colour.value, intensity.value);
+        diamondPrice = Math.round(diamondPrice * multiplier * 100) / 100;
+        entries[0].colourPricing = {
+          colour: colour.selectedOptions[0].textContent,
+          intensity: intensity.selectedOptions[0].textContent,
+          multiplier,
+          groupTotal: diamondPrice
+        };
+      } else {
+        diamondPrice = Math.round(diamondPrice * 100) / 100;
+      }
       if(prismRule?.diamondColours)prod={...prod,name:prod.name+' — '+document.getElementById('prismColour').value+' lab diamond'};
       const stackingSetMultiplier = ['ow_s_promise', 'fb_s_unbreakable_hearts', 'fb_s_bound_by_destiny'].includes(prod.id) ? 3 : 1;
       const subtotal = (ringPrice + diamondPrice + designFee) * stackingSetMultiplier;
@@ -1438,7 +1452,9 @@ const prismRule=ORDER_CONFIGURATION_RULES[prod.id];
 
       p.entries.forEach(function(e, idx){
         if(e.caratNum > 0){
-          if(e.unpriced){
+          if (e.colourPricing && !e.unpriced) {
+            html += '<div class="small">' + colourDiamondBreakdown(e) + '</div>';
+          } else if(e.unpriced){
             html += '<div class="small"><strong>' + DIAMOND_SECTION_NAMES[idx] + ':</strong> ' + (qualityLabels[e.quality] || e.quality) + ', ' + e.carat + ' ct × ' + e.qty + ' — ⚠ price not set for this size, contact us for a quote</div>';
           } else {
             html += '<div class="small"><strong>' + DIAMOND_SECTION_NAMES[idx] + ':</strong> ' + (qualityLabels[e.quality] || e.quality) + ', ' + e.carat + ' ct × ' + e.qty + ' = ' + formatGBPRate(e.total) + '</div>';
@@ -1487,6 +1503,17 @@ const prismRule=ORDER_CONFIGURATION_RULES[prod.id];
         '<div class="small" style="margin-top:8px">Notes: ' + (document.getElementById('notes').value.trim() || '-') + '</div>';
     }
 
+    function colourDiamondBreakdown(entry) {
+      const { colour, intensity, multiplier, groupTotal } = entry.colourPricing;
+      const perStone = formatGBPRate(entry.price * multiplier);
+      return '<strong>' + Number(entry.carat) + ' ct ' + colour.toLowerCase() +
+        ' diamond (' + intensity + ')</strong> = ' + perStone +
+        ' (' + multiplier + ' × ' + formatGBPRate(entry.price) +
+        ' white lab-grown diamond of the same carat)' +
+        (entry.qty > 1 ? '<br>' + entry.qty + ' stones × ' + perStone +
+          ' = ' + formatGBPRate(groupTotal) : '');
+    }
+
     function buildBreakdownMarkup(p){
       const packageLabels = { basic: 'Essential design', signature: 'Signature design' };
       const qualityLabels = { luxe: 'Luxe', select: 'Select' };
@@ -1494,7 +1521,9 @@ const prismRule=ORDER_CONFIGURATION_RULES[prod.id];
       lines += '<div class="breakdown-line"><span>Base price (design) — ' + (packageLabels[p.packageKey] || p.packageKey) + '</span><span>' + formatGBPRate(p.designComplexityFee) + '</span></div>';
       p.entries.forEach(function(e, idx){
         if(e.caratNum > 0){
-          if(e.unpriced){
+          if (e.colourPricing && !e.unpriced) {
+            lines += '<div class="breakdown-formula">' + colourDiamondBreakdown(e) + '</div>';
+          } else if(e.unpriced){
             lines += '<div class="breakdown-line"><span>' + DIAMOND_SECTION_NAMES[idx] + ' — ' + (qualityLabels[e.quality] || e.quality) + ', ' + e.carat + 'ct × ' + e.qty + '</span><span>⚠ unpriced</span></div>';
           } else {
             lines += '<div class="breakdown-line"><span>' + DIAMOND_SECTION_NAMES[idx] + ' — ' + (qualityLabels[e.quality] || e.quality) + ', ' + e.carat + 'ct × ' + e.qty + '</span><span>' + formatGBPRate(e.total) + '</span></div>';
@@ -2098,5 +2127,5 @@ const prismRule=ORDER_CONFIGURATION_RULES[prod.id];
   </script>
 <script src="natural-diamonds-data.js"></script>
 <script src="natural-selector.js"></script>
-<script src="prism-controls.js"></script></body>
+<script src="prism-controls.js?v=colour-breakdown"></script></body>
 </html>
