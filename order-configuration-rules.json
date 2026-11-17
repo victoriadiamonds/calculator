@@ -408,13 +408,10 @@
     "diamondPriceOptions": {
       "0.05": 600,
       "0.10": 1104,
-      "0.20": 3000,
-      "0.25": 2200,
-      "0.50": 2400,
-      "0.75": 2700,
-      "1.00": 3000
+      "0.20": 3000
     },
-    "stoneCount": 48
+    "stoneCount": 48,
+    "braceletReferenceLength": 6.5
   },
   "tennis_princess_line": {
     "braceletMetalTier": "premium",

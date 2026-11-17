@@ -2362,8 +2362,18 @@ function computePricing(params) {
   if (!natural && rule?.diamondPriceOptions) {
     diamondPrice = rule.diamondPriceOptions[params.diamonds[0].carat];
     if(rule.necklaceLengths){const length=Number(params.necklaceLength||16);if(!rule.necklaceLengths.includes(length))throw new Error("Choose a valid necklace length.");const count=require("./tennis-necklace-sizing").estimateStoneCount(length,params.diamonds[0].carat);diamondPrice=count*DIAMOND_PRICES.select[params.diamonds[0].carat];}
+    if (rule.braceletReferenceLength) {
+      const length = Number((params.braceletSize || '2.5|6.5').split('|')[1]);
+      if (![6.5, 7].includes(length)) throw new Error('Choose a valid bracelet length.');
+      const count = Math.round(rule.stoneCount * length / rule.braceletReferenceLength);
+      const perStone = diamondPrice / rule.stoneCount;
+      diamondPrice = Math.round(count * perStone * 100) / 100;
+      entries[0].qty = count;
+      entries[0].price = perStone;
+    } else {
+      entries[0].price = diamondPrice;
+    }
     hasUnpricedDiamond = false;
-    entries[0].price = diamondPrice;
     entries[0].total = diamondPrice;
   }
   if (natural) {
