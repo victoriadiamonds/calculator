@@ -77,6 +77,7 @@
       <div style="flex:1">
         <label for="metal">Metal</label>
         <select id="metal">
+          <option value="white-gold" hidden disabled>White Gold</option>
           <option value="gold">Gold</option>
           <option value="silver">Silver</option>
           <option value="platinum">Platinum</option>
@@ -1133,7 +1134,7 @@
       const metal = document.getElementById('metal').value;
       const container = document.getElementById('metalExtras');
       container.innerHTML = '';
-      if(metal === 'gold'){
+      if(['gold','white-gold'].includes(metal)){
         const label = document.createElement('label');
         label.textContent = 'Gold karat';
         const sel = document.createElement('select');
@@ -1173,7 +1174,7 @@
 
     function getMetalPricePerGram(){
       const metal = document.getElementById('metal').value;
-      if(metal === 'gold'){
+      if(['gold','white-gold'].includes(metal)){
         const karat = Number(document.getElementById('karat').value || 18);
         return BASE.gold24 * (karat/24);
       }
@@ -1305,7 +1306,7 @@
       let metalKey;
       if(metal === 'platinum'){
         metalKey = 'platinum';
-      } else if(metal === 'gold'){
+      } else if(['gold','white-gold'].includes(metal)){
         metalKey = document.getElementById('karat').value + 'K';
       } else {
         metalKey = 'silver';
@@ -1419,8 +1420,8 @@ const prismRule=ORDER_CONFIGURATION_RULES[prod.id];
           '<div class="small">Includes the listed stones and silver specification. No pricing adjustments apply.</div>';
       }
       if(prod.type === 'bracelet'){
-        const metalLabel = p.metal === 'gold'
-          ? document.getElementById('karat').value + 'K gold'
+        const metalLabel = ['gold','white-gold'].includes(p.metal)
+          ? document.getElementById('karat').value + (document.getElementById('metal').value === 'white-gold' ? 'K White Gold' : 'K Gold')
           : (p.metal === 'silver' ? document.getElementById('purity').value + ' silver' : '950 platinum');
         const qualityLabels = { luxe: 'Luxe', select: 'Select' };
         let html = '<div><strong>Collection:</strong> ' + getCollectionName(p.collection) + '</div>' +
@@ -1440,7 +1441,7 @@ const prismRule=ORDER_CONFIGURATION_RULES[prod.id];
       const collectionName = getCollectionName(p.collection);
       const tierInfo = TIERS[p.tierKey];
       const metal = p.metal;
-      const metalLabel = metal === 'gold' ? document.getElementById('karat').value + 'K gold' : (metal === 'silver' ? document.getElementById('purity').value + ' silver' : '950 platinum');
+      const metalLabel = ['gold','white-gold'].includes(metal) ? document.getElementById('karat').value + (document.getElementById('metal').value === 'white-gold' ? 'K White Gold' : 'K Gold') : (metal === 'silver' ? document.getElementById('purity').value + ' silver' : '950 platinum');
       const qualityLabels = { luxe: 'Luxe', select: 'Select' };
 
       var html = '<div class="result-tier-badge" style="--tier-color:' + tierInfo.color + '">' + tierInfo.label + '</div>' +
@@ -2127,5 +2128,5 @@ const prismRule=ORDER_CONFIGURATION_RULES[prod.id];
   </script>
 <script src="natural-diamonds-data.js"></script>
 <script src="natural-selector.js"></script>
-<script src="prism-controls.js?v=colour-breakdown"></script></body>
+<script src="prism-controls.js?v=white-gold"></script></body>
 </html>

@@ -7,9 +7,9 @@ function quoteDaily(body={}, collection='dailySparkle') {
  if(!['dailySparkle','occasionWear','foreverBond','singleLady','mens','keepsake','tennis','halo','christmas','prism'].includes(collection))throw new Error('Unsupported online collection.');
  const product=pricing.getProductsForCollection(collection,'all').find(p=>p.id===body.productId);
  if(!product)throw new Error('Please choose a valid piece from this collection.');
- if(!['gold','silver','platinum'].includes(body.metal))throw new Error('Please choose a valid metal.');
+ if(!['gold','silver','platinum',...(collection==='prism'?['white-gold']:[])].includes(body.metal))throw new Error('Please choose a valid metal.');
  const karat=Number(body.karat),purity=Number(body.purity);
- if(body.metal==='gold'&&![9,14,18,22].includes(karat))throw new Error('Please choose a valid gold karat.');
+ if(['gold','white-gold'].includes(body.metal)&&![9,14,18,22].includes(karat))throw new Error('Please choose a valid gold karat.');
  if(body.metal==='silver'&&purity!==925)throw new Error('Please choose a valid silver purity.');
  const quantity=Number(body.quantity),paymentPercentage=Number(body.paymentPercentage);
  if(!Number.isInteger(quantity)||quantity<1||quantity>10)throw new Error('Quantity must be between 1 and 10.');

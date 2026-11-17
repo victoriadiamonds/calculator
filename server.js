@@ -1068,8 +1068,8 @@ function generateOrderReceiptHTML(order) {
     });
   }
 
-  const metalLabel = product.metal === 'gold' 
-    ? `${pricing.karat || 18}K Gold` 
+  const metalLabel = ['gold', 'white-gold'].includes(product.metal)
+    ? `${pricing.karat || 18}K ${product.metal === "white-gold" ? "White Gold" : "Gold"}`
     : product.metal === 'silver' 
       ? `${pricing.purity || 925} Silver` 
       : 'Platinum';
@@ -1379,7 +1379,7 @@ function generateOrderReceiptPDF(order, res) {
     ['Email', customerEmail],
     ['Collection', getCollectionDisplayName(collection)],
     ['Product', product.name],
-    ['Metal', product.metal === 'gold' ? `${pricing.karat || 18}K Gold` : product.metal === 'silver' ? `${pricing.purity || 925} Silver` : 'Platinum']
+    ['Metal', ['gold', 'white-gold'].includes(product.metal) ? `${pricing.karat || 18}K ${product.metal === "white-gold" ? "White Gold" : "Gold"}` : product.metal === 'silver' ? `${pricing.purity || 925} Silver` : 'Platinum']
   ];
 
   if (pricing && pricing.braceletTier) {

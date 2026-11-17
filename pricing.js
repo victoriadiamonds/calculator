@@ -2028,7 +2028,7 @@ function getPackageFromWeight(weight) {
 
 function getMetalPricePerGram(metal, karat, purity) {
 
-  if (metal === 'gold') {
+  if (['gold', 'white-gold'].includes(metal)) {
     return BASE.gold24 * (Number(karat) / 24);
   }
 
@@ -2238,7 +2238,7 @@ function computePricing(params) {
 
     metalKey = 'silver';
 
-  } else if (metal === 'gold') {
+  } else if (['gold', 'white-gold'].includes(metal)) {
 
     metalKey = String(karat) + 'K';
 
