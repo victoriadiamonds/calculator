@@ -1042,31 +1042,12 @@ function getTierDisplayName(tierKey) {
 
 function generateOrderReceiptHTML(order) {
   const { merchantOrderId, amount, fullAmount, paymentPercentage, isDeposit, currency, customerName, customerEmail, product, collection, pricing, createdAt } = order;
-  const isFullPayment = !isDeposit || paymentPercentage === 100;
   const amountDue = amount;
   const depositLabel = isDeposit ? `Deposit (${paymentPercentage}%)` : 'Full Payment';
   
   const date = new Date(createdAt).toLocaleDateString('en-GB', {
     day: '2-digit', month: 'long', year: 'numeric'
   });
-
-  const diamondRows = [];
-  if (pricing && pricing.entries) {
-    pricing.entries.forEach((entry, idx) => {
-      if (entry.caratNum > 0) {
-        const qualityLabel = entry.quality === 'luxe' ? 'Luxe' : entry.quality === 'select' ? 'Select' : entry.quality;
-        diamondRows.push(`
-          <tr>
-            <td>${['Main Diamond', 'Diamond 2', 'Diamond 3', 'Diamond 4'][idx]}</td>
-            <td>${escapeHtml(qualityLabel)}</td>
-            <td>${escapeHtml(entry.carat)} ct</td>
-            <td>× ${escapeHtml(entry.qty)}</td>
-            <td>${entry.unpriced ? 'Price on request' : formatCurrency(entry.total)}</td>
-          </tr>
-        `);
-      }
-    });
-  }
 
   const metalLabel = ['gold', 'white-gold'].includes(product.metal)
     ? `${pricing.karat || 18}K ${product.metal === "white-gold" ? "White Gold" : "Gold"}`
@@ -1146,77 +1127,14 @@ function generateOrderReceiptHTML(order) {
         <div class="detail-label">Metal</div>
         <div class="detail-value">${escapeHtml(metalLabel)}</div>
       </div>
-      ${pricing && pricing.braceletTier ? `
-      <div class="detail-item">
-        <div class="detail-label">Bracelet Spec</div>
-        <div class="detail-value">${escapeHtml(pricing.braceletTier.label)} — ${escapeHtml(pricing.braceletTier.weight)}</div>
-      </div>
-      ` : ''}
     </div>
-
-    ${diamondRows.length > 0 ? `
-    <h3 class="section-title">Diamond Details</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Section</th>
-          <th>Quality</th>
-          <th>Carat</th>
-          <th>Qty</th>
-          <th>Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${diamondRows.join('')}
-      </tbody>
-    </table>
-    ` : ''}
 
     <div class="totals">
       <h3 class="section-title" style="margin-top:0">Price Summary</h3>
-      <div class="total-row">
-        <span>${pricing?.fixedPrice ? 'Fixed collection price (stones included)' : 'Design / Labour Fee'}</span>
-        <span>${formatCurrency(pricing?.fixedPrice ? pricing.ringPrice : (pricing?.designComplexityFee || 0))}</span>
-      </div>
-      <div class="total-row">
-        <span>Diamond Total</span>
-        <span>${formatCurrency(pricing?.diamondPrice || 0)}</span>
-      </div>
-      ${pricing && pricing.designFee > 0 ? `
-      <div class="total-row">
-        <span>Design Customization</span>
-        <span>${formatCurrency(pricing.designFee)}</span>
-      </div>
-      ` : ''}
-      <div class="total-row">
-        <span>Subtotal</span>
-        <span>${formatCurrency(pricing?.subtotal || 0)}</span>
-      </div>
-      ${pricing && pricing.profitPct > 0 ? `
-      <div class="total-row">
-        <span>Profit (${pricing.profitPct}%)</span>
-        <span>${formatCurrency(pricing.profitAmount)}</span>
-      </div>
-      ` : ''}
-      ${pricing && pricing.discount > 0 ? `
-      <div class="total-row">
-        <span>Discount (${pricing.discount}%)</span>
-        <span>−${formatCurrency(pricing.discountAmount)}</span>
-      </div>
-      ` : ''}
-      <div class="total-row final">
-        <span>Order Total (${depositLabel})</span>
-        <span>${formatCurrency(amountDue)}</span>
-      </div>
+      <div class="total-row final"><span>Order total</span><span>${formatCurrency(fullAmount)}</span></div>
       ${isDeposit ? `
-      <div class="total-row deposit">
-        <span>Full Amount (100%)</span>
-        <span>${formatCurrency(fullAmount)}</span>
-      </div>
-      <div class="total-row deposit">
-        <span>Balance Remaining</span>
-        <span>${formatCurrency(fullAmount - amountDue)}</span>
-      </div>
+      <div class="total-row"><span>Deposit due</span><span>${formatCurrency(amountDue)}</span></div>
+      <div class="total-row"><span>Remaining balance</span><span>${formatCurrency(fullAmount - amountDue)}</span></div>
       ` : ''}
     </div>
 
@@ -1231,7 +1149,7 @@ function generateOrderReceiptHTML(order) {
 }
 
 function generatePaymentReceiptHTML(order) {
-  const { merchantOrderId, amount, fullAmount, paymentPercentage, isDeposit, currency, customerName, customerEmail, product, collection, pricing, paymentIntentId, updatedAt, status } = order;
+  const { merchantOrderId, amount, fullAmount, paymentPercentage, isDeposit, currency, customerName, customerEmail, product, collection, pricing, paymentIntentId, updatedAt, status, createdAt } = order;
   const isPaid = status === 'PAID';
   const depositLabel = isDeposit ? `Deposit (${paymentPercentage}%)` : 'Full Payment';
   
@@ -1321,20 +1239,12 @@ function generatePaymentReceiptHTML(order) {
       </div>
       ${isDeposit ? `
       <div class="payment-row">
-        <span>Deposit Percentage</span>
-        <span>${paymentPercentage}%</span>
-      </div>
-      <div class="payment-row">
-        <span>Deposit Amount</span>
-        <span>${formatCurrency(amount)}</span>
-      </div>
-      <div class="payment-row">
-        <span>Balance Remaining</span>
-        <span>${formatCurrency(fullAmount - amount)}</span>
+        <span>Remaining balance</span>
+        <span>${formatCurrency(fullAmount - (isPaid ? amount : 0))}</span>
       </div>
       ` : ''}
       <div class="payment-row final">
-        <span>Amount Paid</span>
+        <span>${isPaid ? (isDeposit ? 'Deposit paid' : 'Amount paid') : (isDeposit ? 'Deposit due' : 'Amount due')}</span>
         <span>${formatCurrency(amount)}</span>
       </div>
     </div>
@@ -1351,7 +1261,6 @@ function generatePaymentReceiptHTML(order) {
 
 function generateOrderReceiptPDF(order, res) {
   const { merchantOrderId, amount, fullAmount, paymentPercentage, isDeposit, currency, customerName, customerEmail, product, collection, pricing, createdAt } = order;
-  const isFullPayment = !isDeposit || paymentPercentage === 100;
   const amountDue = amount;
   const depositLabel = isDeposit ? `Deposit (${paymentPercentage}%)` : 'Full Payment';
   
@@ -1382,9 +1291,6 @@ function generateOrderReceiptPDF(order, res) {
     ['Metal', ['gold', 'white-gold'].includes(product.metal) ? `${pricing.karat || 18}K ${product.metal === "white-gold" ? "White Gold" : "Gold"}` : product.metal === 'silver' ? `${pricing.purity || 925} Silver` : 'Platinum']
   ];
 
-  if (pricing && pricing.braceletTier) {
-    details.push(['Bracelet Spec', `${pricing.braceletTier.label} — ${pricing.braceletTier.weight}`]);
-  }
 
   let y = doc.y;
   details.forEach(([label, value], i) => {
@@ -1395,37 +1301,12 @@ function generateOrderReceiptPDF(order, res) {
   });
   doc.y = y + Math.ceil(details.length / 2) * 30 + 20;
 
-  // Diamonds
-  if (pricing && pricing.entries) {
-    doc.fontSize(12).font('Helvetica-Bold').text('Diamond Details');
-    doc.moveDown(0.5);
-    const diamondEntries = pricing.entries.filter(e => e.caratNum > 0);
-    if (diamondEntries.length > 0) {
-      diamondEntries.forEach((entry, idx) => {
-        const qualityLabel = entry.quality === 'luxe' ? 'Luxe' : entry.quality === 'select' ? 'Select' : entry.quality;
-        doc.fontSize(10).font('Helvetica-Bold').text(`${['Main Diamond', 'Diamond 2', 'Diamond 3', 'Diamond 4'][idx]}`);
-        doc.fontSize(10).font('Helvetica').text(`  ${qualityLabel}, ${entry.carat} ct × ${entry.qty} = ${entry.unpriced ? 'Price on request' : formatCurrency(entry.total)}`);
-      });
-      doc.moveDown();
-    }
-  }
-
-  // Totals
   doc.fontSize(12).font('Helvetica-Bold').text('Price Summary');
   doc.moveDown(0.5);
-  
-  const totals = [
-    [pricing?.fixedPrice ? 'Fixed collection price (stones included)' : 'Design / Labour Fee', formatCurrency(pricing?.fixedPrice ? pricing.ringPrice : (pricing?.designComplexityFee || 0))],
-    ['Diamond Total', formatCurrency(pricing?.diamondPrice || 0)],
-  ];
-  if (pricing && pricing.designFee > 0) totals.push(['Design Customization', formatCurrency(pricing.designFee)]);
-  totals.push(['Subtotal', formatCurrency(pricing?.subtotal || 0)]);
-  if (pricing && pricing.profitPct > 0) totals.push([`Profit (${pricing.profitPct}%)`, formatCurrency(pricing.profitAmount)]);
-  if (pricing && pricing.discount > 0) totals.push([`Discount (${pricing.discount}%)`, `−${formatCurrency(pricing.discountAmount)}`]);
-  totals.push([`Order Total (${depositLabel})`, formatCurrency(amountDue)]);
+  const totals = [['Order total', formatCurrency(fullAmount)]];
   if (isDeposit) {
-    totals.push(['Full Amount (100%)', formatCurrency(fullAmount)]);
-    totals.push(['Balance Remaining', formatCurrency(fullAmount - amountDue)]);
+    totals.push(['Deposit due', formatCurrency(amountDue)]);
+    totals.push(['Remaining balance', formatCurrency(fullAmount - amountDue)]);
   }
 
   totals.forEach(([label, value]) => {
@@ -1487,11 +1368,9 @@ function generatePaymentReceiptPDF(order, res) {
     ['Order Total', formatCurrency(fullAmount)],
   ];
   if (isDeposit) {
-    paymentRows.push(['Deposit Percentage', `${paymentPercentage}%`]);
-    paymentRows.push(['Deposit Amount', formatCurrency(amount)]);
-    paymentRows.push(['Balance Remaining', formatCurrency(fullAmount - amount)]);
+    paymentRows.push(['Remaining balance', formatCurrency(fullAmount - (isPaid ? amount : 0))]);
   }
-  paymentRows.push(['Amount Paid', formatCurrency(amount)]);
+  paymentRows.push([isPaid ? (isDeposit ? 'Deposit paid' : 'Amount paid') : (isDeposit ? 'Deposit due' : 'Amount due'), formatCurrency(amount)]);
 
   paymentRows.forEach(([label, value], i) => {
     const isFinal = i === paymentRows.length - 1;
