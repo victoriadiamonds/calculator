@@ -1040,6 +1040,31 @@ function getTierDisplayName(tierKey) {
   return tiers[tierKey] || tierKey;
 }
 
+const saleTerms = [
+  ['In-stock jewellery', 'Our returns policy offers 30 days for qualifying returns or exchanges. UK statutory cancellation rights apply to eligible online purchases.'],
+  ['Bespoke and personalised jewellery', 'Change-of-mind returns and exchanges are excluded for genuinely bespoke or personalised pieces, where permitted by law. Contact us about cancellation before production.'],
+  ['Alterations', 'Contact us for availability and a quote for optional resizing or alterations.'],
+  ['Faulty, damaged or incorrect items', 'Contact us with your order details. Your statutory rights and applicable remedies are unaffected.']
+];
+const returnsPolicyUrl = 'https://victoria-diamonds.com/returns-policy.html';
+
+function receiptTermsHTML() {
+  return '<section><h2>Sale terms</h2>' + saleTerms.map(([title, text]) =>
+    '<h3>' + title + '</h3><p>' + text + '</p>').join('') +
+    '<p><a href="' + returnsPolicyUrl + '">Returns policy and full terms</a></p></section>';
+}
+
+function addReceiptTermsPage(doc) {
+  doc.addPage();
+  doc.fillColor('#2c2722').font('Times-Roman').fontSize(28).text('Sale terms');
+  doc.moveDown();
+  for (const [title, text] of saleTerms) {
+    doc.font('Helvetica-Bold').fontSize(11).text(title);
+    doc.font('Helvetica').text(text, { lineGap: 3 }).moveDown();
+  }
+  doc.text(returnsPolicyUrl, { link: returnsPolicyUrl, underline: true });
+}
+
 function generateOrderReceiptHTML(order) {
   const { merchantOrderId, amount, fullAmount, paymentPercentage, isDeposit, currency, customerName, customerEmail, product, collection, pricing, createdAt } = order;
   const amountDue = amount;
@@ -1143,6 +1168,7 @@ function generateOrderReceiptHTML(order) {
       <a href="/payment-receipt/${merchantOrderId}" class="btn btn-secondary">View Payment Receipt</a>
     </div>
   </div>
+${receiptTermsHTML()}
 </body>
 </html>
   `;
@@ -1254,6 +1280,7 @@ function generatePaymentReceiptHTML(order) {
       <a href="/order-receipt/${merchantOrderId}" class="btn btn-secondary">View Order Receipt</a>
     </div>
   </div>
+${receiptTermsHTML()}
 </body>
 </html>
   `;
@@ -1315,6 +1342,7 @@ function generateOrderReceiptPDF(order, res) {
     doc.font('Helvetica');
   });
 
+  addReceiptTermsPage(doc);
   doc.end();
 }
 
@@ -1379,6 +1407,7 @@ function generatePaymentReceiptPDF(order, res) {
     doc.font('Helvetica');
   });
 
+  addReceiptTermsPage(doc);
   doc.end();
 }
 
