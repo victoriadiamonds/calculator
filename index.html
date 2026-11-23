@@ -1298,7 +1298,13 @@
 
       let packageKey = TIER_TO_PACKAGE[tierKey] || 'essential';
       const braceletTierKey = prod.type === 'bracelet' ? getSelectedBraceletTier() : null;
-      if(braceletTierKey){
+      const isAtelierPendant = ['pendant', 'necklace'].includes(prod.type)
+        && ['dailySparkle', 'mens', 'singleLady', 'christmas', 'prism'].includes(collection);
+      if (isAtelierPendant) {
+        packageKey = 'atelier';
+      } else if (ORDER_CONFIGURATION_RULES[prod.id]?.necklaceLengths) {
+        packageKey = ORDER_CONFIGURATION_RULES[prod.id].braceletMetalTier;
+      } else if (braceletTierKey) {
         packageKey = braceletTierKey;
       }
       const metal = document.getElementById('metal').value;

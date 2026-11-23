@@ -2208,7 +2208,12 @@ function computePricing(params) {
 
   let packageKey;
 
-  if (prod.type === 'bracelet' || rule?.necklaceLengths) {
+  const isAtelierPendant = ['pendant', 'necklace'].includes(prod.type)
+    && ['dailySparkle', 'mens', 'singleLady', 'christmas', 'prism'].includes(params.collection);
+
+  if (isAtelierPendant) {
+    packageKey = 'atelier';
+  } else if (prod.type === 'bracelet' || rule?.necklaceLengths) {
 
     // Honour the same specification selected in the customer calculator.
     packageKey = Object.hasOwn(PRICING_PACKAGE_MATRIX, params.braceletMetalTier)
