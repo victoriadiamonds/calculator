@@ -10,7 +10,8 @@ test('small tennis options use configured stone counts and authoritative rates a
  for(const [productId,rule]of designs)for(const [carat,rate]of [['0.05',12.5],['0.10',23],['0.20',62.5]])for(const metal of ['gold','silver','platinum'])for(const paymentPercentage of [50,100]){
   const body={productId,metal,karat:18,purity:925,quantity:1,paymentPercentage,diamonds:[{quality:'select',carat,qty:99}]};
   const quote=quoteDaily(body,'tennis');
-  const expected=pricing.PRICING_PACKAGE_MATRIX[rule.braceletMetalTier][metal==='gold'?'18K':metal]+rule.stoneCount*rate;
+  const base=pricing.PRICING_PACKAGE_MATRIX[rule.braceletMetalTier][metal==='gold'?'18K':metal]+rule.stoneCount*rate;
+  const expected=Math.round(base*120)/100;
   assert.equal(quote.total,expected,productId+' '+carat);
   assert.equal(quote.due,Math.round(expected*paymentPercentage)/100);
   assert.equal(quote.params.diamonds[0].qty,1,'whole-piece price must not multiply client-supplied quantity');

@@ -1032,7 +1032,7 @@
           const typeSuffix = TYPE_LABELS[p.type] ? ' (' + TYPE_LABELS[p.type] + ')' : '';
           var opt = document.createElement('option');
           opt.value = p.id;
-          opt.textContent = p.name + typeSuffix + (p.fixedPrice !== undefined ? ' - ' + formatGBPRate(p.fixedPrice) : tierSuffix);
+          opt.textContent = p.name + typeSuffix + (p.fixedPrice !== undefined ? ' - ' + formatGBPRate(sellingPrice(p.fixedPrice)) : tierSuffix);
           sel.appendChild(opt);
         });
       }
@@ -1394,7 +1394,7 @@ const prismRule=ORDER_CONFIGURATION_RULES[prod.id];
       applyFixedCollectionRestrictions();
       const el = document.getElementById('liveTotal');
       if(!el) return;
-      const p = computePricing();
+      const p = computeSellingQuote();
       if(!p){ el.textContent = typeof NaturalSelector !== 'undefined' && NaturalSelector.origin === 'natural' ? (NaturalSelector.unavailableReason || 'Choose your piece and add a natural diamond to calculate.') : 'No matching piece selected.'; return; }
       if(p.priceOnRequest){
         el.textContent = (TYPE_LABELS[p.type] || 'This piece') + ' is priced on request — not auto-calculated.';
@@ -1542,15 +1542,26 @@ const prismRule=ORDER_CONFIGURATION_RULES[prod.id];
       lines += '<div class="breakdown-formula">Grand total = ' + formatGBPRate(p.unitTotal) + ' × ' + p.qty + ' = <strong>' + formatGBPRate(p.grandTotal) + '</strong></div>';
       if(p.discount > 0){
         lines += '<div class="breakdown-formula">Discount (' + p.discount + '%) = ' + formatGBPRate(p.grandTotal) + ' × ' + p.discount + '% = −<strong>' + formatGBPRate(p.discountAmount) + '</strong></div>';
-        lines += '<div class="breakdown-formula">Final total = ' + formatGBPRate(p.grandTotal) + ' − ' + formatGBPRate(p.discountAmount) + ' = <strong>' + formatGBPRate(p.finalTotal) + '</strong></div>';
+        lines += '<div class="breakdown-formula">Final total = (' + formatGBPRate(p.grandTotal) + ' − ' + formatGBPRate(p.discountAmount) + ') × 1.20 = <strong>' + formatGBPRate(p.finalTotal) + '</strong></div>';
       } else {
         lines += '<div class="breakdown-formula">Final total = <strong>' + formatGBPRate(p.finalTotal) + '</strong></div>';
       }
       return lines;
     }
 
+    function computeSellingQuote(){
+      const quote = computePricing();
+      if (quote && Number.isFinite(quote.finalTotal)) quote.finalTotal = sellingPrice(quote.finalTotal);
+      return quote;
+    }
+
+    function sellingPrice(subtotal){
+      const pennies = Math.round(subtotal * 100);
+      return (pennies + Math.round(pennies * 0.20)) / 100;
+    }
+
     function calculate(){
-      const p = computePricing();
+      const p = computeSellingQuote();
       if(!p) return;
 
       const proceedBtn = document.getElementById('proceedPaymentFromPopup');
@@ -1716,7 +1727,7 @@ const prismRule=ORDER_CONFIGURATION_RULES[prod.id];
     }
 
     function getOrderDataForPayment() {
-      const p = computePricing();
+      const p = computeSellingQuote();
       if (!p || p.priceOnRequest) return null;
 
       const diamonds = [];

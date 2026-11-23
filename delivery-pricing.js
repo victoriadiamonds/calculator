@@ -3,7 +3,7 @@ function deliveryPricing(subtotal, destination) {
     throw new Error('Choose a delivery destination.');
   }
   const net = Math.round(subtotal * 100);
-  const vat = destination === 'GB' ? Math.round(net * 0.20) : 0;
-  return {total:(net + vat) / 100, vat:vat / 100, delivery:destination === 'GB' ? 0 : null};
+  const adjustment = Math.round(net * 0.20);
+  return {total:(net + adjustment) / 100, vat:destination === 'GB' ? adjustment / 100 : 0, delivery:destination === 'GB' ? 0 : null};
 }
 module.exports = {deliveryPricing};

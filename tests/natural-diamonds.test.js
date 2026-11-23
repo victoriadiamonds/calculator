@@ -16,7 +16,7 @@ test('all workbook combinations have a 10 percent reduction rounded to pennies',
 });
 test('natural quotes use authoritative prices, preserve pence and deposits',()=>{
  const q=quoteDaily({...input,diamonds:[{...input.diamonds[0],price:1,carat:'5.00',quality:'select'}]});
- const base=pricing.computePricing(input);assert.equal(q.total,base.ringPrice+base.designFee+855.75*2);assert.equal(q.due,Math.round(q.total*50)/100);assert.equal(q.balance,q.due);
+ const base=pricing.computePricing(input);assert.equal(q.total,Math.round((base.ringPrice+base.designFee+855.75*2)*120)/100);assert.equal(q.due,Math.round(q.total*50)/100);assert.equal(q.balance,q.due);
  const r=pricing.computePricing(input);assert.equal(r.entries[0].shape,'Round');assert.equal(r.entries[0].clarity,'SI2');
  assert.equal(r.designFee,0,'Natural diamonds do not add automatic customization charges');
 });
@@ -35,7 +35,7 @@ test('additional natural diamond groups retain individual grades, quantities and
  assert.equal(r.entries.length,2);assert.equal(r.entries[0].shape,'Round');assert.equal(r.entries[1].shape,'Oval');
  assert.equal(r.diamondPrice,Math.round((one.price+two.price*2)*100)/100);
  const q=quoteDaily({...input,diamonds:[{naturalId:one.id,qty:1},{naturalId:two.id,qty:2}]});
- assert.equal(q.total,Math.round(r.finalTotal*100)/100);
+ assert.equal(q.total,Math.round(r.finalTotal*120)/100);
 });
 test('audited smaller sizes have source evidence, correct grades and exactly one reduction',()=>{
  const audit=require('../natural-diamond-audit.json');
