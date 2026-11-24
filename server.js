@@ -451,6 +451,7 @@ app.get('/health', (req, res) => {
 
   res.json({
     status: 'ok',
+    revision: process.env.RENDER_GIT_COMMIT?.slice(0, 12),
 
     environment:
       IS_PRODUCTION
@@ -743,6 +744,8 @@ app.post(
           paymentLinkId,
 
           paymentLinkUrl,
+          ringSize: req.body.ringSize,
+          diamondOrigin: req.body.diamondOrigin,
 
           amount,
 
@@ -1041,28 +1044,104 @@ function getTierDisplayName(tierKey) {
 }
 
 const saleTerms = [
-  ['In-stock jewellery', 'Our returns policy offers 30 days for qualifying returns or exchanges. UK statutory cancellation rights apply to eligible online purchases.'],
-  ['Bespoke and personalised jewellery', 'Change-of-mind returns and exchanges are excluded for genuinely bespoke or personalised pieces, where permitted by law. Contact us about cancellation before production.'],
-  ['Alterations', 'Contact us for availability and a quote for optional resizing or alterations.'],
-  ['Faulty, damaged or incorrect items', 'Contact us with your order details. Your statutory rights and applicable remedies are unaffected.']
+  [
+    "The atelier",
+    "Victoria Diamonds Limited, registration 80917544, commissions bespoke jewellery. Contact info@victoria-diamonds.com or +44 7594 442577. Registered office: Unit 1801, 18/F, OfficePlus @ Wan Chai, 303 Hennessy Road, Wan Chai, Hong Kong."
+  ],
+  [
+    "Your commission",
+    "Your order is the piece described in the approved design and written quotation. The design may include sketches, CAD drawings, measurements and stone details. The deposit is the initial payment towards the order total."
+  ],
+  [
+    "Appointments",
+    "Consultations are by appointment. Any fee is confirmed when booking and credited towards the commission if you proceed. Please give 48 hours’ notice to change an appointment where possible."
+  ],
+  [
+    "Design and quotation",
+    "Quotes are valid for 30 days. Approve the design, dimensions, stones and quote in writing before work begins. Handmade details may vary slightly. We will seek approval for material changes."
+  ],
+  [
+    "Price and payment",
+    "The quoted price in GBP includes the business and operating costs associated with your order. The agreed deposit is credited towards the total. The balance is payable before dispatch or collection unless otherwise agreed in writing."
+  ],
+  [
+    "Stones and materials",
+    "The order specifies the metal, stones and any grading report agreed. Natural characteristics vary. For customer-supplied stones, disclose known treatments or damage and consider an independent valuation before setting."
+  ],
+  [
+    "Timing and delivery",
+    "We discuss timing for each commission and tell you if the estimate changes. Confirm delivery details before dispatch or arrange collection with the atelier. Keep the order reference and inspect the piece on receipt."
+  ],
+  [
+    "Design rights",
+    "Unless otherwise agreed in writing, atelier sketches and CAD files remain the property of Victoria Diamonds. Tell us before delivery if you would like your commission excluded from portfolio photographs."
+  ],
+  [
+    "Changes and cancellations",
+    "Contact us promptly if you wish to change or cancel. Before work starts, only an agreed consultation fee is retained. Once work begins, design work and committed materials may affect the refund. Bespoke change-of-mind restrictions do not affect rights relating to faults. Eligible in-stock pieces qualify for our 30-day returns policy."
+  ],
+  [
+    "Faults and aftercare",
+    "Contact the atelier if the piece appears faulty or differs from the approved specification. The 12-month workmanship warranty covers manufacturing defects. Wear, accidental damage and elective resizing or alterations are assessed separately. Statutory rights are unaffected."
+  ],
+  [
+    "Valuation and insurance",
+    "An independent insurance valuation can be arranged on request for an additional fee. Consider insurance from receipt and keep your receipt, stone reports and any valuation together."
+  ],
+  [
+    "Liability",
+    "Nothing in these terms excludes liability for fraud, death or personal injury caused by negligence, or any liability that cannot lawfully be limited. Your mandatory consumer protections continue to apply."
+  ],
+  [
+    "Privacy",
+    "We use contact, order and payment information to fulfil your commission and communicate with you. Marketing requires your consent. See the website privacy policy for details."
+  ],
+  [
+    "Complaints",
+    "Email info@victoria-diamonds.com with your order reference, a description and photographs where relevant. We aim to resolve complaints within 14 days."
+  ],
+  [
+    "Governing law",
+    "The terms are governed by the laws of England and Wales, subject to any mandatory rights and jurisdiction protections that apply where you live."
+  ],
+  [
+    "Applicable version",
+    "The terms agreed when you place your deposit apply to your commission. Keep a copy of your quotation, approved specifications and receipt."
+  ]
 ];
 const returnsPolicyUrl = 'https://victoria-diamonds.com/returns-policy.html';
 
 function receiptTermsHTML() {
-  return '<section><h2>Sale terms</h2>' + saleTerms.map(([title, text]) =>
-    '<h3>' + title + '</h3><p>' + text + '</p>').join('') +
+  return '<section><h2>Sale terms</h2>' + saleTerms.map(([title, text], index) =>
+    '<h3>' + (index + 1) + '. ' + title + '</h3><p>' + text + '</p>').join('') +
     '<p><a href="' + returnsPolicyUrl + '">Returns policy and full terms</a></p></section>';
 }
 
 function addReceiptTermsPage(doc) {
   doc.addPage();
-  doc.fillColor('#2c2722').font('Times-Roman').fontSize(28).text('Sale terms');
-  doc.moveDown();
-  for (const [title, text] of saleTerms) {
-    doc.font('Helvetica-Bold').fontSize(11).text(title);
-    doc.font('Helvetica').text(text, { lineGap: 3 }).moveDown();
-  }
-  doc.text(returnsPolicyUrl, { link: returnsPolicyUrl, underline: true });
+  doc.fillColor('#786443').font('Helvetica').fontSize(10).text('VICTORIA DIAMONDS', 36, 32);
+  doc.fillColor('#302b25').font('Times-Roman').fontSize(26).text('Terms of sale', 36, 55);
+  let y = 105;
+  saleTerms.forEach(([title, body], index) => {
+    if (index === 8) y = 105;
+    const x = index < 8 ? 36 : 307;
+    doc.font('Helvetica-Bold').fontSize(10).text((index + 1) + '. ' + title, x, y, { width: 251 });
+    doc.font('Helvetica').fontSize(9.4).text(body, x, doc.y + 2, { width: 251, lineGap: 1 });
+    y = doc.y + 9;
+  });
+  doc.fontSize(9).text('Returns policy', 36, 775, {link: returnsPolicyUrl, underline: true});
+}
+
+function receiptSpecifications(order) {
+  const pricing = order.pricing || {};
+  const metal = pricing.metal || order.product.metal;
+  const metals = { gold: 'Gold', 'white-gold': 'White gold', 'rose-gold': 'Rose gold', platinum: 'Platinum', silver: 'Silver' };
+  const purity = metal === 'silver' ? pricing.purity : null;
+  const prefix = metal?.includes('gold') && pricing.karat ? pricing.karat + 'K ' : purity ? purity + ' ' : '';
+  const stones = (pricing.entries || []).filter(e => Number(e.caratNum || e.carat) > 0)
+    .map(e => [e.qty + ' × ' + (e.caratNum || e.carat) + ' ct', e.quality].filter(Boolean).join(' · '));
+  return [['Metal', metal && prefix + (metals[metal] || metal)], ['Ring size', order.ringSize],
+    ['Diamond origin', order.diamondOrigin], ['Stone specifications', stones.join('; ')]].filter(([, value]) => value);
 }
 
 function generateOrderReceiptHTML(order) {
@@ -1073,12 +1152,6 @@ function generateOrderReceiptHTML(order) {
   const date = new Date(createdAt).toLocaleDateString('en-GB', {
     day: '2-digit', month: 'long', year: 'numeric'
   });
-
-  const metalLabel = ['gold', 'white-gold'].includes(product.metal)
-    ? `${pricing.karat || 18}K ${product.metal === "white-gold" ? "White Gold" : "Gold"}`
-    : product.metal === 'silver' 
-      ? `${pricing.purity || 925} Silver` 
-      : 'Platinum';
 
   return `
 <!DOCTYPE html>
@@ -1148,12 +1221,10 @@ function generateOrderReceiptHTML(order) {
         <div class="detail-label">Product</div>
         <div class="detail-value">${escapeHtml(product.name)}</div>
       </div>
-      <div class="detail-item">
-        <div class="detail-label">Metal</div>
-        <div class="detail-value">${escapeHtml(metalLabel)}</div>
-      </div>
+
     </div>
 
+    <section><h2>Jewellery specifications</h2>${receiptSpecifications(order).map(([label,value]) => "<p><strong>" + label + "</strong> " + escapeHtml(String(value)) + "</p>").join("")}</section>
     <div class="totals">
       <h3 class="section-title" style="margin-top:0">Price Summary</h3>
       <div class="total-row final"><span>Order total</span><span>${formatCurrency(fullAmount)}</span></div>
@@ -1257,6 +1328,7 @@ function generatePaymentReceiptHTML(order) {
       </div>
     </div>
 
+    <section><h2>Jewellery specifications</h2>${receiptSpecifications(order).map(([label,value]) => "<p><strong>" + label + "</strong> " + escapeHtml(String(value)) + "</p>").join("")}</section>
     <div class="payment-details">
       <h3>Payment Summary</h3>
       <div class="payment-row">
@@ -1286,132 +1358,41 @@ ${receiptTermsHTML()}
   `;
 }
 
-function generateOrderReceiptPDF(order, res) {
-  const { merchantOrderId, amount, fullAmount, paymentPercentage, isDeposit, currency, customerName, customerEmail, product, collection, pricing, createdAt } = order;
-  const amountDue = amount;
-  const depositLabel = isDeposit ? `Deposit (${paymentPercentage}%)` : 'Full Payment';
-  
-  const date = new Date(createdAt).toLocaleDateString('en-GB', {
-    day: '2-digit', month: 'long', year: 'numeric'
-  });
-
-  const doc = new PDFDocument({ margin: 50, size: 'A4' });
+function generateReceiptPDF(order, res, payment) {
+  const { merchantOrderId, fullAmount, amount, isDeposit, paymentPercentage, product } = order;
+  const paid = payment && order.status === 'PAID';
+  const doc = new PDFDocument({ margin: 42, size: 'A4' });
   res.setHeader('Content-Type', 'application/pdf');
-  res.setHeader('Content-Disposition', `attachment; filename="order-receipt-${merchantOrderId}.pdf"`);
+  res.setHeader('Content-Disposition', 'attachment; filename="' + (payment ? 'payment' : 'order') + '-receipt-' + merchantOrderId + '.pdf"');
   doc.pipe(res);
-
-  // Header
-  doc.fontSize(28).font('Helvetica-Bold').text('VICTORIA DIAMONDS', { align: 'center' });
-  doc.fontSize(12).font('Helvetica').text('Luxury Jewellery', { align: 'center' });
-  doc.moveDown();
-  doc.fontSize(12).font('Helvetica-Bold').text(`ORDER RECEIPT — ${depositLabel}`, { align: 'center' });
-  doc.moveDown(2);
-
-  // Details
-  const details = [
-    ['Order Reference', merchantOrderId],
-    ['Date', date],
-    ['Customer', customerName],
-    ['Email', customerEmail],
-    ['Collection', getCollectionDisplayName(collection)],
-    ['Product', product.name],
-    ['Metal', ['gold', 'white-gold'].includes(product.metal) ? `${pricing.karat || 18}K ${product.metal === "white-gold" ? "White Gold" : "Gold"}` : product.metal === 'silver' ? `${pricing.purity || 925} Silver` : 'Platinum']
-  ];
-
-
-  let y = doc.y;
-  details.forEach(([label, value], i) => {
-    const x = i % 2 === 0 ? 50 : 300;
-    const rowY = y + Math.floor(i / 2) * 30;
-    doc.fontSize(8).font('Helvetica-Bold').text(label, x, rowY, { width: 120 });
-    doc.fontSize(10).font('Helvetica').text(value, x, rowY + 12, { width: 220 });
-  });
-  doc.y = y + Math.ceil(details.length / 2) * 30 + 20;
-
-  doc.fontSize(12).font('Helvetica-Bold').text('Price Summary');
-  doc.moveDown(0.5);
-  const totals = [['Order total', formatCurrency(fullAmount)]];
-  if (isDeposit) {
-    totals.push(['Deposit due', formatCurrency(amountDue)]);
-    totals.push(['Remaining balance', formatCurrency(fullAmount - amountDue)]);
+  doc.fillColor('#786443').font('Helvetica').fontSize(11).text('VICTORIA DIAMONDS');
+  doc.moveDown(1.2).fillColor('#302b25').font('Times-Roman').fontSize(30)
+    .text(paid ? (isDeposit ? 'Deposit receipt' : 'Payment receipt') : 'Order summary');
+  doc.font('Helvetica').fontSize(11).text(paid ? 'Payment received' : 'Awaiting payment');
+  function row(label, value) {
+    doc.font('Helvetica-Bold').fontSize(10).text(label + '   ', {continued: true});
+    doc.font('Helvetica').text(String(value || '—')).moveDown(0.45);
   }
-
-  totals.forEach(([label, value]) => {
-    doc.fontSize(10).font('Helvetica').text(label, { continued: true });
-    doc.font('Helvetica-Bold').text(value);
-    doc.font('Helvetica');
-  });
-
+  function heading(text) {
+    doc.moveDown().font('Times-Roman').fontSize(20).text(text).moveDown(0.4);
+  }
+  doc.moveDown(1.5);
+  row('Order reference', merchantOrderId);
+  row('Date', new Date((payment && order.updatedAt) || order.createdAt).toLocaleDateString('en-GB'));
+  row('Customer', order.customerName);
+  row('Email', order.customerEmail);
+  heading('Your jewellery');
+  row('Piece', product.name);
+  row('Collection', getCollectionDisplayName(order.collection));
+  receiptSpecifications(order).forEach(([label, value]) => row(label, value));
+  heading('Payment breakdown');
+  row('Order total', formatCurrency(fullAmount));
+  row(isDeposit ? 'Deposit ' + (paid ? 'paid' : 'due') + ' (' + paymentPercentage + '%)' : (paid ? 'Amount paid' : 'Amount due'), formatCurrency(amount));
+  if (isDeposit) row(paid ? 'Remaining balance' : 'Balance after deposit', formatCurrency(fullAmount - amount));
   addReceiptTermsPage(doc);
   doc.end();
 }
 
-function generatePaymentReceiptPDF(order, res) {
-  const { merchantOrderId, amount, fullAmount, paymentPercentage, isDeposit, currency, customerName, customerEmail, product, collection, pricing, paymentIntentId, updatedAt, status, createdAt } = order;
-  const isPaid = status === 'PAID';
-  const depositLabel = isDeposit ? `Deposit (${paymentPercentage}%)` : 'Full Payment';
-  
-  const date = new Date(updatedAt || createdAt).toLocaleDateString('en-GB', {
-    day: '2-digit', month: 'long', year: 'numeric'
-  });
-
-  const doc = new PDFDocument({ margin: 50, size: 'A4' });
-  res.setHeader('Content-Type', 'application/pdf');
-  res.setHeader('Content-Disposition', `attachment; filename="payment-receipt-${merchantOrderId}.pdf"`);
-  doc.pipe(res);
-
-  // Header
-  doc.fontSize(28).font('Helvetica-Bold').text('VICTORIA DIAMONDS', { align: 'center' });
-  doc.fontSize(12).font('Helvetica').text('Luxury Jewellery', { align: 'center' });
-  doc.moveDown();
-  doc.fontSize(12).font('Helvetica-Bold').text(isPaid ? 'PAYMENT RECEIPT — CONFIRMED' : 'PAYMENT RECEIPT — PENDING', { align: 'center' });
-  doc.moveDown(2);
-
-  // Details
-  const details = [
-    ['Order Reference', merchantOrderId],
-    ['Date', date],
-    ['Customer', customerName],
-    ['Email', customerEmail],
-    ['Payment Type', depositLabel],
-    ['Payment Intent', paymentIntentId || 'N/A'],
-    ['Collection', getCollectionDisplayName(collection)],
-    ['Product', product.name]
-  ];
-
-  let y = doc.y;
-  details.forEach(([label, value], i) => {
-    const x = i % 2 === 0 ? 50 : 300;
-    const rowY = y + Math.floor(i / 2) * 30;
-    doc.fontSize(8).font('Helvetica-Bold').text(label, x, rowY, { width: 120 });
-    doc.fontSize(10).font('Helvetica').text(value, x, rowY + 12, { width: 220 });
-  });
-  doc.y = y + Math.ceil(details.length / 2) * 30 + 20;
-
-  // Payment Summary
-  doc.fontSize(12).font('Helvetica-Bold').text('Payment Summary');
-  doc.moveDown(0.5);
-  
-  const paymentRows = [
-    ['Order Total', formatCurrency(fullAmount)],
-  ];
-  if (isDeposit) {
-    paymentRows.push(['Remaining balance', formatCurrency(fullAmount - (isPaid ? amount : 0))]);
-  }
-  paymentRows.push([isPaid ? (isDeposit ? 'Deposit paid' : 'Amount paid') : (isDeposit ? 'Deposit due' : 'Amount due'), formatCurrency(amount)]);
-
-  paymentRows.forEach(([label, value], i) => {
-    const isFinal = i === paymentRows.length - 1;
-    doc.fontSize(10).font(isFinal ? 'Helvetica-Bold' : 'Helvetica').text(label, { continued: true });
-    doc.font(isFinal ? 'Helvetica-Bold' : 'Helvetica').text(value);
-    doc.font('Helvetica');
-  });
-
-  addReceiptTermsPage(doc);
-  doc.end();
-}
-
-// =========================
 // RECEIPT ROUTES
 // =========================
 
@@ -1426,7 +1407,7 @@ app.get('/order-receipt/:merchantOrderId', (req, res) => {
   const format = req.query.format || 'html';
   
   if (format === 'pdf') {
-    return generateOrderReceiptPDF(order, res);
+    return generateReceiptPDF(order, res, false);
   }
 
   res.send(generateOrderReceiptHTML(order));
@@ -1443,7 +1424,7 @@ app.get('/payment-receipt/:merchantOrderId', (req, res) => {
   const format = req.query.format || 'html';
   
   if (format === 'pdf') {
-    return generatePaymentReceiptPDF(order, res);
+    return generateReceiptPDF(order, res, true);
   }
 
   res.send(generatePaymentReceiptHTML(order));
