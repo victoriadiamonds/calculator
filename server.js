@@ -1062,7 +1062,7 @@ const saleTerms = [
   ],
   [
     "Payment schedule, deposit and methods",
-    "For bespoke ring commissions, the 50% deposit reserves the selected stone and starts CAD modelling that day. Pay by Visa or Mastercard via our secure payment link. The balance is payable before or at handover. If you cancel, we explain any direct, unrecoverable costs and return the excess."
+    "For bespoke ring commissions, the 50% deposit is non-refundable once paid. It reserves the selected stone and starts CAD modelling that day. Pay by Visa or Mastercard via our secure payment link. The remaining 50% is payable when the finished ring is physically handed to you. Your statutory rights are unaffected."
   ],
   [
     "Stone and design approval",
