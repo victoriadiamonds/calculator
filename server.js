@@ -1054,39 +1054,35 @@ const saleTerms = [
   ],
   [
     "Appointments",
-    "Consultations are by appointment. Any fee is confirmed when booking and credited towards the commission if you proceed. Please give 48 hours’ notice to change an appointment where possible."
+    "Consultations are by appointment. Any fee is confirmed when booking and credited towards the commission if you proceed."
   ],
   [
     "Design and quotation",
-    "Quotes are valid for 30 days. Approve the design, dimensions, stones and quote in writing before work begins. Handmade details may vary slightly. We will seek approval for material changes."
+    "Quotes are valid for 30 days. Confirm the initial design, dimensions, ring size, centre stone specifications and quote in writing before paying the deposit. Handmade details may vary slightly. We seek written approval for material changes."
   ],
   [
-    "Price and payment",
-    "The quoted price in GBP includes the business and operating costs associated with your order. The agreed deposit is credited towards the total. The balance is payable before dispatch or collection unless otherwise agreed in writing."
+    "Payment schedule, deposit and methods",
+    "For bespoke ring commissions, the 50% deposit reserves the selected stone and starts CAD modelling that day. Pay by Visa or Mastercard via our secure payment link. The balance is payable before or at handover. If you cancel, we explain any direct, unrecoverable costs and return the excess."
   ],
   [
-    "Stones and materials",
-    "The order specifies the metal, stones and any grading report agreed. Natural characteristics vary. For customer-supplied stones, disclose known treatments or damage and consider an independent valuation before setting."
+    "Stone and design approval",
+    "We share multiple CAD rounds and the official IGI report for the reserved diamond on bespoke IGI commissions. Crafting begins after final written approval. Confirm the report number and stone details before setting. Agree any later change, revised quote and timing in writing."
   ],
   [
-    "Timing and delivery",
-    "We discuss timing for each commission and tell you if the estimate changes. Confirm delivery details before dispatch or arrange collection with the atelier. Keep the order reference and inspect the piece on receipt."
+    "Delivery and handover",
+    "The bespoke quote includes operating costs, delivery and full transit insurance through in-person handover. Nothing further is due on delivery beyond the agreed balance. We arrange the handover with you and advise of changes to the estimated timing."
   ],
   [
     "Design rights",
     "Unless otherwise agreed in writing, atelier sketches and CAD files remain the property of Victoria Diamonds. Tell us before delivery if you would like your commission excluded from portfolio photographs."
   ],
   [
-    "Changes and cancellations",
-    "Contact us promptly if you wish to change or cancel. Before work starts, only an agreed consultation fee is retained. Once work begins, design work and committed materials may affect the refund. Bespoke change-of-mind restrictions do not affect rights relating to faults. Eligible in-stock pieces qualify for our 30-day returns policy."
+    "Resizing and returns",
+    "Bespoke pieces made to your design, ring size and stone specifications cannot be returned for a change of mind. Resizing is at your expense. We can recommend a local UK jeweller. Minor adjustments typically cost under £180, subject to their quote. Rights for faulty or misdescribed goods are unaffected. Eligible in-stock pieces retain our 30-day returns policy."
   ],
   [
     "Faults and aftercare",
     "Contact the atelier if the piece appears faulty or differs from the approved specification. The 12-month workmanship warranty covers manufacturing defects. Wear, accidental damage and elective resizing or alterations are assessed separately. Statutory rights are unaffected."
-  ],
-  [
-    "Valuation and insurance",
-    "An independent insurance valuation can be arranged on request for an additional fee. Consider insurance from receipt and keep your receipt, stone reports and any valuation together."
   ],
   [
     "Liability",
@@ -1135,7 +1131,7 @@ function addReceiptTermsPage(doc) {
 function receiptSpecifications(order) {
   const pricing = order.pricing || {};
   const metal = pricing.metal || order.product.metal;
-  const metals = { gold: 'Gold', 'white-gold': 'White gold', 'rose-gold': 'Rose gold', platinum: 'Platinum', silver: 'Silver' };
+  const metals = { gold: 'Yellow gold', 'white-gold': 'White gold', 'rose-gold': 'Rose gold', platinum: 'Platinum', silver: 'Silver' };
   const purity = metal === 'silver' ? pricing.purity : null;
   const prefix = metal?.includes('gold') && pricing.karat ? pricing.karat + 'K ' : purity ? purity + ' ' : '';
   const stones = (pricing.entries || []).filter(e => Number(e.caratNum || e.carat) > 0)
@@ -1380,10 +1376,10 @@ function generateReceiptPDF(order, res, payment) {
   row('Order reference', merchantOrderId);
   row('Date', new Date((payment && order.updatedAt) || order.createdAt).toLocaleDateString('en-GB'));
   row('Customer', order.customerName);
-  row('Email', order.customerEmail);
+  if (order.customerEmail) row('Email', order.customerEmail);
   heading('Your jewellery');
-  row('Piece', product.name);
-  row('Collection', getCollectionDisplayName(order.collection));
+  row('Product', product.name);
+  if (order.collection) row('Collection', getCollectionDisplayName(order.collection));
   receiptSpecifications(order).forEach(([label, value]) => row(label, value));
   heading('Payment breakdown');
   row('Order total', formatCurrency(fullAmount));
