@@ -30,6 +30,10 @@ function quoteDaily(body={}, collection='dailySparkle') {
   if(!d||!['select','luxe'].includes(d.quality)||!pricing.DIAMOND_CARATS.includes(d.carat)||!Number.isInteger(Number(d.qty))||Number(d.qty)<1||Number(d.qty)>100)throw new Error('Please check the diamond specifications.');
   return {quality:d.quality,carat:d.carat,qty:Number(d.qty)};
  });
+ if(natural && rule?.fixedNaturalSizes){
+  const chosen=require('./natural-diamonds').resolve(diamonds);
+  if(chosen.length!==rule.fixedDiamonds.length || chosen.some((stone,i)=>stone.caratNum!==Number(rule.fixedDiamonds[i].carat)||stone.qty!==rule.fixedDiamonds[i].qty))throw new Error('Choose the fixed stone sizes and counts for this pendant.');
+ }
  const braceletMetalTier=rule?.braceletMetalTier||body.braceletMetalTier;
  if(product.type==='bracelet'&&!Object.hasOwn(pricing.PRICING_PACKAGE_MATRIX,braceletMetalTier))throw new Error('Please choose a bracelet specification.');
  const params={collection,productId:product.id,typeFilter:'all',metal:body.metal,karat:karat||18,purity:purity||925,quantity,diamonds,diamondOrigin:body.diamondOrigin||'lab',braceletMetalTier,discount:0,profit:0,designFee:0};

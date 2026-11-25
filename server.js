@@ -1078,7 +1078,7 @@ const saleTerms = [
   ],
   [
     "Resizing and returns",
-    "Bespoke pieces made to your design, ring size and stone specifications cannot be returned for a change of mind. Resizing is at your expense. We can recommend a local UK jeweller. Minor adjustments typically cost under £180, subject to their quote. Rights for faulty or misdescribed goods are unaffected. Eligible in-stock pieces retain our 30-day returns policy."
+    "Bespoke pieces made to your design, ring size and stone specifications cannot be returned for a change of mind. Our Asia workshop offers repair and resizing for £130, taking 2–3 months. For resizing or minor adjustments we can recommend reputable local UK jewellers at your own expense. Rights for faulty or misdescribed goods are unaffected. Eligible in-stock pieces retain our 30-day returns policy."
   ],
   [
     "Faults and aftercare",
@@ -1325,6 +1325,7 @@ function generatePaymentReceiptHTML(order) {
     </div>
 
     <section><h2>Jewellery specifications</h2>${receiptSpecifications(order).map(([label,value]) => "<p><strong>" + label + "</strong> " + escapeHtml(String(value)) + "</p>").join("")}</section>
+    ${isPaid && !isDeposit ? "<p><strong>Warranty start date (handover)</strong>　" + escapeHtml(order.handoverDate || "________________") + " · 12 months from handover</p>" : ""}
     <div class="payment-details">
       <h3>Payment Summary</h3>
       <div class="payment-row">
@@ -1361,6 +1362,8 @@ function generateReceiptPDF(order, res, payment) {
   res.setHeader('Content-Type', 'application/pdf');
   res.setHeader('Content-Disposition', 'attachment; filename="' + (payment ? 'payment' : 'order') + '-receipt-' + merchantOrderId + '.pdf"');
   doc.pipe(res);
+  doc.image(path.join(__dirname,'receipt-logo.png'), 467, 35, {width: 66});
+  doc.moveTo(42,105).lineTo(552,105).strokeColor('#c6b391').stroke();
   doc.fillColor('#786443').font('Helvetica').fontSize(11).text('VICTORIA DIAMONDS');
   doc.moveDown(1.2).fillColor('#302b25').font('Times-Roman').fontSize(30)
     .text(paid ? (isDeposit ? 'Deposit receipt' : 'Payment receipt') : 'Order summary');
@@ -1372,7 +1375,7 @@ function generateReceiptPDF(order, res, payment) {
   function heading(text) {
     doc.moveDown().font('Times-Roman').fontSize(20).text(text).moveDown(0.4);
   }
-  doc.moveDown(1.5);
+  doc.x=42; doc.y=134;
   row('Order reference', merchantOrderId);
   row('Date', new Date((payment && order.updatedAt) || order.createdAt).toLocaleDateString('en-GB'));
   row('Customer', order.customerName);
@@ -1381,10 +1384,19 @@ function generateReceiptPDF(order, res, payment) {
   row('Product', product.name);
   if (order.collection) row('Collection', getCollectionDisplayName(order.collection));
   receiptSpecifications(order).forEach(([label, value]) => row(label, value));
+  doc.moveDown();
+  doc.moveTo(42,doc.y).lineTo(552,doc.y).strokeColor('#c6b391').stroke();
   heading('Payment breakdown');
   row('Order total', formatCurrency(fullAmount));
   row(isDeposit ? 'Deposit ' + (paid ? 'paid' : 'due') + ' (' + paymentPercentage + '%)' : (paid ? 'Amount paid' : 'Amount due'), formatCurrency(amount));
   if (isDeposit) row(paid ? 'Remaining balance' : 'Balance after deposit', formatCurrency(fullAmount - amount));
+  if (paid && order.settlementPayments) {
+    for (const entry of order.settlementPayments) row(entry.label, formatCurrency(entry.amount));
+  }
+  if (paid && !isDeposit) {
+    row('Warranty start date (handover)', order.handoverDate || '________________');
+    doc.fontSize(9).text('12 months from physical handover. Record the date when the piece is delivered.');
+  }
   addReceiptTermsPage(doc);
   doc.end();
 }
@@ -1528,4 +1540,7 @@ if (typeof module !== 'undefined' && require.main === module) app.listen(
   }
 );
 
-if (typeof module !== 'undefined') module.exports = app;
+if (typeof module !== 'undefined') {
+  module.exports = app;
+  module.exports.generateReceiptPDF = generateReceiptPDF;
+}

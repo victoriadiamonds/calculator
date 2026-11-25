@@ -864,5 +864,30 @@
       "5.00"
     ],
     "stoneCount": 1
+  },
+  "ds_m_celeste": {
+    "fixedDiamonds": [
+      {
+        "quality": "select",
+        "carat": "1.00",
+        "qty": 1
+      },
+      {
+        "quality": "select",
+        "carat": "0.75",
+        "qty": 2
+      },
+      {
+        "quality": "select",
+        "carat": "0.50",
+        "qty": 2
+      },
+      {
+        "quality": "select",
+        "carat": "0.25",
+        "qty": 4
+      }
+    ],
+    "fixedNaturalSizes": true
   }
 }
