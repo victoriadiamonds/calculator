@@ -1363,19 +1363,20 @@ function generateReceiptPDF(order, res, payment) {
   res.setHeader('Content-Disposition', 'attachment; filename="' + (payment ? 'payment' : 'order') + '-receipt-' + merchantOrderId + '.pdf"');
   doc.pipe(res);
   doc.image(path.join(__dirname,'receipt-logo.png'), 467, 35, {width: 66});
-  doc.moveTo(42,105).lineTo(552,105).strokeColor('#c6b391').stroke();
-  doc.fillColor('#786443').font('Helvetica').fontSize(11).text('VICTORIA DIAMONDS');
+  doc.fillColor('#786443').font('Helvetica').fontSize(11).text('VICTORIA DIAMONDS', 42, 46);
   doc.moveDown(1.2).fillColor('#302b25').font('Times-Roman').fontSize(30)
     .text(paid ? (isDeposit ? 'Deposit receipt' : 'Payment receipt') : 'Order summary');
   doc.font('Helvetica').fontSize(11).text(paid ? 'Payment received' : 'Awaiting payment');
   function row(label, value) {
-    doc.font('Helvetica-Bold').fontSize(10).text(label + '   ', {continued: true});
-    doc.font('Helvetica').text(String(value || '—')).moveDown(0.45);
+    doc.font('Helvetica-Bold').fontSize(11).text(label + '   ', {continued: true});
+    doc.font('Helvetica').text(String(value || '—')).moveDown(0.85);
   }
   function heading(text) {
-    doc.moveDown().font('Times-Roman').fontSize(20).text(text).moveDown(0.4);
+    doc.moveDown(1.5).font('Times-Roman').fontSize(22).text(text).moveDown(0.4);
   }
-  doc.x=42; doc.y=134;
+  doc.moveTo(42,123).lineTo(552,123).strokeColor('#c6b391').stroke();
+  doc.x = 42;
+  doc.y = 151;
   row('Order reference', merchantOrderId);
   row('Date', new Date((payment && order.updatedAt) || order.createdAt).toLocaleDateString('en-GB'));
   row('Customer', order.customerName);
@@ -1394,8 +1395,14 @@ function generateReceiptPDF(order, res, payment) {
     for (const entry of order.settlementPayments) row(entry.label, formatCurrency(entry.amount));
   }
   if (paid && !isDeposit) {
+    heading('Workmanship warranty');
     row('Warranty start date (handover)', order.handoverDate || '________________');
     doc.fontSize(9).text('12 months from physical handover. Record the date when the piece is delivered.');
+  }
+  if (doc.y < 730) {
+    doc.moveTo(42,749).lineTo(552,749).strokeColor('#c6b391').stroke();
+    doc.font('Helvetica').fontSize(10).fillColor('#786443')
+      .text('Victoria Diamonds Limited  |  info@victoria-diamonds.com', 42, 764);
   }
   addReceiptTermsPage(doc);
   doc.end();
